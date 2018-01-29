@@ -1,6 +1,6 @@
 package com.crypto.cryptoinfo.cryptoinfo.repository.network;
 
-import com.crypto.cryptoinfo.cryptoinfo.repository.pojo.CoinPojo;
+import com.crypto.cryptoinfo.cryptoinfo.repository.db.room.entity.CoinPojo;
 
 import java.util.List;
 
@@ -13,6 +13,9 @@ import static com.crypto.cryptoinfo.cryptoinfo.repository.network.ApiConstants.T
 public interface ApiInterface {
 
     @GET(TICKERS)
-    Observable<List<CoinPojo>> getTickers(@Query("convert") String usd);
+    Observable<List<CoinPojo>> getTickersWithConvert(@Query("convert") String usd);
+
+    @GET(TICKERS)
+    Observable<List<CoinPojo>> getAllTickers();
 
 }

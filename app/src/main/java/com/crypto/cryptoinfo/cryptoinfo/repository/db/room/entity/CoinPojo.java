@@ -1,9 +1,18 @@
-package com.crypto.cryptoinfo.cryptoinfo.repository.pojo;
+package com.crypto.cryptoinfo.cryptoinfo.repository.db.room.entity;
+
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(tableName = "coin")
 public class CoinPojo {
+
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "uid")
+    private int uid;
 
     @SerializedName("id")
     @Expose
@@ -71,6 +80,14 @@ public class CoinPojo {
         this.percentChange24h = percentChange24h;
         this.percentChange7d = percentChange7d;
         this.lastUpdated = lastUpdated;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     public String getId() {
