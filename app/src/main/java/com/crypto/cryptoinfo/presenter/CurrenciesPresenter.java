@@ -1,6 +1,8 @@
 package com.crypto.cryptoinfo.presenter;
 
 
+import android.os.AsyncTask;
+
 import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.network.RestClient;
@@ -40,8 +42,7 @@ public class CurrenciesPresenter implements IPresenter {
     }
 
     private void responseCurrenciesHandler(List<CoinPojo> coinPojos) {
-        App.dbInstance.getCoinDao().deleteAll();
-        App.dbInstance.getCoinDao().insertListCoinPojo(coinPojos);
+        new SaveCoinsAsync().execute(coinPojos);
     }
 
     public void sortListByRank(ArrayList<CoinPojo> list, boolean isSortUp) {
@@ -65,5 +66,15 @@ public class CurrenciesPresenter implements IPresenter {
     @Override
     public void unsubscribe() {
         mCompositeSubscription.unsubscribe();
+    }
+
+    private static class SaveCoinsAsync extends AsyncTask<List<CoinPojo>, Void, Void> {
+
+        @Override
+        protected Void doInBackground(List<CoinPojo>[] lists) {
+            App.dbInstance.getCoinDao().deleteAll();
+            App.dbInstance.getCoinDao().insertListCoinPojo(lists[0]);
+            return null;
+        }
     }
 }

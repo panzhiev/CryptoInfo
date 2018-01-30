@@ -1,12 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    android:background="@color/white"
-    android:orientation="vertical"
-    tools:context=".ui.fragment.allCoinsFragment.AllCoinsFragment">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:animateLayoutChanges="true"
+              android:background="@color/white"
+              android:orientation="vertical"
+              tools:context=".ui.fragment.allCoinsFragment.AllCoinsFragment">
 
     <LinearLayout
         android:id="@+id/ll_sort"
@@ -32,18 +32,18 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:background="@drawable/ic_arrow_up_down_blcak"
-                android:backgroundTint="@color/colorTextDefault" />
+                android:backgroundTint="@color/colorTextDefault"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/rang" />
+                android:text="@string/rang"/>
         </LinearLayout>
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <LinearLayout
             android:id="@+id/ll_sort_price"
@@ -58,22 +58,22 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:background="@drawable/ic_arrow_up_down_blcak"
-                android:backgroundTint="@color/colorTextDefault" />
+                android:backgroundTint="@color/colorTextDefault"/>
 
             <View
                 android:layout_width="@dimen/divider_s"
-                android:layout_height="0dp" />
+                android:layout_height="0dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/usd_symbol" />
+                android:text="@string/usd_symbol"/>
         </LinearLayout>
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <LinearLayout
             android:id="@+id/ll_sort_cap"
@@ -88,18 +88,18 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:background="@drawable/ic_arrow_up_down_blcak"
-                android:backgroundTint="@color/colorTextDefault" />
+                android:backgroundTint="@color/colorTextDefault"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/cap" />
+                android:text="@string/cap"/>
         </LinearLayout>
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <LinearLayout
             android:id="@+id/ll_sort_1h"
@@ -114,22 +114,22 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:background="@drawable/ic_arrow_up_down_blcak"
-                android:backgroundTint="@color/colorTextDefault" />
+                android:backgroundTint="@color/colorTextDefault"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/item_1h" />
+                android:text="@string/item_1h"/>
         </LinearLayout>
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
 
         <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true">
@@ -138,8 +138,9 @@
                 android:id="@+id/iv_close_sort"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:background="@drawable/ic_close_black_24dp"
-                android:backgroundTint="@color/colorTextDefault" />
+                android:backgroundTint="@color/colorTextDefault"/>
         </FrameLayout>
     </LinearLayout>
 
@@ -166,15 +167,16 @@
             android:paddingEnd="8dp"
             android:paddingStart="8dp"
             android:textColor="@color/colorTextDefault"
-            android:textColorHint="@color/colorTextDefault" />
+            android:textColorHint="@color/colorTextDefault"/>
 
         <View
             android:layout_width="@dimen/divider_l"
-            android:layout_height="0dp" />
+            android:layout_height="0dp"/>
 
         <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/divider_s"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:focusable="true">
@@ -183,8 +185,9 @@
                 android:id="@+id/iv_close_search"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:background="@drawable/ic_close_black_24dp"
-                android:backgroundTint="@color/colorTextDefault" />
+                android:backgroundTint="@color/colorTextDefault"/>
         </FrameLayout>
 
     </LinearLayout>
@@ -200,7 +203,7 @@
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:visibility="visible"
-            tools:listitem="@layout/item_currency" />
+            tools:listitem="@layout/item_currency"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </LinearLayout>

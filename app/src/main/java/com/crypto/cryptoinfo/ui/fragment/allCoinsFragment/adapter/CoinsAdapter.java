@@ -11,7 +11,10 @@ import android.widget.TextView;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,18 +38,40 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(CoinsAdapter.ViewHolder holder, int position) {
 
+        Context context = holder.mTextView1h.getContext();
         final CoinPojo coinPojo = mArrayList.get(position);
+
+        String price = coinPojo.getPriceUsd();
+        String formattingPrice;
+        if (price != null && !price.isEmpty()) {
+            formattingPrice = String.format(Locale.getDefault(), "%1$,.2f", Double.parseDouble(price))
+                    + " " + context.getString(R.string.usd_symbol);
+        } else {
+            formattingPrice = "";
+        }
 
         holder.mTextViewSymbol.setText(coinPojo.getSymbol());
         holder.mTextViewCurrencyName.setText(coinPojo.getName());
-        holder.mTextViewPrice.setText(coinPojo.getPriceUsd());
-        holder.mTextViewCoinmarketCap.setText(coinPojo.getMarketCapUsd());
+        holder.mTextViewPrice.setText(formattingPrice);
+
+        String marketCap = coinPojo.getMarketCapUsd();
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator(' ');
+        DecimalFormat df = new DecimalFormat();
+        df.setDecimalFormatSymbols(symbols);
+        df.setGroupingSize(3);
+
+        if (marketCap != null && !marketCap.isEmpty()) {
+            marketCap = df.format(Double.parseDouble(marketCap)) + " " + context.getString(R.string.usd_symbol);
+        } else {
+            marketCap = "";
+        }
+
+        holder.mTextViewCoinmarketCap.setText(marketCap);
 
         String percentChange1h = coinPojo.getPercentChange1h();
         String percentChange24h = coinPojo.getPercentChange24h();
         String percentChange7d = coinPojo.getPercentChange7d();
-
-        Context context = holder.mTextView1h.getContext();
 
         if (percentChange1h != null) {
             if (percentChange1h.contains("-")) {

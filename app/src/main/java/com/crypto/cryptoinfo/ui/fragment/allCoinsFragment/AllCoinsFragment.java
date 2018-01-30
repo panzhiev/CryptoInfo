@@ -123,7 +123,13 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
     }
 
     private void setListeners() {
-        mSwipeRefreshLayout.setOnRefreshListener(() -> mCurrenciesPresenter.getCurrenciesList());
+        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+            mCurrenciesPresenter.getCurrenciesList();
+            if (isVisibleSortLayout) {
+                selectRank();
+                setSortLayoutVisibility();
+            }
+        });
         mIvCloseSort.setOnClickListener(v -> setSortLayoutVisibility());
         mIvCloseSearch.setOnClickListener(v -> setSearchLayoutVisibility());
         mLlSortRank.setOnClickListener(v -> {
