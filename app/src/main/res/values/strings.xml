@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CryptoInfo</string>
+    <string name="app_name">Crypto Info</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -19,4 +19,11 @@
     <string name="news">Новости</string>
     <string name="converter">Конвертер валют</string>
     <string name="connect">Связаться с нами</string>
+    <string name="search">Поиск</string>
+    <string name="rang">Ранг</string>
+    <string name="usd_symbol">$</string>
+    <string name="cap">Кап</string>
+    <string name="item_1h">1ч %</string>
+    <string name="sort">Сортировка</string>
+    <string name="edit">Избранное</string>
 </resources>

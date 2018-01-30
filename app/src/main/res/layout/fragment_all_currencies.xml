@@ -1,25 +1,196 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context="ui.fragment.allCurrenciesFragment.AllCurrenciesFragment">
+    tools:context=".ui.fragment.allCoinsFragment.AllCoinsFragment">
 
-    <Button
-        android:id="@+id/delete_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="delete all" />
+    <LinearLayout
+        android:id="@+id/ll_sort"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:visibility="gone">
 
-    <Button
-        android:id="@+id/get_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="get all" />
+        <LinearLayout
+            android:id="@+id/ll_sort_rank"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_sort_views"
+            android:background="@drawable/sort_enabled_bg"
+            android:gravity="center_vertical"
+            android:paddingEnd="8dp"
+            android:paddingStart="4dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:background="@drawable/ic_arrow_up_down_blcak"
+                android:backgroundTint="@color/colorTextDefault" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/rang" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/ll_sort_price"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_sort_views"
+            android:background="@drawable/sort_disabled_bg"
+            android:gravity="center_vertical"
+            android:paddingEnd="8dp"
+            android:paddingStart="4dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:background="@drawable/ic_arrow_up_down_blcak"
+                android:backgroundTint="@color/colorTextDefault" />
+
+            <View
+                android:layout_width="@dimen/divider_s"
+                android:layout_height="0dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/usd_symbol" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/ll_sort_cap"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_sort_views"
+            android:background="@drawable/sort_disabled_bg"
+            android:gravity="center_vertical"
+            android:paddingEnd="8dp"
+            android:paddingStart="4dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:background="@drawable/ic_arrow_up_down_blcak"
+                android:backgroundTint="@color/colorTextDefault" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cap" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:id="@+id/ll_sort_1h"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/height_sort_views"
+            android:background="@drawable/sort_disabled_bg"
+            android:gravity="center_vertical"
+            android:paddingEnd="8dp"
+            android:paddingStart="4dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:background="@drawable/ic_arrow_up_down_blcak"
+                android:backgroundTint="@color/colorTextDefault" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/item_1h" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/iv_close_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_close_black_24dp"
+                android:backgroundTint="@color/colorTextDefault" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_search"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/activity_horizontal_margin"
+        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:visibility="gone">
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/height_sort_views"
+            android:layout_weight="1"
+            android:background="@drawable/sort_enabled_bg"
+            android:fontFamily="sans-serif-light"
+            android:hint="@string/search"
+            android:inputType="text"
+            android:paddingEnd="8dp"
+            android:paddingStart="8dp"
+            android:textColor="@color/colorTextDefault"
+            android:textColorHint="@color/colorTextDefault" />
+
+        <View
+            android:layout_width="@dimen/divider_l"
+            android:layout_height="0dp" />
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/iv_close_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_close_black_24dp"
+                android:backgroundTint="@color/colorTextDefault" />
+        </FrameLayout>
+
+    </LinearLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_my_nvs"
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -32,5 +203,6 @@
             tools:listitem="@layout/item_currency" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
-
 </LinearLayout>
+
+    <!--<com.wang.avi.AVLoadingIndicatorView--><!--android:id="@+id/loading_indicator"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--app:indicatorColor="@color/colorPrimary"--><!--android:layout_gravity="center"--><!--android:visibility="visible"--><!--app:indicatorName="BallPulseSyncIndicator" />-->
