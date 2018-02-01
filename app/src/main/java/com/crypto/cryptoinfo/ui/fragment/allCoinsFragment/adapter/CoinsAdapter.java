@@ -2,14 +2,19 @@ package com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.amulyakhare.textdrawable.TextDrawable;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.utils.Utils;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -110,6 +115,19 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
             holder.mTextView7d.setText("-");
             holder.mTextView7d.setTextColor(context.getResources().getColor(R.color.colorTextDefault));
         }
+
+        Bitmap bitmap = Utils.getBitmapFromCryptoIconsAssets(context, coinPojo.getSymbol().toLowerCase());
+        if (bitmap != null){
+            holder.mImageViewIcon.setImageBitmap(bitmap);
+        } else {
+            TextDrawable drawable = TextDrawable.builder()
+                    .beginConfig()
+                        .textColor(context.getResources().getColor(R.color.textDisabled))
+                        .fontSize(35)
+                    .endConfig()
+                    .buildRoundRect(coinPojo.getSymbol().length() <= 3 ? coinPojo.getSymbol() : coinPojo.getSymbol().substring(0, 3), Color.LTGRAY, 64);
+            holder.mImageViewIcon.setImageDrawable(drawable);
+        }
     }
 
     public void reloadList(ArrayList<CoinPojo> list) {
@@ -144,6 +162,9 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
 
         @BindView(R.id.tv_percent_change_7d)
         TextView mTextView7d;
+
+        @BindView(R.id.iv_crypto_icon)
+        ImageView mImageViewIcon;
 
         ViewHolder(View v) {
             super(v);
