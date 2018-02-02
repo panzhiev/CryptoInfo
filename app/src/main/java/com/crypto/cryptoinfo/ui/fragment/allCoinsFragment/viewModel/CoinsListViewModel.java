@@ -9,11 +9,11 @@ import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 
 import java.util.List;
 
-public class CurrenciesListViewModel extends ViewModel {
+public class CoinsListViewModel extends ViewModel {
 
     private final LiveData<List<CoinPojo>> coinsListLiveData;
 
-    public CurrenciesListViewModel() {
+    public CoinsListViewModel() {
         coinsListLiveData = App.dbInstance.getCoinDao().getAll();
     }
 

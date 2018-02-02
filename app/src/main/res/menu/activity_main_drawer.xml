@@ -7,11 +7,11 @@
         <item
             android:id="@+id/nav_favourites"
             android:icon="@drawable/ic_favorite_black_24dp"
-            android:title="@string/favourites" />
+            android:title="@string/title_fav_coins" />
         <item
-            android:id="@+id/nav_all_currencies"
+            android:id="@+id/nav_all_coins"
             android:icon="@drawable/ic_format_list_bulleted_black_24dp"
-            android:title="@string/all_currencies" />
+            android:title="@string/title_all_coins" />
         <item
             android:id="@+id/nav_feed"
             android:icon="@drawable/ic_rss_feed_black_24dp"

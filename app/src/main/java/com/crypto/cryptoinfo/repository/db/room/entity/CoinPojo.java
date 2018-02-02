@@ -59,6 +59,8 @@ public class CoinPojo {
     @Expose
     private String lastUpdated;
 
+    private boolean isFavourite;
+
     /**
      * No args constructor for use in serialization
      */
@@ -201,6 +203,14 @@ public class CoinPojo {
 
     public void setLastUpdated(String lastUpdated) {
         this.lastUpdated = lastUpdated;
+    }
+
+    public boolean isFavourite() {
+        return isFavourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        isFavourite = favourite;
     }
 
     @Override

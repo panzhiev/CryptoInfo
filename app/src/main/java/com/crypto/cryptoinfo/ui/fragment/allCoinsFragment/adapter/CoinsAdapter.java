@@ -35,7 +35,7 @@ public class CoinsAdapter extends RecyclerView.Adapter<CoinsAdapter.ViewHolder> 
     @Override
     public CoinsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_currency, parent, false);
+                .inflate(R.layout.item_coin, parent, false);
 
         return new ViewHolder(v);
     }

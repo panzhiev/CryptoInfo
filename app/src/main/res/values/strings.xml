@@ -11,11 +11,10 @@
     <string name="dialog_error_title">Error</string>
     <string name="error_message">Could not connect to the server</string>
     <string name="loading">Loading…</string>
-    <string name="list">Все валюты</string>
     <string name="share">Поделиться</string>
     <string name="settings">Настройки</string>
-    <string name="favourites">Избранные</string>
-    <string name="all_currencies">Все валюты</string>
+    <string name="title_fav_coins">Избранные</string>
+    <string name="title_all_coins">Все валюты</string>
     <string name="news">Новости</string>
     <string name="converter">Конвертер валют</string>
     <string name="connect">Связаться с нами</string>

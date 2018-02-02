@@ -17,6 +17,9 @@ public interface CoinDao {
     @Query("SELECT * FROM coin")
     LiveData<List<CoinPojo>> getAll();
 
+    @Query("SELECT * FROM coin WHERE isFavourite LIKE 1")
+    LiveData<List<CoinPojo>> getFavourites();
+
     @Insert
     void insertAll(CoinPojo... coinPojos);
 

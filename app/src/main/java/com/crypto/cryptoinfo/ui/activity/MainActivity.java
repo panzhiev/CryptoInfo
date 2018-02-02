@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.AllCoinsFragment;
+import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.FavouritesCoinsFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         AllCoinsFragment allCoinsFragment = AllCoinsFragment.newInstance();
-
         navigator(allCoinsFragment, allCoinsFragment.getCurrentTag());
     }
 
@@ -56,9 +56,19 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        IBaseFragment iBaseFragment = null;
+        for (Fragment f : fragmentManager.getFragments()) {
+            if (f instanceof IBaseFragment) {
+                iBaseFragment = (IBaseFragment) f;
+                break;
+            }
+        }
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else if (iBaseFragment != null) {
+            iBaseFragment.onBackPressed();
         } else {
             super.onBackPressed();
         }
@@ -92,19 +102,25 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-//        if (id == R.id.nav_camera) {
-//            // Handle the camera action
-//        } else if (id == R.id.nav_gallery) {
-//
-//        } else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
+        if (id == R.id.nav_favourites) {
+            FavouritesCoinsFragment favouritesCoinsFragment = FavouritesCoinsFragment.newInstance();
+            navigator(favouritesCoinsFragment, favouritesCoinsFragment.getCurrentTag());
+
+        } else if (id == R.id.nav_all_coins) {
+            AllCoinsFragment allCoinsFragment = AllCoinsFragment.newInstance();
+            navigator(allCoinsFragment, allCoinsFragment.getCurrentTag());
+
+        } else if (id == R.id.nav_feed) {
+
+        } else if (id == R.id.nav_convert) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_connect) {
+
+        } else if (id == R.id.nav_settings) {
+
+        }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -118,6 +134,7 @@ public class MainActivity extends AppCompatActivity
         if (!(f != null && f.isVisible())) {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .replace(R.id.container_content_main, fragment, TAG)
                     .commit();
         }
@@ -127,6 +144,7 @@ public class MainActivity extends AppCompatActivity
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .replace(R.id.container_content_main, fragment, ((IBaseFragment) fragment).getCurrentTag())
                 .commit();
     }

@@ -1,8 +1,8 @@
-package com.crypto.cryptoinfo.ui.fragment.allCoinsFragment;
+package com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment;
 
 
 import android.app.ProgressDialog;
-import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,17 +15,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.ui.activity.favActivity.FavActivity;
 import com.crypto.cryptoinfo.ui.activity.MainActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
+import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.AllCoinsFragment;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter.CoinsAdapter;
-import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.viewModel.CoinsListViewModel;
+import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.viewModel.CoinsFavListViewModel;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.Utils;
 
@@ -34,49 +35,37 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.Disposable;
 
-import static com.jakewharton.rxbinding2.widget.RxTextView.textChanges;
-
-public class AllCoinsFragment extends Fragment implements IBaseFragment {
+public class FavouritesCoinsFragment extends Fragment implements IBaseFragment {
 
     private final String TAG = getClass().getSimpleName();
 
-    @BindView(R.id.rv_all_coins)
+    @BindView(R.id.rv_fav_coins)
     public RecyclerView mRvCurrencies;
 
-    @BindView(R.id.ll_sort)
+    @BindView(R.id.ll_sort_fav)
     public LinearLayout mLlSort;
 
-    @BindView(R.id.ll_search)
-    public LinearLayout mLlSearch;
-
-    @BindView(R.id.ll_sort_rank)
+    @BindView(R.id.ll_sort_rank_fav)
     public LinearLayout mLlSortRank;
 
-    @BindView(R.id.ll_sort_price)
+    @BindView(R.id.ll_sort_price_fav)
     public LinearLayout mLlSortPrice;
 
-    @BindView(R.id.et_search)
-    public EditText mEtSearch;
-
-    @BindView(R.id.ll_sort_cap)
+    @BindView(R.id.ll_sort_cap_fav)
     public LinearLayout mLlSortCap;
 
-    @BindView(R.id.ll_sort_1h)
+    @BindView(R.id.ll_sort_1h_fav)
     public LinearLayout mLlSort1h;
 
-    @BindView(R.id.swipe_refresh)
+    @BindView(R.id.swipe_refresh_fav)
     public SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @BindView(R.id.iv_close_sort)
+    @BindView(R.id.iv_close_sort_fav)
     public ImageView mIvCloseSort;
 
-    @BindView(R.id.iv_close_search)
-    public ImageView mIvCloseSearch;
-
     private CoinsAdapter mCoinsAdapter;
-    private CoinsListViewModel mCoinsListViewModel;
+    private CoinsFavListViewModel mCoinsFavListViewModel;
     private CoinsPresenter mCoinsPresenter;
     private ProgressDialog mProgressDialog;
     private List<CoinPojo> mCoinPojoList = new ArrayList<>();
@@ -87,14 +76,13 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
     private boolean isSortPriceUp = false;
     private boolean isSortCapUp = false;
     private boolean isSort1hUp = false;
-    private Disposable searchDisposable;
 
-    public AllCoinsFragment() {
+    public FavouritesCoinsFragment() {
         // Required empty public constructor
     }
 
-    public static AllCoinsFragment newInstance() {
-        return new AllCoinsFragment();
+    public static FavouritesCoinsFragment newInstance() {
+        return new FavouritesCoinsFragment();
     }
 
     @Override
@@ -110,22 +98,22 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView started");
-        View view = inflater.inflate(R.layout.fragment_all_coins, container, false);
+        View view = inflater.inflate(R.layout.fragment_fav_coins, container, false);
         ButterKnife.bind(this, view);
         setUpRecyclerView();
         setListeners();
-        ((MainActivity) getActivity()).setToolbarTitle(this.getResources().getString(R.string.title_all_coins));
+        ((MainActivity) getActivity()).setToolbarTitle(this.getResources().getString(R.string.title_fav_coins));
 
-        mCoinsListViewModel = ViewModelProviders.of(this).get(CoinsListViewModel.class);
-        mCoinsListViewModel.getCoinsList().observe(this, coins -> {
-                    mCoinPojoList = coins;
-                    setList((ArrayList) coins);
-                }
-        );
-
-        searchDisposable = textChanges(mEtSearch)
-                .map(inputText -> filter(inputText.toString()))
-                .subscribe(list -> setList((ArrayList) list), Throwable::printStackTrace);
+//        mCoinsFavListViewModel = ViewModelProviders.of(this).get(CoinsFavListViewModel.class);
+//        mCoinsFavListViewModel.getCoinsFavList().observe(this, coins -> {
+//                    mCoinPojoList = coins;
+//                    setList((ArrayList) coins);
+//                }
+//        );
+//
+//        searchDisposable = textChanges(mEtSearch)
+//                .map(inputText -> filter(inputText.toString()))
+//                .subscribe(list -> setList((ArrayList) list), Throwable::printStackTrace);
 
         return view;
     }
@@ -156,14 +144,8 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
                 selectRank();
                 setSortLayoutVisibility();
             }
-
-            if (isVisibleSearchLayout) {
-                setSearchLayoutVisibility();
-                mEtSearch.setText("");
-            }
         });
         mIvCloseSort.setOnClickListener(v -> setSortLayoutVisibility());
-        mIvCloseSearch.setOnClickListener(v -> setSearchLayoutVisibility());
         mLlSortRank.setOnClickListener(v -> {
             selectRank();
             mCoinsPresenter.sortListByRank((ArrayList<CoinPojo>) mCoinPojoList, isSortRankUp);
@@ -188,21 +170,13 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
     }
 
     private void setSortLayoutVisibility() {
+        assert mLlSort != null;
         if (!isVisibleSortLayout) {
             mLlSort.setVisibility(View.VISIBLE);
         } else {
             mLlSort.setVisibility(View.GONE);
         }
         isVisibleSortLayout = !isVisibleSortLayout;
-    }
-
-    private void setSearchLayoutVisibility() {
-        if (!isVisibleSearchLayout) {
-            mLlSearch.setVisibility(View.VISIBLE);
-        } else {
-            mLlSearch.setVisibility(View.GONE);
-        }
-        isVisibleSearchLayout = !isVisibleSearchLayout;
     }
 
     private void selectRank() {
@@ -258,7 +232,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
 
     @Override
     public void onBackPressed() {
-
+        ((MainActivity) getActivity()).navigatorBackPressed(AllCoinsFragment.newInstance());
     }
 
     public String getCurrentTag() {
@@ -272,7 +246,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.all_menu, menu);
+        inflater.inflate(R.menu.favourites_menu, menu);
         Utils.setToolbarIconsColor(getContext(), menu, R.color.colorTextDefault);
     }
 
@@ -280,16 +254,10 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_sort:
-                if (isVisibleSearchLayout) {
-                    setSearchLayoutVisibility();
-                }
                 setSortLayoutVisibility();
                 return true;
-            case R.id.action_search:
-                if (isVisibleSortLayout) {
-                    setSortLayoutVisibility();
-                }
-                setSearchLayoutVisibility();
+            case R.id.action_edit_favourites:
+                startActivity(new Intent(getContext(), FavActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -319,10 +287,6 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
         super.onDestroy();
         if (mCoinsPresenter != null) {
             mCoinsPresenter.unsubscribe();
-        }
-
-        if (!searchDisposable.isDisposed()) {
-            searchDisposable.dispose();
         }
     }
 }
