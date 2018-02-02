@@ -263,4 +263,52 @@ public class CoinPojo {
 
         return 1;
     };
+
+    public static Comparator<CoinPojo> sCapCoinComparatorUp = (c1, c2) -> {
+
+        String capString1 = c1.getMarketCapUsd();
+        if (capString1 == null) capString1 = "0";
+        String capString2 = c2.getMarketCapUsd();
+        if (capString2 == null) capString2 = "0";
+
+        double cap1 = Double.parseDouble(capString1);
+        double cap2 = Double.parseDouble(capString2);
+        return Double.compare(cap1, cap2);
+    };
+
+    public static Comparator<CoinPojo> sCapCoinComparatorDown = (c1, c2) -> {
+
+        String capString1 = c1.getMarketCapUsd();
+        if (capString1 == null) capString1 = "0";
+        String capString2 = c2.getMarketCapUsd();
+        if (capString2 == null) capString2 = "0";
+
+        double cap1 = Double.parseDouble(capString1);
+        double cap2 = Double.parseDouble(capString2);
+        return Double.compare(cap2, cap1);
+    };
+
+    public static Comparator<CoinPojo> s1hCoinComparatorUp = (c1, c2) -> {
+
+        String persent1h1 = c1.getPercentChange1h();
+        if (persent1h1 == null) persent1h1 = "0";
+        String persent1h2 = c2.getPercentChange1h();
+        if (persent1h2 == null) persent1h2 = "0";
+
+        double percent1 = Double.parseDouble(persent1h1);
+        double percent2 = Double.parseDouble(persent1h2);
+        return Double.compare(percent1, percent2);
+    };
+
+    public static Comparator<CoinPojo> s1hCoinComparatorDown = (c1, c2) -> {
+
+        String persent1h1 = c1.getPercentChange1h();
+        if (persent1h1 == null) persent1h1 = "0";
+        String persent1h2 = c2.getPercentChange1h();
+        if (persent1h2 == null) persent1h2 = "0";
+
+        double percent1 = Double.parseDouble(persent1h1);
+        double percent2 = Double.parseDouble(persent1h2);
+        return Double.compare(percent2, percent1);
+    };
 }

@@ -15,11 +15,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.crypto.cryptoinfo.R;
-import com.crypto.cryptoinfo.presenter.CurrenciesPresenter;
+import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.ui.activity.MainActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
@@ -33,6 +34,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.Disposable;
+
+import static com.jakewharton.rxbinding2.widget.RxTextView.textChanges;
 
 public class AllCoinsFragment extends Fragment implements IBaseFragment {
 
@@ -53,6 +57,9 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
     @BindView(R.id.ll_sort_price)
     public LinearLayout mLlSortPrice;
 
+    @BindView(R.id.et_search)
+    public EditText mEtSearch;
+
     @BindView(R.id.ll_sort_cap)
     public LinearLayout mLlSortCap;
 
@@ -70,14 +77,17 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
 
     private CoinsAdapter mCoinsAdapter;
     private CurrenciesListViewModel mCurrenciesListViewModel;
-    private CurrenciesPresenter mCurrenciesPresenter;
+    private CoinsPresenter mCoinsPresenter;
     private ProgressDialog mProgressDialog;
-    private List<CoinPojo> mCoinPojoList;
+    private List<CoinPojo> mCoinPojoList = new ArrayList<>();
 
     private boolean isVisibleSortLayout = false;
     private boolean isVisibleSearchLayout = false;
     private boolean isSortRankUp = false;
     private boolean isSortPriceUp = false;
+    private boolean isSortCapUp = false;
+    private boolean isSort1hUp = false;
+    private Disposable searchDisposable;
 
     public AllCoinsFragment() {
         // Required empty public constructor
@@ -91,8 +101,8 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if (mCurrenciesPresenter == null) {
-            mCurrenciesPresenter = new CurrenciesPresenter(this);
+        if (mCoinsPresenter == null) {
+            mCoinsPresenter = new CoinsPresenter(this);
         }
     }
 
@@ -110,11 +120,28 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
         mCurrenciesListViewModel.getCoinsList().observe(this, coins -> {
                     mCoinPojoList = coins;
                     setList((ArrayList) coins);
-                    Log.d(TAG, mCoinPojoList.toString());
                 }
         );
 
+        searchDisposable = textChanges(mEtSearch)
+                .map(inputText -> filter(inputText.toString()))
+                .subscribe(list -> setList((ArrayList) list), Throwable::printStackTrace);
+
         return view;
+    }
+
+    private List<CoinPojo> filter(String input) {
+
+        List<CoinPojo> searchingCoinPogoList = new ArrayList<>();
+
+        if (!mCoinPojoList.isEmpty()) {
+            for (CoinPojo coinPojo : mCoinPojoList) {
+                if (coinPojo.getSymbol().toLowerCase().contains(input.toLowerCase()) || coinPojo.getName().toLowerCase().contains(input.toLowerCase())) {
+                    searchingCoinPogoList.add(coinPojo);
+                }
+            }
+        }
+        return searchingCoinPogoList;
     }
 
     private void setUpRecyclerView() {
@@ -124,27 +151,40 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
 
     private void setListeners() {
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
-            mCurrenciesPresenter.getCurrenciesList();
+            mCoinsPresenter.getCurrenciesList();
             if (isVisibleSortLayout) {
                 selectRank();
                 setSortLayoutVisibility();
+            }
+
+            if (isVisibleSearchLayout) {
+                setSearchLayoutVisibility();
+                mEtSearch.setText("");
             }
         });
         mIvCloseSort.setOnClickListener(v -> setSortLayoutVisibility());
         mIvCloseSearch.setOnClickListener(v -> setSearchLayoutVisibility());
         mLlSortRank.setOnClickListener(v -> {
             selectRank();
-            mCurrenciesPresenter.sortListByRank((ArrayList<CoinPojo>) mCoinPojoList, isSortRankUp);
+            mCoinsPresenter.sortListByRank((ArrayList<CoinPojo>) mCoinPojoList, isSortRankUp);
             isSortRankUp = !isSortRankUp;
         });
 
         mLlSortPrice.setOnClickListener(v -> {
             selectPrice();
-            mCurrenciesPresenter.sortListByPrice((ArrayList<CoinPojo>) mCoinPojoList, isSortPriceUp);
+            mCoinsPresenter.sortListByPrice((ArrayList<CoinPojo>) mCoinPojoList, isSortPriceUp);
             isSortPriceUp = !isSortPriceUp;
         });
-        mLlSortCap.setOnClickListener(v -> selectCap());
-        mLlSort1h.setOnClickListener(v -> select1h());
+        mLlSortCap.setOnClickListener(v -> {
+            selectCap();
+            mCoinsPresenter.sortListByCap((ArrayList<CoinPojo>) mCoinPojoList, isSortCapUp);
+            isSortCapUp = !isSortCapUp;
+        });
+        mLlSort1h.setOnClickListener(v -> {
+            select1h();
+            mCoinsPresenter.sortListBy1h((ArrayList<CoinPojo>) mCoinPojoList, isSort1hUp);
+            isSort1hUp = !isSort1hUp;
+        });
     }
 
     private void setSortLayoutVisibility() {
@@ -277,8 +317,12 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mCurrenciesPresenter != null) {
-            mCurrenciesPresenter.unsubscribe();
+        if (mCoinsPresenter != null) {
+            mCoinsPresenter.unsubscribe();
+        }
+
+        if (!searchDisposable.isDisposed()) {
+            searchDisposable.dispose();
         }
     }
 }

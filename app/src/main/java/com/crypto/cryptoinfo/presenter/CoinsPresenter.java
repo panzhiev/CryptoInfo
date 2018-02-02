@@ -17,14 +17,14 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class CurrenciesPresenter implements IPresenter {
+public class CoinsPresenter implements IPresenter {
 
     private final String TAG = getClass().getSimpleName();
     private ILoadingView fragment;
     private Subscription mSubscriptionCurrencies;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
-    public CurrenciesPresenter(ILoadingView fragment) {
+    public CoinsPresenter(ILoadingView fragment) {
         this.fragment = fragment;
     }
 
@@ -63,13 +63,31 @@ public class CurrenciesPresenter implements IPresenter {
         fragment.setList(list);
     }
 
+    public void sortListByCap(ArrayList<CoinPojo> list, boolean isSortUp) {
+        if (isSortUp) {
+            Collections.sort(list, CoinPojo.sCapCoinComparatorUp);
+        } else {
+            Collections.sort(list, CoinPojo.sCapCoinComparatorDown);
+        }
+        fragment.setList(list);
+    }
+
+    public void sortListBy1h(ArrayList<CoinPojo> list, boolean isSortUp) {
+        if (isSortUp) {
+            Collections.sort(list, CoinPojo.s1hCoinComparatorUp);
+        } else {
+            Collections.sort(list, CoinPojo.s1hCoinComparatorDown);
+        }
+        fragment.setList(list);
+    }
+
     @Override
     public void unsubscribe() {
         mCompositeSubscription.unsubscribe();
     }
 
-    private static class SaveCoinsAsync extends AsyncTask<List<CoinPojo>, Void, Void> {
 
+    private static class SaveCoinsAsync extends AsyncTask<List<CoinPojo>, Void, Void> {
         @Override
         protected Void doInBackground(List<CoinPojo>[] lists) {
             App.dbInstance.getCoinDao().deleteAll();
