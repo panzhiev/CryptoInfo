@@ -321,4 +321,19 @@ public class CoinPojo {
         double percent2 = Double.parseDouble(persent1h2);
         return Double.compare(percent2, percent1);
     };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CoinPojo coinPojo = (CoinPojo) o;
+
+        return id != null ? id.equals(coinPojo.id) : coinPojo.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

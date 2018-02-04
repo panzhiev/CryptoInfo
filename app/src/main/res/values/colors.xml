@@ -25,5 +25,6 @@
     <color name="colorItemNewAddressBitcoin">#F9C7A3</color>
     <color name="colorEditItemAddress">#D8743C</color>
     <color name="translucent">#20000000</color>
+    <color name="transparent">#00000000</color>
     <color name="deleteItemAddressBookColor">#DA3975</color>
 </resources>

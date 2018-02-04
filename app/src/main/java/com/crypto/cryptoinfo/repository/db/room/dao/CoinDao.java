@@ -11,16 +11,25 @@ import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 
 import java.util.List;
 
+import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
+
 @Dao
 public interface CoinDao {
 
     @Query("SELECT * FROM coin")
-    LiveData<List<CoinPojo>> getAll();
+    List<CoinPojo> getAll();
 
-    @Query("SELECT * FROM coin WHERE isFavourite LIKE 1")
+    @Query("SELECT * FROM coin")
+    LiveData<List<CoinPojo>> getAllAsLiveData();
+
+//    @Query("SELECT * FROM coin WHERE isFavourite LIKE 1")
+//    LiveData<List<CoinPojo>> getFavourites();
+
+    @Query("SELECT * FROM coin "
+            + "INNER JOIN fav ON coin.id = fav.id")
     LiveData<List<CoinPojo>> getFavourites();
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     void insertAll(CoinPojo... coinPojos);
 
     @Insert

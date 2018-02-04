@@ -2,6 +2,7 @@ package com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment;
 
 
 import android.app.ProgressDialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,12 +22,13 @@ import android.widget.LinearLayout;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
-import com.crypto.cryptoinfo.ui.activity.favActivity.FavActivity;
 import com.crypto.cryptoinfo.ui.activity.MainActivity;
+import com.crypto.cryptoinfo.ui.activity.favActivity.FavActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.AllCoinsFragment;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter.CoinsAdapter;
 import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.viewModel.CoinsFavListViewModel;
+import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.Utils;
 
@@ -104,13 +106,13 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment {
         setListeners();
         ((MainActivity) getActivity()).setToolbarTitle(this.getResources().getString(R.string.title_fav_coins));
 
-//        mCoinsFavListViewModel = ViewModelProviders.of(this).get(CoinsFavListViewModel.class);
-//        mCoinsFavListViewModel.getCoinsFavList().observe(this, coins -> {
-//                    mCoinPojoList = coins;
-//                    setList((ArrayList) coins);
-//                }
-//        );
-//
+        mCoinsFavListViewModel = ViewModelProviders.of(this).get(CoinsFavListViewModel.class);
+        mCoinsFavListViewModel.getCoinsFavList().observe(this, coins -> {
+                    mCoinPojoList = coins;
+                    setList((ArrayList) coins);
+                }
+        );
+
 //        searchDisposable = textChanges(mEtSearch)
 //                .map(inputText -> filter(inputText.toString()))
 //                .subscribe(list -> setList((ArrayList) list), Throwable::printStackTrace);
@@ -212,7 +214,7 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment {
         Log.d(TAG, "setList started");
         if (mCoinsAdapter == null) {
             Log.d(TAG, "mCoinsAdapter == null");
-            mCoinsAdapter = new CoinsAdapter(list);
+            mCoinsAdapter = new CoinsAdapter(list, Constants.COIN_DEFAULT_VIEW_TYPE);
             mRvCurrencies.setAdapter(mCoinsAdapter);
         } else {
             Log.d(TAG, "mCoinsAdapter != null");

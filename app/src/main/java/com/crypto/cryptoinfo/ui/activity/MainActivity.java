@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     FragmentManager fragmentManager = getSupportFragmentManager();
+    DrawerLayout drawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show());
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -74,6 +75,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void onCloseNavigationDrawer() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        }
+    }
+
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
@@ -103,12 +110,30 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_favourites) {
-            FavouritesCoinsFragment favouritesCoinsFragment = FavouritesCoinsFragment.newInstance();
-            navigator(favouritesCoinsFragment, favouritesCoinsFragment.getCurrentTag());
+
+            onCloseNavigationDrawer();
+            new Thread(() -> {
+                try {
+                    Thread.sleep(250);
+                    FavouritesCoinsFragment favouritesCoinsFragment = FavouritesCoinsFragment.newInstance();
+                    navigator(favouritesCoinsFragment, favouritesCoinsFragment.getCurrentTag());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
 
         } else if (id == R.id.nav_all_coins) {
-            AllCoinsFragment allCoinsFragment = AllCoinsFragment.newInstance();
-            navigator(allCoinsFragment, allCoinsFragment.getCurrentTag());
+
+            onCloseNavigationDrawer();
+            new Thread(() -> {
+                try {
+                    Thread.sleep(250);
+                    AllCoinsFragment allCoinsFragment = AllCoinsFragment.newInstance();
+                    navigator(allCoinsFragment, allCoinsFragment.getCurrentTag());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
 
         } else if (id == R.id.nav_feed) {
 
@@ -122,10 +147,9 @@ public class MainActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 
     public void navigator(Fragment fragment, String TAG) {
 

@@ -14,7 +14,7 @@ public class CoinsListViewModel extends ViewModel {
     private final LiveData<List<CoinPojo>> coinsListLiveData;
 
     public CoinsListViewModel() {
-        coinsListLiveData = App.dbInstance.getCoinDao().getAll();
+        coinsListLiveData = App.dbInstance.getCoinDao().getAllAsLiveData();
     }
 
     public LiveData<List<CoinPojo>> getCoinsList() {

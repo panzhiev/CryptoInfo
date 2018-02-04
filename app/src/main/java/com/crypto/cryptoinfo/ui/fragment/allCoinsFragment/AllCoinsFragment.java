@@ -26,6 +26,7 @@ import com.crypto.cryptoinfo.ui.activity.MainActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter.CoinsAdapter;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.viewModel.CoinsListViewModel;
+import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.Utils;
 
@@ -238,7 +239,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
         Log.d(TAG, "setList started");
         if (mCoinsAdapter == null) {
             Log.d(TAG, "mCoinsAdapter == null");
-            mCoinsAdapter = new CoinsAdapter(list);
+            mCoinsAdapter = new CoinsAdapter(list, Constants.COIN_DEFAULT_VIEW_TYPE);
             mRvCurrencies.setAdapter(mCoinsAdapter);
         } else {
             Log.d(TAG, "mCoinsAdapter != null");

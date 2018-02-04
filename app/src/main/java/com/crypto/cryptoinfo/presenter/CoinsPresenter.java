@@ -86,7 +86,6 @@ public class CoinsPresenter implements IPresenter {
         mCompositeSubscription.unsubscribe();
     }
 
-
     private static class SaveCoinsAsync extends AsyncTask<List<CoinPojo>, Void, Void> {
         @Override
         protected Void doInBackground(List<CoinPojo>[] lists) {

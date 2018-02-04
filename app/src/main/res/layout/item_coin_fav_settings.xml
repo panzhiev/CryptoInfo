@@ -28,14 +28,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/iv_crypto_icon"
+            android:layout_marginStart="58dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv_symbol_currency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/textSizeSmall"
+                android:textSize="@dimen/textSizeMedium"
                 tools:text="BTC" />
 
             <TextView
@@ -46,11 +46,14 @@
         </LinearLayout>
 
         <CheckBox
-            android:id="@+id/checkbox"
+            android:id="@+id/checkbox_fav"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:button="@drawable/check_box_fav" />
+            android:gravity="center"
+            android:button="@color/transparent"
+            android:background="@drawable/check_box_fav"/>
 
     </RelativeLayout>
 
