@@ -254,7 +254,8 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
 
     @Override
     public void showError() {
-        DialogFactory.createGenericErrorDialog(getContext(), R.string.error_message);
+        Log.d(TAG, "showError");
+        DialogFactory.createGenericErrorDialog(getContext(), R.string.error_message).show();
     }
 
     @Override

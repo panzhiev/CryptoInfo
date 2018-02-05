@@ -229,7 +229,7 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment {
 
     @Override
     public void showError() {
-        DialogFactory.createGenericErrorDialog(getContext(), R.string.error_message);
+        DialogFactory.createGenericErrorDialog(getContext(), R.string.error_message).show();
     }
 
     @Override
