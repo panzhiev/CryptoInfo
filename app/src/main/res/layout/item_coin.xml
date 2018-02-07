@@ -33,7 +33,7 @@
                     android:layout_width="@dimen/dimen_currency_icon"
                     android:layout_height="@dimen/dimen_currency_icon"
                     android:layout_marginRight="6dp"
-                    tools:src="@mipmap/ic_launcher_round"/>
+                    tools:src="@drawable/ic_star_checked"/>
 
                 <TextView
                     android:id="@+id/tv_symbol_currency"

@@ -2,35 +2,44 @@ package com.crypto.cryptoinfo.presenter;
 
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
-import com.crypto.cryptoinfo.repository.network.RestClient;
+import com.crypto.cryptoinfo.repository.db.room.entity.PointTimePrice;
 import com.crypto.cryptoinfo.ui.fragment.ILoadingView;
+import com.google.gson.JsonElement;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import retrofit2.Response;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class CoinsPresenter implements IPresenter {
+public class CoinsPresenter extends BasePresenter implements IPresenter {
 
     private final String TAG = getClass().getSimpleName();
     private ILoadingView fragment;
-    private Subscription mSubscriptionCurrencies;
+    private Subscription mSubscriptionCurrencies, mSubscriptionGetCharts;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     public CoinsPresenter(ILoadingView fragment) {
+        super();
         this.fragment = fragment;
     }
 
     public void getCurrenciesList() {
 
-        mSubscriptionCurrencies = RestClient.getApiInterface()
+        mSubscriptionCurrencies = mModel
                 .getAllTickers()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -43,6 +52,51 @@ public class CoinsPresenter implements IPresenter {
 
     private void responseCurrenciesHandler(List<CoinPojo> coinPojos) {
         new SaveCoinsAsync().execute(coinPojos);
+    }
+
+    public void getChartsData(String coin, String pastTime, String presentTime) {
+        mSubscriptionGetCharts = mModel
+                .getGraphsPerPeriod(coin, pastTime, presentTime)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> fragment.showProgressIndicator())
+                .doOnTerminate(() -> fragment.hideProgressIndicator())
+                .subscribe(this::responseChartsDataHandler);
+    }
+
+    private void responseChartsDataHandler(Response<JsonElement> response) {
+        Log.d(TAG, "responseChartsDataHandler started");
+        JSONObject jsonObject;
+        if (response.isSuccessful()) {
+            Log.d(TAG, "responseChartsDataHandler response.isSuccessful()");
+            try {
+                jsonObject = new JSONObject(response.body().toString());
+                Log.d(TAG, jsonObject.toString());
+
+                JSONArray jsonArray = jsonObject.getJSONArray("price_usd");
+//                String priceUsd = String.valueOf();
+//                Log.d(TAG, priceUsd);
+
+                List<PointTimePrice> list = new ArrayList<>();
+                for (int i = 0; i<jsonArray.length(); i++){
+                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                    list.add(new PointTimePrice(jsonArray1.getString(0), jsonArray1.getString(1)));
+                }
+                Log.d(TAG, list.toString());
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+
+            }
+        } else {
+            Log.d(TAG, "responseChartsDataHandler response.unSuccessful()");
+            fragment.showError();
+            try {
+                Log.d("TAG", response.errorBody().string());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void sortListByRank(ArrayList<CoinPojo> list, boolean isSortUp) {

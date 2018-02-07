@@ -153,6 +153,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
     private void setListeners() {
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mCoinsPresenter.getCurrenciesList();
+            mCoinsPresenter.getChartsData("bitcoin", "1517915664000", "1518002064000");
             if (isVisibleSortLayout) {
                 selectRank();
                 setSortLayoutVisibility();
@@ -260,7 +261,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
 
     @Override
     public void onBackPressed() {
-
+        getActivity().onBackPressed();
     }
 
     public String getCurrentTag() {

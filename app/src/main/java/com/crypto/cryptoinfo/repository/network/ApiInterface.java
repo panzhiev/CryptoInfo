@@ -1,10 +1,13 @@
 package com.crypto.cryptoinfo.repository.network;
 
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.google.gson.JsonElement;
 
 import java.util.List;
 
+import retrofit2.Response;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
@@ -18,4 +21,9 @@ public interface ApiInterface {
     @GET(TICKERS)
     Observable<List<CoinPojo>> getAllTickers();
 
+    @GET("{coin}/{pastTime}/{presentTime}/")
+    Observable<Response<JsonElement>> getGraphsPerPeriod(
+            @Path("coin") String coinFullName,
+            @Path("pastTime") String pastTime,
+            @Path("presentTime") String presentTime);
 }

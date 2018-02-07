@@ -13,8 +13,7 @@ import static com.crypto.cryptoinfo.repository.network.ApiConstants.BASE_URL;
 
 public class RestClient {
 
-    public static ApiInterface getApiInterface() {
-
+    public static ApiInterface getApiInterface(String baseUrl) {
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -23,7 +22,7 @@ public class RestClient {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(BASE_URL)
+                .baseUrl(baseUrl)
                 .build();
 
         return retrofit.create(ApiInterface.class);
