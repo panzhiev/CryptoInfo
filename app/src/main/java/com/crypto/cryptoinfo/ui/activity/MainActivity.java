@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity
 
     public void navigator(Fragment fragment, String TAG) {
 
-        Fragment f = getSupportFragmentManager().findFragmentByTag(TAG);
+        Fragment f = fragmentManager.findFragmentByTag(TAG);
 
         if (!(f != null && f.isVisible())) {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

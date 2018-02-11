@@ -3,6 +3,8 @@ package com.crypto.cryptoinfo.repository.db.room.entity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -10,7 +12,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.Comparator;
 
 @Entity(tableName = "coin")
-public class CoinPojo {
+public class CoinPojo implements Parcelable{
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "uid")
@@ -43,6 +45,9 @@ public class CoinPojo {
     @SerializedName("available_supply")
     @Expose
     private String availableSupply;
+    @SerializedName("max_supply")
+    @Expose
+    private String maxSupply;
     @SerializedName("total_supply")
     @Expose
     private String totalSupply;
@@ -67,7 +72,7 @@ public class CoinPojo {
     public CoinPojo() {
     }
 
-    public CoinPojo(String id, String name, String symbol, String rank, String priceUsd, String priceBtc, String _24hVolumeUsd, String marketCapUsd, String availableSupply, String totalSupply, String percentChange1h, String percentChange24h, String percentChange7d, String lastUpdated) {
+    public CoinPojo(String id, String name, String symbol, String rank, String priceUsd, String priceBtc, String _24hVolumeUsd, String marketCapUsd, String availableSupply, String maxSupply, String totalSupply, String percentChange1h, String percentChange24h, String percentChange7d, String lastUpdated) {
         super();
         this.id = id;
         this.name = name;
@@ -78,12 +83,44 @@ public class CoinPojo {
         this._24hVolumeUsd = _24hVolumeUsd;
         this.marketCapUsd = marketCapUsd;
         this.availableSupply = availableSupply;
+        this.maxSupply = maxSupply;
         this.totalSupply = totalSupply;
         this.percentChange1h = percentChange1h;
         this.percentChange24h = percentChange24h;
         this.percentChange7d = percentChange7d;
         this.lastUpdated = lastUpdated;
     }
+
+    private CoinPojo(Parcel in) {
+        this.uid = in.readInt();
+        this.id = in.readString();
+        this.name = in.readString();
+        this.symbol = in.readString();
+        this.rank = in.readString();
+        this.priceUsd = in.readString();
+        this.priceBtc = in.readString();
+        this._24hVolumeUsd = in.readString();
+        this.marketCapUsd = in.readString();
+        this.availableSupply = in.readString();
+        this.maxSupply = in.readString();
+        this.totalSupply = in.readString();
+        this.percentChange1h = in.readString();
+        this.percentChange24h = in.readString();
+        this.percentChange7d = in.readString();
+        this.lastUpdated = in.readString();
+    }
+
+    public static final Creator<CoinPojo> CREATOR = new Creator<CoinPojo>() {
+        @Override
+        public CoinPojo createFromParcel(Parcel in) {
+            return new CoinPojo(in);
+        }
+
+        @Override
+        public CoinPojo[] newArray(int size) {
+            return new CoinPojo[size];
+        }
+    };
 
     public int getUid() {
         return uid;
@@ -213,6 +250,14 @@ public class CoinPojo {
         isFavourite = favourite;
     }
 
+    public String getMaxSupply() {
+        return maxSupply;
+    }
+
+    public void setMaxSupply(String maxSupply) {
+        this.maxSupply = maxSupply;
+    }
+
     @Override
     public String toString() {
         return "CoinPojo{" +
@@ -226,11 +271,13 @@ public class CoinPojo {
                 ", _24hVolumeUsd='" + _24hVolumeUsd + '\'' +
                 ", marketCapUsd='" + marketCapUsd + '\'' +
                 ", availableSupply='" + availableSupply + '\'' +
+                ", maxSupply='" + maxSupply + '\'' +
                 ", totalSupply='" + totalSupply + '\'' +
                 ", percentChange1h='" + percentChange1h + '\'' +
                 ", percentChange24h='" + percentChange24h + '\'' +
                 ", percentChange7d='" + percentChange7d + '\'' +
                 ", lastUpdated='" + lastUpdated + '\'' +
+                ", isFavourite=" + isFavourite +
                 '}' + "\n";
     }
 
@@ -335,5 +382,30 @@ public class CoinPojo {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(uid);
+        parcel.writeString(id);
+        parcel.writeString(name);
+        parcel.writeString(symbol);
+        parcel.writeString(rank);
+        parcel.writeString(priceUsd);
+        parcel.writeString(priceBtc);
+        parcel.writeString(_24hVolumeUsd);
+        parcel.writeString(marketCapUsd);
+        parcel.writeString(availableSupply);
+        parcel.writeString(maxSupply);
+        parcel.writeString(totalSupply);
+        parcel.writeString(percentChange1h);
+        parcel.writeString(percentChange24h);
+        parcel.writeString(percentChange7d);
+        parcel.writeString(lastUpdated);
     }
 }

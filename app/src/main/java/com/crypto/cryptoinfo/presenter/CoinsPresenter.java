@@ -54,9 +54,9 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
         new SaveCoinsAsync().execute(coinPojos);
     }
 
-    public void getChartsData(String coin, String pastTime, String presentTime) {
+    public void getChartsData(String coin, String pastTime) {
         mSubscriptionGetCharts = mModel
-                .getGraphsPerPeriod(coin, pastTime, presentTime)
+                .getGraphsPerPeriod(coin, pastTime, String.valueOf(System.currentTimeMillis() / 1000L))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> fragment.showProgressIndicator())

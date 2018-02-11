@@ -1,35 +1,31 @@
-package com.crypto.cryptoinfo.ui.fragment.coinChartsFragment;
+package com.crypto.cryptoinfo.ui.fragment.chartsCoinFragment;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.utils.DialogFactory;
-import com.crypto.cryptoinfo.utils.Utils;
 
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 
-public class CoinChartsFragment extends Fragment implements IBaseFragment {
+public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
     private final String TAG = getClass().getSimpleName();
 
-    public CoinChartsFragment() {
+    public ChartsCoinFragment() {
         // Required empty public constructor
     }
 
-    public static CoinChartsFragment newInstance() {
-        return new CoinChartsFragment();
+    public static ChartsCoinFragment newInstance() {
+        return new ChartsCoinFragment();
     }
 
     @Override
@@ -42,7 +38,7 @@ public class CoinChartsFragment extends Fragment implements IBaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView started");
-        View view = inflater.inflate(R.layout.fragment_coin_charts, container, false);
+        View view = inflater.inflate(R.layout.fragment_charts_coin, container, false);
         ButterKnife.bind(this, view);
         setListeners();
 
@@ -82,25 +78,6 @@ public class CoinChartsFragment extends Fragment implements IBaseFragment {
         super.onDestroyView();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.all_menu, menu);
-        Utils.setToolbarIconsColor(getContext(), menu, R.color.colorTextDefault);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_sort:
-
-                return true;
-            case R.id.action_search:
-
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     public void showProgressIndicator() {

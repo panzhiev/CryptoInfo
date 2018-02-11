@@ -18,12 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.ui.activity.FavActivity;
 import com.crypto.cryptoinfo.ui.activity.MainActivity;
-import com.crypto.cryptoinfo.ui.activity.favActivity.FavActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.AllCoinsFragment;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter.CoinsAdapter;
@@ -38,7 +39,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FavouritesCoinsFragment extends Fragment implements IBaseFragment {
+public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, CoinsAdapter.OnCoinItemClickListener {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -214,7 +215,7 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment {
         Log.d(TAG, "setList started");
         if (mCoinsAdapter == null) {
             Log.d(TAG, "mCoinsAdapter == null");
-            mCoinsAdapter = new CoinsAdapter(list, Constants.COIN_DEFAULT_VIEW_TYPE);
+            mCoinsAdapter = new CoinsAdapter(list, Constants.COIN_DEFAULT_VIEW_TYPE, this);
             mRvCurrencies.setAdapter(mCoinsAdapter);
         } else {
             Log.d(TAG, "mCoinsAdapter != null");
@@ -290,5 +291,10 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment {
         if (mCoinsPresenter != null) {
             mCoinsPresenter.unsubscribe();
         }
+    }
+
+    @Override
+    public void onCoinItemClick(CoinPojo coinPojo) {
+        Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show();
     }
 }

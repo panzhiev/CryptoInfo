@@ -27,4 +27,5 @@
 
     <!-- Views -->
     <dimen name="height_sort_views">32dp</dimen>
+    <dimen name="tab_layout_height">48dp</dimen>
 </resources>
