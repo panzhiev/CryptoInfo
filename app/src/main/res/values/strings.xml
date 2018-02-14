@@ -10,6 +10,8 @@
     <string name="dialog_action_ok">OK</string>
     <string name="dialog_error_title">Error</string>
     <string name="error_message">Could not connect to the server</string>
+
+
     <string name="loading">Loading…</string>
     <string name="share">Поделиться</string>
     <string name="settings">Настройки</string>
