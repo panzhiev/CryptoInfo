@@ -3,6 +3,7 @@ package com.crypto.cryptoinfo.ui.fragment.allCoinsFragment;
 
 import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -22,6 +23,7 @@ import android.widget.LinearLayout;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.activity.MainActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter.CoinsAdapter;
@@ -37,9 +39,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 
+import static com.crypto.cryptoinfo.utils.Constants.COIN;
 import static com.jakewharton.rxbinding2.widget.RxTextView.textChanges;
 
-public class AllCoinsFragment extends Fragment implements IBaseFragment {
+public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAdapter.OnCoinItemClickListener {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -153,7 +156,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
     private void setListeners() {
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mCoinsPresenter.getCurrenciesList();
-            mCoinsPresenter.getChartsData("bitcoin", "1517915664000", "1518002064000");
+            mCoinsPresenter.getChartsData("bitcoin", "1517915664000");
             if (isVisibleSortLayout) {
                 selectRank();
                 setSortLayoutVisibility();
@@ -240,7 +243,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
         Log.d(TAG, "setList started");
         if (mCoinsAdapter == null) {
             Log.d(TAG, "mCoinsAdapter == null");
-            mCoinsAdapter = new CoinsAdapter(list, Constants.COIN_DEFAULT_VIEW_TYPE);
+            mCoinsAdapter = new CoinsAdapter(list, Constants.COIN_DEFAULT_VIEW_TYPE, this);
             mRvCurrencies.setAdapter(mCoinsAdapter);
         } else {
             Log.d(TAG, "mCoinsAdapter != null");
@@ -261,7 +264,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
 
     @Override
     public void onBackPressed() {
-        getActivity().onBackPressed();
+        getActivity().finishAffinity();
     }
 
     public String getCurrentTag() {
@@ -327,5 +330,12 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment {
         if (!searchDisposable.isDisposed()) {
             searchDisposable.dispose();
         }
+    }
+
+    @Override
+    public void onCoinItemClick(CoinPojo coinPojo) {
+        Intent intent = new Intent(getContext(), CoinInfoActivity.class);
+        intent.putExtra(COIN, coinPojo);
+        startActivity(intent);
     }
 }

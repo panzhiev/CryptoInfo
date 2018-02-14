@@ -1,4 +1,4 @@
-package com.crypto.cryptoinfo.ui.activity.favActivity;
+package com.crypto.cryptoinfo.ui.activity;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter.CoinsAdapter;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.viewModel.CoinsListViewModel;
 import com.crypto.cryptoinfo.utils.Constants;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FavActivity extends AppCompatActivity {
+public class FavActivity extends AppCompatActivity implements CoinsAdapter.OnCoinItemClickListener{
 
     private final String TAG = getClass().getSimpleName();
 
@@ -71,7 +72,7 @@ public class FavActivity extends AppCompatActivity {
         Log.d(TAG, "setList started");
         if (mCoinsAdapter == null) {
             Log.d(TAG, "mCoinsAdapter == null");
-            mCoinsAdapter = new CoinsAdapter(list, Constants.COIN_FAV_SETTINGS_VIEW_TYPE);
+            mCoinsAdapter = new CoinsAdapter(list, Constants.COIN_FAV_SETTINGS_VIEW_TYPE, this);
             mRvCoins.setAdapter(mCoinsAdapter);
         } else {
             Log.d(TAG, "mCoinsAdapter != null");
@@ -82,5 +83,10 @@ public class FavActivity extends AppCompatActivity {
     private void setUpRecyclerView() {
         mRvCoins.setLayoutManager(new LinearLayoutManager(this));
         mRvCoins.setHasFixedSize(true);
+    }
+
+    @Override
+    public void onCoinItemClick(CoinPojo coinPojo) {
+
     }
 }

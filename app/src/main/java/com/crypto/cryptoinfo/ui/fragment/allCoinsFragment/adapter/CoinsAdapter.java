@@ -5,12 +5,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -34,15 +34,21 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private ArrayList<CoinPojo> mArrayList = new ArrayList<>();
     private ArrayList<CoinFavPojo> mCoinFavPojos = (ArrayList<CoinFavPojo>) App.dbInstance.getCoinFavDao().getAll();
     private ArrayList<String> mCoinFavString = new ArrayList<>();
+    private OnCoinItemClickListener mOnCoinItemClickListener;
 
     private int viewType;
 
-    public CoinsAdapter(ArrayList<CoinPojo> list, int viewType) {
+    public interface OnCoinItemClickListener {
+        void onCoinItemClick(CoinPojo coinPojo);
+    }
+
+    public CoinsAdapter(ArrayList<CoinPojo> list, int viewType, OnCoinItemClickListener listener) {
         mArrayList = list;
         this.viewType = viewType;
         for (CoinFavPojo coinFavPojo : mCoinFavPojos) {
             mCoinFavString.add(coinFavPojo.getId());
         }
+        mOnCoinItemClickListener = listener;
     }
 
     @Override
@@ -121,6 +127,9 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         @BindView(R.id.iv_crypto_icon)
         ImageView mImageViewIcon;
+
+        @BindView(R.id.rl_item_coin)
+        RelativeLayout mRlItemCoin;
 
         ViewHolderDefaultCoinItem(View v) {
             super(v);
@@ -244,6 +253,8 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     .buildRoundRect(coinPojo.getSymbol().length() <= 3 ? coinPojo.getSymbol() : coinPojo.getSymbol().substring(0, 3), Color.LTGRAY, 64);
             holder.mImageViewIcon.setImageDrawable(drawable);
         }
+
+        holder.mRlItemCoin.setOnClickListener(view -> mOnCoinItemClickListener.onCoinItemClick(coinPojo));
     }
 
     private void configureViewHolderFavCoin(ViewHolderFavCoinSettingsItem holder, int position) {
