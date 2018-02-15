@@ -20,6 +20,7 @@ import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
+import com.crypto.cryptoinfo.ui.fragment.detailsCoinFragment.adapter.MarketsAdapter;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.Utils;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -97,6 +98,7 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     private CoinsPresenter mCoinsPresenter;
 
     private CoinPojo mCoinPojo;
+    private MarketsAdapter mMarketsAdapter;
 
     public DetailsCoinFragment() {
         // Required empty public constructor
@@ -145,7 +147,24 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
 
     @Override
     public void setList(ArrayList list) {
+        Log.d(TAG, "setList started");
 
+        if (list == null || list.isEmpty()) {
+            Log.d(TAG, "list null or empty");
+            //TODO: add here textview visibility with text "Have no makets yet"
+            return;
+        } else {
+            //TODO: add here textview visibility
+        }
+
+        if (mMarketsAdapter == null) {
+            Log.d(TAG, "mCoinsAdapter == null");
+            mMarketsAdapter = new MarketsAdapter(list);
+            mRvMarkets.setAdapter(mMarketsAdapter);
+        } else {
+            Log.d(TAG, "mCoinsAdapter != null");
+            mMarketsAdapter.reloadList(list);
+        }
     }
 
     @Override

@@ -312,7 +312,7 @@
                             <android.support.v7.widget.RecyclerView
                                 android:id="@+id/rv_markets"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="240dp" />
 
                             <com.wang.avi.AVLoadingIndicatorView
                                 android:id="@+id/loading_indicator_markets"
