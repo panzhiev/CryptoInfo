@@ -6,6 +6,10 @@
     <color name="colorPrimaryDark">#ac893c</color>
     <color name="colorAccent">#616161</color>
 
+    <!-- colors for cards-->
+    <color name="colorPrimaryLight1">#dfb863</color>
+
+
     <color name="colorYellowLight">#F6F5D1</color>
     <color name="buttonDisabled">#a0a0a0</color>
     <color name="colorTextDefault">#90000000</color>

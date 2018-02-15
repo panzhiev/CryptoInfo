@@ -9,8 +9,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static com.crypto.cryptoinfo.repository.network.ApiConstants.BASE_URL;
-
 public class RestClient {
 
     public static ApiInterface getApiInterface(String baseUrl) {

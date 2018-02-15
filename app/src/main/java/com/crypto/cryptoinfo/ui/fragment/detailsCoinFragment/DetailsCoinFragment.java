@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +16,13 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.Utils;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -82,8 +86,16 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     @BindView(R.id.tv_percent_change_7d_value)
     TextView mTvPercentChange7dValue;
 
+    @BindView(R.id.rv_markets)
+    RecyclerView mRvMarkets;
+
+    @BindView(R.id.loading_indicator_markets)
+    AVLoadingIndicatorView mAVLoadingIndicatorView;
 
     private final String TAG = getClass().getSimpleName();
+
+    private CoinsPresenter mCoinsPresenter;
+
     private CoinPojo mCoinPojo;
 
     public DetailsCoinFragment() {
@@ -97,6 +109,7 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCoinsPresenter = new CoinsPresenter(this);
     }
 
     @Override
@@ -105,10 +118,77 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
         Log.d(TAG, "onCreateView started");
         View view = inflater.inflate(R.layout.fragment_details_coin, container, false);
         ButterKnife.bind(this, view);
+
+        setUpRecyclerView();
         setListeners();
 
         mCoinPojo = ((CoinInfoActivity) getActivity()).getCoinPojo();
+        parseCoinInfo();
 
+        mCoinsPresenter.getCoinSnapshot(mCoinPojo.getSymbol(), "USD");
+
+        return view;
+    }
+
+    private void setUpRecyclerView() {
+        mRvMarkets.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRvMarkets.setHasFixedSize(true);
+    }
+
+    private String formattingDoubleValues(String rawValue) {
+        return getString(R.string.usd_symbol) + " " + String.format(Locale.getDefault(), "%1$,.2f",
+                Double.parseDouble(rawValue));
+    }
+
+    private void setListeners() {
+    }
+
+    @Override
+    public void setList(ArrayList list) {
+
+    }
+
+    @Override
+    public void reloadList(ArrayList list) {
+
+    }
+
+    @Override
+    public void showError() {
+        Log.d(TAG, "showError");
+        DialogFactory.createGenericErrorDialog(getContext(), R.string.error_message).show();
+    }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
+    public String getCurrentTag() {
+        return TAG;
+    }
+
+    @Override
+    public void showProgressIndicator() {
+
+        mAVLoadingIndicatorView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgressIndicator() {
+        mAVLoadingIndicatorView.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mCoinsPresenter != null) {
+            mCoinsPresenter.unsubscribe();
+        }
+    }
+
+    public void parseCoinInfo() {
         Bitmap bitmap = Utils.getBitmapFromCryptoIconsAssets(getContext(), mCoinPojo.getSymbol().toLowerCase());
         if (bitmap == null) {
             TextDrawable drawable = TextDrawable.builder()
@@ -172,7 +252,7 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
         String percent1h = mCoinPojo.getPercentChange1h();
         if (percent1h == null) {
             mTvPercentChange1hValue.setText("-");
-        } else if (percent1h.contains("-")){
+        } else if (percent1h.contains("-")) {
             mTvPercentChange1hValue.setText(percent1h + "%" + getString(R.string.arrow_down));
             mTvPercentChange1hValue.setTextColor(getResources().getColor(R.color.red));
         } else {
@@ -183,7 +263,7 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
         String percent24h = mCoinPojo.getPercentChange24h();
         if (percent24h == null) {
             mTvPercentChange24hValue.setText("-");
-        } else if (percent24h.contains("-")){
+        } else if (percent24h.contains("-")) {
             mTvPercentChange24hValue.setText(percent24h + "%" + getString(R.string.arrow_down));
             mTvPercentChange24hValue.setTextColor(getResources().getColor(R.color.red));
         } else {
@@ -194,77 +274,12 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
         String percent7d = mCoinPojo.getPercentChange7d();
         if (percent7d == null) {
             mTvPercentChange7dValue.setText("-");
-        } else if (percent7d.contains("-")){
+        } else if (percent7d.contains("-")) {
             mTvPercentChange7dValue.setText(percent7d + "%" + getString(R.string.arrow_down));
             mTvPercentChange7dValue.setTextColor(getResources().getColor(R.color.red));
         } else {
             mTvPercentChange7dValue.setText("+" + percent7d + "%" + getString(R.string.arrow_up));
             mTvPercentChange7dValue.setTextColor(getResources().getColor(R.color.green));
         }
-
-        return view;
-    }
-
-    private String formattingDoubleValues(String rawValue) {
-        return getString(R.string.usd_symbol) + " " + String.format(Locale.getDefault(), "%1$,.2f",
-                Double.parseDouble(rawValue));
-    }
-
-    private void setListeners() {
-    }
-
-    @Override
-    public void setList(ArrayList list) {
-
-    }
-
-    @Override
-    public void reloadList(ArrayList list) {
-
-    }
-
-    @Override
-    public void showError() {
-        Log.d(TAG, "showError");
-        DialogFactory.createGenericErrorDialog(getContext(), R.string.error_message).show();
-    }
-
-    @Override
-    public void onBackPressed() {
-
-    }
-
-    public String getCurrentTag() {
-        return TAG;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
-    public void showProgressIndicator() {
-//        mProgressDialog = DialogFactory.createProgressDialog(getContext(), R.string.loading);
-//        mProgressDialog.show();
-//        mAVLoadingIndicatorView.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void hideProgressIndicator() {
-
-    }
-
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-//        if (mCoinsPresenter != null) {
-//            mCoinsPresenter.unsubscribe();
-//        }
-//
-//        if (!searchDisposable.isDisposed()) {
-//            searchDisposable.dispose();
-//        }
     }
 }

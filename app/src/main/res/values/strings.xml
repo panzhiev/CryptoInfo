@@ -23,9 +23,21 @@
     <string name="rang">Rank</string>
     <string name="usd_symbol">$</string>
     <string name="cap">Cap</string>
-    <string name="item_1h">1ч %</string>
+    <string name="item_1h">1h %</string>
     <string name="sort">Sorting</string>
     <string name="edit">Favourites</string>
+
+    <!-- Coin info card -->
+    <string name="global_info">| Global Info</string>
+    <string name="markets">Markets</string>
+    <string name="price">Price</string>
+    <string name="market_cap">Market Cap</string>
+    <string name="available_supply">Available Supply</string>
+    <string name="max_supply">Max Supply</string>
+    <string name="volume_24_hours">Volume (24 hours)</string>
+    <string name="percent_change_1_hour">Percent Change (1 hour)</string>
+    <string name="percent_change_24_hours">Percent Change (24 hours)</string>
+    <string name="percent_change_7_days">Percent Change (7 days)</string>
     <string name="_6_hours">6h</string>
     <string name="_1_day">1d</string>
     <string name="_7_days">7d</string>
@@ -35,5 +47,7 @@
     <string name="arrow_up">ꜛ</string>
     <string name="arrow_down">ꜜ</string>
 
-    <string name="global_info">| Global Info</string>
+    <!-- // -->
+
+
 </resources>

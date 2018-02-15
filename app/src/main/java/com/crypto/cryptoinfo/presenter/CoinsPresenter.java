@@ -2,10 +2,12 @@ package com.crypto.cryptoinfo.presenter;
 
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.repository.db.room.entity.MarketPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.PointTimePrice;
 import com.crypto.cryptoinfo.ui.fragment.ILoadingView;
 import com.google.gson.JsonElement;
@@ -29,7 +31,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
 
     private final String TAG = getClass().getSimpleName();
     private ILoadingView fragment;
-    private Subscription mSubscriptionCurrencies, mSubscriptionGetCharts;
+    private Subscription mSubscriptionCurrencies, mSubscriptionGetCharts, mSubscriptionGetCoinSnapshot;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     public CoinsPresenter(ILoadingView fragment) {
@@ -62,6 +64,56 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                 .doOnSubscribe(() -> fragment.showProgressIndicator())
                 .doOnTerminate(() -> fragment.hideProgressIndicator())
                 .subscribe(this::responseChartsDataHandler);
+
+        mCompositeSubscription.add(mSubscriptionGetCharts);
+    }
+
+    public void getCoinSnapshot(@NonNull String fromSymbol, @NonNull String toSymbol) {
+
+        mSubscriptionGetCoinSnapshot = mModel.getCoinSnapshot(fromSymbol, toSymbol)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> fragment.showProgressIndicator())
+                .doOnTerminate(() -> fragment.hideProgressIndicator())
+                .subscribe(this::responseCoinSnapshotHandler);
+
+        mCompositeSubscription.add(mSubscriptionGetCoinSnapshot);
+    }
+
+    private void responseCoinSnapshotHandler(Response<JsonElement> response) {
+        Log.d(TAG, "responseCoinSnapshotHandler started");
+        JSONObject jsonObject;
+
+        if (response.isSuccessful()) {
+            Log.d(TAG, "responseCoinSnapshotHandler response.isSuccessful()");
+            try {
+
+                jsonObject = new JSONObject(response.body().toString());
+                Log.d(TAG, jsonObject.toString());
+
+                JSONArray jsonArrayExchanges = jsonObject
+                        .getJSONObject("Data")
+                        .getJSONArray("Exchanges");
+
+                ArrayList<MarketPojo> marketPojoArrayList = new ArrayList<>();
+
+                for (int i = 0; i < jsonArrayExchanges.length(); i++) {
+                    JSONObject jsonObjectMarket = (JSONObject) jsonArrayExchanges.get(i);
+//                    Log.d(TAG, jsonObjectMarket.getString("MARKET") + "\n" + jsonObjectMarket.getString("PRICE"));
+
+                    marketPojoArrayList.add(new MarketPojo(
+                            jsonObjectMarket.getString("MARKET"),
+                            jsonObjectMarket.getString("PRICE"),
+                            jsonObjectMarket.getString("LASTUPDATE")
+                    ));
+
+                    fragment.setList(marketPojoArrayList);
+                }
+
+            } catch (NullPointerException | JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void responseChartsDataHandler(Response<JsonElement> response) {
@@ -78,7 +130,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
 //                Log.d(TAG, priceUsd);
 
                 List<PointTimePrice> list = new ArrayList<>();
-                for (int i = 0; i<jsonArray.length(); i++){
+                for (int i = 0; i < jsonArray.length(); i++) {
                     JSONArray jsonArray1 = jsonArray.getJSONArray(i);
                     list.add(new PointTimePrice(jsonArray1.getString(0), jsonArray1.getString(1)));
                 }

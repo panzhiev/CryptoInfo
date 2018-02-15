@@ -11,6 +11,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
+import static com.crypto.cryptoinfo.repository.network.ApiConstants.COIN_SNAPSHOT;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.TICKERS;
 
 public interface ApiInterface {
@@ -26,4 +27,7 @@ public interface ApiInterface {
             @Path("coin") String coinFullName,
             @Path("pastTime") String pastTime,
             @Path("presentTime") String presentTime);
+
+    @GET(COIN_SNAPSHOT)
+    Observable<Response<JsonElement>> getCoinSnapshot(@Query("fsym") String fromSymbol, @Query("tsym") String toSymbol);
 }
