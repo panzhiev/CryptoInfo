@@ -29,7 +29,7 @@
 
     <!-- Coin info card -->
     <string name="global_info">| Global Info</string>
-    <string name="markets">Markets</string>
+    <string name="exchanges">Exchanges</string>
     <string name="price">Price</string>
     <string name="market_cap">Market Cap</string>
     <string name="available_supply">Available Supply</string>
@@ -46,6 +46,7 @@
     <string name="_1_year">1y</string>
     <string name="arrow_up">ꜛ</string>
     <string name="arrow_down">ꜜ</string>
+    <string name="no_available_exchanges">No available exchanges</string>
 
     <!-- // -->
 

@@ -156,11 +156,11 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     private void setListeners() {
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mCoinsPresenter.getCurrenciesList();
-            mCoinsPresenter.getChartsData("bitcoin", "1517915664000");
-            if (isVisibleSortLayout) {
-                selectRank();
-                setSortLayoutVisibility();
-            }
+//            mCoinsPresenter.getChartsData("bitcoin", "1517915664000");
+//            if (isVisibleSortLayout) {
+//                selectRank();
+//                setSortLayoutVisibility();
+//            }
 
             if (isVisibleSearchLayout) {
                 setSearchLayoutVisibility();

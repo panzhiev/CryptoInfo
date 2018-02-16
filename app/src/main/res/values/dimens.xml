@@ -20,6 +20,7 @@
     <dimen name="dimen_currency_icon">32dp</dimen>
 
     <!-- Dividers -->
+    <dimen name="divider_xs">4dp</dimen>
     <dimen name="divider_s">8dp</dimen>
     <dimen name="divider_m">12dp</dimen>
     <dimen name="divider_l">16dp</dimen>

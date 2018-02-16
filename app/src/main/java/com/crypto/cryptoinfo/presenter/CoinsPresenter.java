@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
-import com.crypto.cryptoinfo.repository.db.room.entity.MarketPojo;
+import com.crypto.cryptoinfo.repository.db.room.entity.ExchangePojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.PointTimePrice;
 import com.crypto.cryptoinfo.ui.fragment.ILoadingView;
 import com.google.gson.JsonElement;
@@ -63,7 +63,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> fragment.showProgressIndicator())
                 .doOnTerminate(() -> fragment.hideProgressIndicator())
-                .subscribe(this::responseChartsDataHandler);
+                .subscribe(this::responseChartsDataHandler, e -> fragment.showError());
 
         mCompositeSubscription.add(mSubscriptionGetCharts);
     }
@@ -75,7 +75,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> fragment.showProgressIndicator())
                 .doOnTerminate(() -> fragment.hideProgressIndicator())
-                .subscribe(this::responseCoinSnapshotHandler);
+                .subscribe(this::responseCoinSnapshotHandler, e -> fragment.showError());
 
         mCompositeSubscription.add(mSubscriptionGetCoinSnapshot);
     }
@@ -83,6 +83,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
     private void responseCoinSnapshotHandler(Response<JsonElement> response) {
         Log.d(TAG, "responseCoinSnapshotHandler started");
         JSONObject jsonObject;
+        ArrayList<ExchangePojo> exchangePojoArrayList = new ArrayList<>();
 
         if (response.isSuccessful()) {
             Log.d(TAG, "responseCoinSnapshotHandler response.isSuccessful()");
@@ -95,23 +96,22 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                         .getJSONObject("Data")
                         .getJSONArray("Exchanges");
 
-                ArrayList<MarketPojo> marketPojoArrayList = new ArrayList<>();
-
                 for (int i = 0; i < jsonArrayExchanges.length(); i++) {
                     JSONObject jsonObjectMarket = (JSONObject) jsonArrayExchanges.get(i);
 //                    Log.d(TAG, jsonObjectMarket.getString("MARKET") + "\n" + jsonObjectMarket.getString("PRICE"));
 
-                    marketPojoArrayList.add(new MarketPojo(
+                    exchangePojoArrayList.add(new ExchangePojo(
                             jsonObjectMarket.getString("MARKET"),
                             jsonObjectMarket.getString("PRICE"),
                             jsonObjectMarket.getString("LASTUPDATE")
                     ));
-
-                    fragment.setList(marketPojoArrayList);
                 }
+
+                fragment.setList(exchangePojoArrayList);
 
             } catch (NullPointerException | JSONException e) {
                 e.printStackTrace();
+                fragment.setList(exchangePojoArrayList);
             }
         }
     }

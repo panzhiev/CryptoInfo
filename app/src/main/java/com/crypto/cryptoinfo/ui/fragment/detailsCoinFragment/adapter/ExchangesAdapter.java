@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.crypto.cryptoinfo.R;
-import com.crypto.cryptoinfo.repository.db.room.entity.MarketPojo;
+import com.crypto.cryptoinfo.repository.db.room.entity.ExchangePojo;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,11 +19,12 @@ import java.util.TimeZone;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MarketsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class ExchangesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<MarketPojo> mArrayList = new ArrayList<>();
+    private ArrayList<ExchangePojo> mArrayList = new ArrayList<>();
 
-    public MarketsAdapter(ArrayList<MarketPojo> list) {
+    public ExchangesAdapter(ArrayList<ExchangePojo> list) {
+        mArrayList = list;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class MarketsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         configureViewHolder(holder, position);
     }
 
-    public void reloadList(ArrayList<MarketPojo> list) {
+    public void reloadList(ArrayList<ExchangePojo> list) {
         mArrayList = list;
         notifyDataSetChanged();
     }
@@ -73,13 +74,13 @@ public class MarketsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private void configureViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         ViewHolder viewHolder = (ViewHolder) holder;
-        final MarketPojo marketPojo = mArrayList.get(position);
+        final ExchangePojo exchangePojo = mArrayList.get(position);
 
-        viewHolder.mTvName.setText(marketPojo.getName());
-        viewHolder.mTvPrice.setText("$" + marketPojo.getPrice());
+        viewHolder.mTvName.setText(exchangePojo.getName());
+        viewHolder.mTvPrice.setText("$" + exchangePojo.getPrice());
 
         try {
-            Date date = new Date(Long.parseLong(marketPojo.getLastUpdate()) * 1000L);
+            Date date = new Date(Long.parseLong(exchangePojo.getLastUpdate()) * 1000L);
             SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss z", Locale.getDefault());
             sdf.setTimeZone(TimeZone.getDefault());
             String formattedDate = sdf.format(date);
@@ -87,6 +88,5 @@ public class MarketsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 }

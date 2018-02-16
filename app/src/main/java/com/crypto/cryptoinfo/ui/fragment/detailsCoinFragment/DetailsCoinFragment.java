@@ -20,7 +20,7 @@ import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
-import com.crypto.cryptoinfo.ui.fragment.detailsCoinFragment.adapter.MarketsAdapter;
+import com.crypto.cryptoinfo.ui.fragment.detailsCoinFragment.adapter.ExchangesAdapter;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.Utils;
 import com.wang.avi.AVLoadingIndicatorView;
@@ -35,70 +35,53 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
 
     @BindView(R.id.iv_coin_icon)
     ImageView mIvCoinIcon;
-
     @BindView(R.id.tv_coin_global_info)
     TextView mTvCoinNameSymbol;
-
     @BindView(R.id.tv_price)
     TextView mTvPrice;
-
     @BindView(R.id.tv_price_value)
     TextView mTvPriceValue;
-
     @BindView(R.id.tv_market_cap)
     TextView mTvMarketCap;
-
     @BindView(R.id.tv_market_cap_value)
     TextView mTvMarketCapValue;
-
     @BindView(R.id.tv_available_supply)
     TextView mTvAvailableSupply;
-
     @BindView(R.id.tv_available_supply_value)
     TextView mTvAvailableSupplyValue;
-
     @BindView(R.id.tv_max_supply)
     TextView mTvMaxSupply;
-
     @BindView(R.id.tv_max_supply_value)
     TextView mTvMaxSupplyValue;
-
     @BindView(R.id.tv_24h_volume)
     TextView mTvVolume24h;
-
     @BindView(R.id.tv_24h_volume_value)
     TextView mTvVolume24hValue;
-
     @BindView(R.id.tv_percent_change_1h)
     TextView mTvPercentChange1h;
-
     @BindView(R.id.tv_percent_change_1h_value)
     TextView mTvPercentChange1hValue;
-
     @BindView(R.id.tv_percent_change_24h)
     TextView mTvPercentChange24h;
-
     @BindView(R.id.tv_percent_change_24h_value)
     TextView mTvPercentChange24hValue;
-
     @BindView(R.id.tv_percent_change_7d)
     TextView mTvPercentChange7d;
-
     @BindView(R.id.tv_percent_change_7d_value)
     TextView mTvPercentChange7dValue;
-
     @BindView(R.id.rv_markets)
-    RecyclerView mRvMarkets;
-
+    RecyclerView mRvExchanges;
     @BindView(R.id.loading_indicator_markets)
     AVLoadingIndicatorView mAVLoadingIndicatorView;
+    @BindView(R.id.tv_no_exchanges)
+    TextView mTvNoExchanges;
 
     private final String TAG = getClass().getSimpleName();
 
     private CoinsPresenter mCoinsPresenter;
 
     private CoinPojo mCoinPojo;
-    private MarketsAdapter mMarketsAdapter;
+    private ExchangesAdapter mExchangesAdapter;
 
     public DetailsCoinFragment() {
         // Required empty public constructor
@@ -133,8 +116,8 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     }
 
     private void setUpRecyclerView() {
-        mRvMarkets.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRvMarkets.setHasFixedSize(true);
+        mRvExchanges.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRvExchanges.setHasFixedSize(true);
     }
 
     private String formattingDoubleValues(String rawValue) {
@@ -151,19 +134,23 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
 
         if (list == null || list.isEmpty()) {
             Log.d(TAG, "list null or empty");
+            mTvNoExchanges.setVisibility(View.VISIBLE);
             //TODO: add here textview visibility with text "Have no makets yet"
             return;
         } else {
+            mTvNoExchanges.setVisibility(View.GONE);
             //TODO: add here textview visibility
         }
 
-        if (mMarketsAdapter == null) {
-            Log.d(TAG, "mCoinsAdapter == null");
-            mMarketsAdapter = new MarketsAdapter(list);
-            mRvMarkets.setAdapter(mMarketsAdapter);
+        Log.d(TAG, list.toString());
+
+        if (mExchangesAdapter == null) {
+            Log.d(TAG, "mExchangesAdapter == null");
+            mExchangesAdapter = new ExchangesAdapter(list);
+            mRvExchanges.setAdapter(mExchangesAdapter);
         } else {
             Log.d(TAG, "mCoinsAdapter != null");
-            mMarketsAdapter.reloadList(list);
+            mExchangesAdapter.reloadList(list);
         }
     }
 

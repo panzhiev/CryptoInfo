@@ -8,6 +8,7 @@
 
     <!-- colors for cards-->
     <color name="colorPrimaryLight1">#dfb863</color>
+    <color name="colorPrimaryXLight">#e2cb98</color>
 
 
     <color name="colorYellowLight">#F6F5D1</color>

@@ -1,13 +1,13 @@
 package com.crypto.cryptoinfo.repository.db.room.entity;
 
 
-public class MarketPojo {
+public class ExchangePojo {
 
     private String name;
     private String price;
     private String lastUpdate;
 
-    public MarketPojo(String name, String price, String lastUpdate) {
+    public ExchangePojo(String name, String price, String lastUpdate) {
         this.name = name;
         this.price = price;
         this.lastUpdate = lastUpdate;
@@ -15,7 +15,7 @@ public class MarketPojo {
 
     @Override
     public String toString() {
-        return "MarketPojo{" +
+        return "ExchangePojo{" +
                 "name='" + name + '\'' +
                 ", price='" + price + '\'' +
                 ", lastUpdate='" + lastUpdate + '\'' +
