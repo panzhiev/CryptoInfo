@@ -1,12 +1,13 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@color/colorTextDefault</item>
+        <item name="android:textColorSecondary">@color/colorTextDefaultSecondary</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -15,6 +16,7 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <style name="ToolbarDarkOverflow" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -36,7 +38,7 @@
         <item name="actionMenuTextColor">@color/colorTextDefault</item>
         <!-- android:textColorSecondary is the color of the menu
              overflow icon (three vertical dots) -->
-        <item name="android:textColorSecondary">@color/colorTextDefault</item>
+        <item name="android:textColorSecondary">@color/colorTextDefaultSecondary</item>
 
         <!-- This would set the toolbar's background color,
               but setting this also changes the popup menu's background,

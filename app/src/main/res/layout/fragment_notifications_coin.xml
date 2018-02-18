@@ -13,7 +13,7 @@
         android:layout_gravity="center"
         android:visibility="visible"
         app:indicatorColor="@color/colorPrimary"
-        app:indicatorName="BallPulseSyncIndicator"/>
+        app:indicatorName="BallClipRotateMultipleIndicator"/>
 
 </FrameLayout>
 

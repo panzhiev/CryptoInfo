@@ -2,27 +2,27 @@
 <resources>
 
     <!-- Colors for the app -->
-    <color name="colorPrimaryLight">#e1b34e</color>
-    <color name="colorPrimary">#d7ab4b</color>
-    <color name="colorPrimaryMiddle">#c49c45</color>
-    <color name="colorPrimaryDark">#ac893c</color>
+    <color name="colorPrimaryLight">#717171</color>
+    <color name="colorPrimary">#585858</color>
+    <color name="colorPrimaryMiddle">#4d4d4d</color>
+    <color name="colorPrimaryDark">#424242</color>
     <color name="colorAccent">#cc9232</color>
 
-    <!-- colors for cards -->
-    <color name="gradient_high">#ffffff</color>
-    <color name="gradient_low">#e2cb98</color>
+    <!-- colors for cards-->
+    <color name="gradient_high">#424242</color>
+    <color name="gradient_low">#565656</color>
 
     <!-- fragment bg -->
-    <color name="color_fragment_bg">#F5F5F5</color>
+    <color name="color_fragment_bg">#424242</color>
 
     <!-- progress bar -->
-    <color name="color_progress_bar">#c49c45</color>
+    <color name="color_progress_bar">#9E9E9E</color>
 
     <color name="colorYellowLight">#F6F5D1</color>
     <color name="buttonDisabled">#a0a0a0</color>
 
-    <color name="colorTextDefault">#90000000</color>
-    <color name="colorTextDefaultSecondary">#60000000</color>
+    <color name="colorTextDefault">#96ffffff</color>
+    <color name="colorTextDefaultSecondary">#60ffffff</color>
 
     <color name="lightGray">#cfcfcf</color>
     <color name="navigation_drawer_bg">#E0E0E0</color>

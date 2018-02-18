@@ -2,6 +2,7 @@ package com.crypto.cryptoinfo;
 
 import android.app.Application;
 import android.arch.persistence.room.Room;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.crypto.cryptoinfo.di.component.ApplicationComponent;
 import com.crypto.cryptoinfo.di.component.DaggerApplicationComponent;
@@ -13,6 +14,11 @@ public class App extends Application {
 
     public static MainDatabase dbInstance;
     private static ApplicationComponent sApplicationComponent;
+
+    static {
+        AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_AUTO);
+    }
 
     @Override
     public void onCreate() {

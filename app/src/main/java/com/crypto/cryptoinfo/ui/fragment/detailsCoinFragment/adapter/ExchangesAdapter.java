@@ -81,7 +81,7 @@ public class ExchangesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         try {
             Date date = new Date(Long.parseLong(exchangePojo.getLastUpdate()) * 1000L);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss z", Locale.getDefault());
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
             sdf.setTimeZone(TimeZone.getDefault());
             String formattedDate = sdf.format(date);
             viewHolder.mTvLastUpdate.setText(formattedDate);

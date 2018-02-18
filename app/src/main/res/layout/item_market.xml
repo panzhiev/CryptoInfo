@@ -11,10 +11,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:paddingBottom="@dimen/divider_s"
-        android:paddingEnd="@dimen/activity_horizontal_margin"
-        android:paddingStart="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/divider_s"
+        android:padding="@dimen/divider_s"
         android:layout_height="wrap_content">
 
         <TextView
@@ -39,8 +36,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-light"
         android:paddingBottom="@dimen/divider_s"
-        android:paddingEnd="@dimen/activity_horizontal_margin"
-        android:paddingStart="@dimen/activity_horizontal_margin"
+        android:paddingEnd="@dimen/divider_s"
+        android:paddingStart="@dimen/divider_s"
         android:textSize="@dimen/textSizeXSmall"
         android:layout_gravity="end"
         tools:text="23.02.2018" />

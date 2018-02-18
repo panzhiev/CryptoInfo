@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="categ_night_mode"
+        android:title="@string/night_mode">
+
+        <SwitchPreference
+            android:key="enable_night_mode"
+            android:summaryOff="@string/switch_on_to_enable_night_mode"
+            android:summaryOn="@string/switch_off_to_disable_night_mode"
+            android:title="@string/enable_night_mode"/>
+
+        <SwitchPreference
+            android:key="enable_auto_night_mode"
+            android:summaryOff="@string/automatically_toggles_night_mode"
+            android:summaryOn="@string/automatically_toggles_night_mode"
+            android:dependency="enable_night_mode"
+            android:title="@string/automatic_night_mode"/>
+    </PreferenceCategory>
+</PreferenceScreen>

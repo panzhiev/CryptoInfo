@@ -35,8 +35,8 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
 
     @BindView(R.id.iv_coin_icon)
     ImageView mIvCoinIcon;
-    @BindView(R.id.tv_coin_global_info)
-    TextView mTvCoinNameSymbol;
+    @BindView(R.id.iv_coin_icon_exchanges)
+    ImageView mIvCoinIconExchanges;
     @BindView(R.id.tv_price)
     TextView mTvPrice;
     @BindView(R.id.tv_price_value)
@@ -135,11 +135,9 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
         if (list == null || list.isEmpty()) {
             Log.d(TAG, "list null or empty");
             mTvNoExchanges.setVisibility(View.VISIBLE);
-            //TODO: add here textview visibility with text "Have no makets yet"
             return;
         } else {
             mTvNoExchanges.setVisibility(View.GONE);
-            //TODO: add here textview visibility
         }
 
         Log.d(TAG, list.toString());
@@ -204,11 +202,11 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
                     .endConfig()
                     .buildRoundRect(mCoinPojo.getSymbol().length() <= 3 ? mCoinPojo.getSymbol() : mCoinPojo.getSymbol().substring(0, 3), Color.LTGRAY, 64);
             mIvCoinIcon.setImageDrawable(drawable);
+            mIvCoinIconExchanges.setImageDrawable(drawable);
         } else {
             mIvCoinIcon.setImageBitmap(bitmap);
+            mIvCoinIconExchanges.setImageBitmap(bitmap);
         }
-
-        mTvCoinNameSymbol.setText(mCoinPojo.getName() + " (" + mCoinPojo.getSymbol() + ") " + getString(R.string.global_info));
 
         String price = mCoinPojo.getPriceUsd();
         String formattingPrice;
