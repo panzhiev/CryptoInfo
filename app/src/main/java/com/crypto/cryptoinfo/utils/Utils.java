@@ -9,6 +9,9 @@ import android.view.Menu;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class Utils {
@@ -37,5 +40,11 @@ public class Utils {
         }
 
         return bitmap;
+    }
+
+    public static String longToDateTime(long timestamp) {
+        Date date = new Date(timestamp * 1000);
+        DateFormat formatter = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+        return formatter.format(date);
     }
 }
