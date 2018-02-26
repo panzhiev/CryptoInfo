@@ -36,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         Toolbar toolbar = findViewById(R.id.toolbar_settings);
+
         setSupportActionBar(toolbar);
 
         try {
