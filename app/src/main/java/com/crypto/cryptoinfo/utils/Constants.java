@@ -17,4 +17,7 @@ public class Constants {
     //keys for intent of CoinInfoActivity
     public static final String COIN = "COIN";
 
+    //SharedPrefs Keys
+    public static final String ENABLE_NIGHT_MODE = "enable_night_mode";
+    public static final String ENABLE_AUTO_NIGHT_MODE = "enable_auto_night_mode";
 }

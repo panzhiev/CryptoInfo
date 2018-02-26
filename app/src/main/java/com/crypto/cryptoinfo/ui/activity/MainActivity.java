@@ -1,8 +1,9 @@
 package com.crypto.cryptoinfo.ui.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,27 +21,49 @@ import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.AllCoinsFragment;
 import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.FavouritesCoinsFragment;
 
+import static com.crypto.cryptoinfo.utils.Constants.ENABLE_AUTO_NIGHT_MODE;
+import static com.crypto.cryptoinfo.utils.Constants.ENABLE_NIGHT_MODE;
+
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     FragmentManager fragmentManager = getSupportFragmentManager();
     DrawerLayout drawer;
 
+    SharedPreferences prefs;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (prefs == null) {
+            prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        }
+        prefs.registerOnSharedPreferenceChangeListener(this);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        AppCompatDelegate.setDefaultNightMode(
-                AppCompatDelegate.MODE_NIGHT_YES);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
+        boolean isNightModeEnabled = prefs.getBoolean(ENABLE_NIGHT_MODE, false);
+        boolean isAutoNightModeEnabled = prefs.getBoolean(ENABLE_AUTO_NIGHT_MODE, false);
+
+        if (isNightModeEnabled) {
+            if (isAutoNightModeEnabled) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            startActivity(new Intent(this, SettingsActivity.class));
-        });
 
         drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -150,7 +173,15 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_connect) {
 
         } else if (id == R.id.nav_settings) {
-
+            onCloseNavigationDrawer();
+            new Thread(() -> {
+                try {
+                    Thread.sleep(250);
+                    startActivity(new Intent(this, SettingsActivity.class));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
         }
 
         return true;
@@ -177,5 +208,29 @@ public class MainActivity extends AppCompatActivity
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .replace(R.id.container_content_main, fragment, ((IBaseFragment) fragment).getCurrentTag())
                 .commit();
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        switch (key) {
+            case ENABLE_NIGHT_MODE:
+                boolean b = sharedPreferences.getBoolean(key, false);
+                AppCompatDelegate.setDefaultNightMode(b ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                recreate();
+                break;
+            case ENABLE_AUTO_NIGHT_MODE:
+                boolean b1 = sharedPreferences.getBoolean(key, false);
+                AppCompatDelegate.setDefaultNightMode(b1 ? AppCompatDelegate.MODE_NIGHT_AUTO : AppCompatDelegate.MODE_NIGHT_YES);
+                recreate();
+                break;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (prefs != null)
+            prefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 }
