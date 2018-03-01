@@ -18,6 +18,8 @@ import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -82,7 +84,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         }
 
         // create a dataset and give it a type
-        LineDataSet set1 = new LineDataSet(yVals, "DataSet 1");
+        LineDataSet set1 = new LineDataSet(yVals,"DataSet 1");
         set1.setFillAlpha(110);
 
 //        set1.setFillColor(Color.RED);
@@ -145,12 +147,12 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         ((LineDataSet) data.getDataSetByIndex(0)).setCircleColorHole(color);
 
         // no description text
-        chart.getDescription().setEnabled(true);
+        chart.getDescription().setEnabled(false);
 
         // mChart.setDrawHorizontalGrid(false);
         //
         // enable / disable grid background
-        chart.setDrawGridBackground(true);
+        chart.setDrawGridBackground(false);
 //        chart.getRenderer().getGridPaint().setGridColor(Color.WHITE & 0x70FFFFFF);
 
         // enable touch gestures
@@ -163,7 +165,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(false);
 
-        chart.setBackgroundColor(color);
+//        chart.setBackgroundColor(color);
 
         // set custom chart offsets (automatic offset calculation is hereby disabled)
 //        chart.setViewPortOffsets(0, 0, 0, 0);
@@ -173,15 +175,31 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
         // get the legend (only possible after setting data)
         Legend l = chart.getLegend();
-        l.setEnabled(true);
+        l.setEnabled(false);
 
-        chart.getAxisLeft().setEnabled(true);
-        chart.getAxisLeft().setSpaceTop(40);
-        chart.getAxisLeft().setSpaceBottom(40);
+        chart.setAutoScaleMinMaxEnabled(true);
+//        chart.getAxisLeft().setSpaceTop(40);
+//        chart.getAxisLeft().setSpaceBottom(40);
+
         chart.getAxisRight().setEnabled(false);
-        chart.getXAxis().setEnabled(true);
+
+        YAxis yAxis = chart.getAxisLeft();
+        yAxis.setEnabled(true);
+        yAxis.setSpaceBottom(0f);
+        yAxis.setSpaceTop(0f);
+        yAxis.setYOffset(-5f);
+        yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
+        yAxis.setTextColor(getResources().getColor(R.color.colorTextDefault));
+
+        XAxis xAxis = chart.getXAxis();
+        xAxis.setEnabled(true);
+        xAxis.setAxisMinimum(data.getMaxEntryCountSet().getEntryForIndex(0).getX());
+        xAxis.setAxisMaximum(data.getMaxEntryCountSet().getEntryForIndex(data.getEntryCount()-1).getX());
+        xAxis.setDrawAxisLine(false);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setTextColor(getResources().getColor(R.color.colorTextDefault));
 
         // animate calls invalidate()...
-        chart.animateX(2500);
+        chart.animateX(1500);
     }
 }
