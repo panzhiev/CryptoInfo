@@ -10,7 +10,7 @@
 
     <!-- colors for cards -->
     <color name="gradient_high">#ffffff</color>
-    <color name="gradient_low">#e2cb98</color>
+    <color name="gradient_low">@color/colorPrimary</color>
 
     <!-- fragment bg -->
     <color name="color_fragment_bg">#F5F5F5</color>
@@ -21,7 +21,7 @@
     <color name="colorYellowLight">#F6F5D1</color>
     <color name="buttonDisabled">#a0a0a0</color>
 
-    <color name="colorTextDefault">#90000000</color>
+    <color name="colorTextDefault">#95000000</color>
     <color name="colorTextDefaultSecondary">#60000000</color>
 
     <color name="lightGray">#cfcfcf</color>

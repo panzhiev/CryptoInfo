@@ -58,7 +58,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
 
     public void getChartsData(String coin, String pastTime) {
         mSubscriptionGetCharts = mModel
-                .getGraphsPerPeriod(coin, pastTime, String.valueOf(System.currentTimeMillis() / 1000L))
+                .getGraphsPerPeriod(coin, pastTime, String.valueOf(System.currentTimeMillis()))
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> fragment.showProgressIndicator())
@@ -126,15 +126,15 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                 Log.d(TAG, jsonObject.toString());
 
                 JSONArray jsonArray = jsonObject.getJSONArray("price_usd");
-//                String priceUsd = String.valueOf();
-//                Log.d(TAG, priceUsd);
 
-                List<PointTimePrice> list = new ArrayList<>();
+                ArrayList<PointTimePrice> list = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONArray jsonArray1 = jsonArray.getJSONArray(i);
                     list.add(new PointTimePrice(jsonArray1.getString(0), jsonArray1.getString(1)));
                 }
-                Log.d(TAG, list.toString());
+
+                fragment.setList(list);
+//                Log.d(TAG, list.toString());
 
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:orientation="vertical"
     tools:context=".ui.fragment.chartsCoinFragment.ChartsCoinFragment">
 
@@ -27,6 +26,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/radio_button_bg"
                 android:button="@android:color/transparent"
+                android:checked="true"
                 android:gravity="center"
                 android:padding="@dimen/divider_xs"
                 android:text="@string/_6_hours" />
@@ -43,7 +43,6 @@
                 android:layout_weight="1"
                 android:background="@drawable/radio_button_bg"
                 android:button="@android:color/transparent"
-                android:checked="true"
                 android:gravity="center"
                 android:padding="@dimen/divider_xs"
                 android:text="@string/_1_day" />
@@ -113,6 +112,23 @@
                 android:text="@string/_1_year" />
 
         </RadioGroup>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/divider_m"
+        android:layout_marginStart="@dimen/divider_m"
+        android:layout_marginBottom="@dimen/divider_m"
+        android:layout_weight="1"
+        app:cardCornerRadius="3dp"
+        app:cardElevation="2dp">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart_coin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </android.support.v7.widget.CardView>
 </LinearLayout>
 

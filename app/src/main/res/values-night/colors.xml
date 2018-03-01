@@ -21,7 +21,7 @@
     <color name="colorYellowLight">#F6F5D1</color>
     <color name="buttonDisabled">#a0a0a0</color>
 
-    <color name="colorTextDefault">#96ffffff</color>
+    <color name="colorTextDefault">#99ffffff</color>
     <color name="colorTextDefaultSecondary">#60ffffff</color>
 
     <color name="lightGray">#cfcfcf</color>
