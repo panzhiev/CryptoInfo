@@ -42,7 +42,6 @@
     <color name="translucent">#20000000</color>
     <color name="translucent_white">#60ffffff</color>
     <color name="transparent">#00000000</color>
-    <color name="deleteItemAddressBookColor">#DA3975</color>
 
     <color name="red_50">#FFEBEE</color>
     <color name="red_100">#FFCDD2</color>

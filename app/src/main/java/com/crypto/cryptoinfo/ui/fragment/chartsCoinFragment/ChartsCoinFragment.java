@@ -3,6 +3,7 @@ package com.crypto.cryptoinfo.ui.fragment.chartsCoinFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.PointTimePrice;
+import com.crypto.cryptoinfo.tools.HourAxisValueFormatter;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.utils.Constants;
@@ -23,6 +25,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
 import java.util.ArrayList;
 
@@ -34,6 +37,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
     private final String TAG = getClass().getSimpleName();
     private CoinsPresenter mCoinsPresenter;
     private CoinPojo mCoinPojo;
+    private ArrayList<PointTimePrice> mPointList = new ArrayList<>();
 
     @BindView(R.id.chart_coin)
     LineChart lineChart;
@@ -77,24 +81,34 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
     @Override
     public void setList(ArrayList list) {
 
+        mPointList = list;
+
         ArrayList<Entry> yVals = new ArrayList<>();
 
-        for (PointTimePrice p : (ArrayList<PointTimePrice>) list) {
+        for (PointTimePrice p : mPointList) {
             yVals.add(new Entry(Float.parseFloat(p.getUnixTime()), Float.parseFloat(p.getPriceUsd())));
         }
 
         // create a dataset and give it a type
         LineDataSet set1 = new LineDataSet(yVals,"DataSet 1");
+
+        set1.setDrawFilled(true);
+        set1.setFillDrawable(ContextCompat.getDrawable(getContext(), R.drawable.gradient_chart));
+
         set1.setFillAlpha(110);
 
 //        set1.setFillColor(Color.RED);
         set1.setDrawCircles(false);
-        set1.setLineWidth(1.75f);
+        set1.setLineWidth(1f);
 //        set1.setCircleRadius(5f);
 //        set1.setCircleHoleRadius(2.5f);
-        set1.setColor(getResources().getColor(R.color.colorTextDefault));
+        set1.setColor(ContextCompat.getColor(getContext(), R.color.colorTextDefault));
 //        set1.setCircleColor(Color.WHITE);
-//        set1.setHighLightColor(Color.WHITE);
+        set1.setHighlightEnabled(true);
+        set1.setHighLightColor(ContextCompat.getColor(getContext(), R.color.colorTextDefault));
+        set1.setDrawHorizontalHighlightIndicator(false);
+        set1.setHighlightLineWidth(0.5f);
+
         set1.setDrawValues(false);
 
         // create a data object with the datasets
@@ -148,8 +162,9 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
         // no description text
         chart.getDescription().setEnabled(false);
+//        chart.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent));
 
-        // mChart.setDrawHorizontalGrid(false);
+//         mChart.setDrawHorizontalGrid(false);
         //
         // enable / disable grid background
         chart.setDrawGridBackground(false);
@@ -159,7 +174,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         chart.setTouchEnabled(true);
 
         // enable scaling and dragging
-        chart.setDragEnabled(false);
+        chart.setDragEnabled(true);
         chart.setScaleEnabled(false);
 
         // if disabled, scaling can be done on x- and y-axis separately
@@ -177,7 +192,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         Legend l = chart.getLegend();
         l.setEnabled(false);
 
-        chart.setAutoScaleMinMaxEnabled(true);
+//        chart.setAutoScaleMinMaxEnabled(true);
 //        chart.getAxisLeft().setSpaceTop(40);
 //        chart.getAxisLeft().setSpaceBottom(40);
 
@@ -187,19 +202,29 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         yAxis.setEnabled(true);
         yAxis.setSpaceBottom(0f);
         yAxis.setSpaceTop(0f);
-        yAxis.setYOffset(-5f);
+        yAxis.setYOffset(-7f);
+        yAxis.setAxisMinimum(data.getDataSetByIndex(0).getYMin());
+        yAxis.setAxisMaximum(data.getDataSetByIndex(0).getYMax());
+        yAxis.enableGridDashedLine(10f, 10f, 0f);
         yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         yAxis.setTextColor(getResources().getColor(R.color.colorTextDefault));
 
+
         XAxis xAxis = chart.getXAxis();
         xAxis.setEnabled(true);
-        xAxis.setAxisMinimum(data.getMaxEntryCountSet().getEntryForIndex(0).getX());
-        xAxis.setAxisMaximum(data.getMaxEntryCountSet().getEntryForIndex(data.getEntryCount()-1).getX());
-        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(false);
+        xAxis.setDrawAxisLine(true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextColor(getResources().getColor(R.color.colorTextDefault));
 
+        IAxisValueFormatter xAxisFormatter = new HourAxisValueFormatter(Long.parseLong(mPointList.get(0).getUnixTime()));
+        xAxis.setValueFormatter(xAxisFormatter);
+
+//        chart.moveViewToX(200f);
+
         // animate calls invalidate()...
-        chart.animateX(1500);
+        chart.animateX(700);
+//        chart.invalidate();
+//        chart.animateY(1000);
     }
 }
