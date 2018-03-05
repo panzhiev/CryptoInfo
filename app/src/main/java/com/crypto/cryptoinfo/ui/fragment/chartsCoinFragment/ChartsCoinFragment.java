@@ -95,10 +95,15 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         set1.setDrawFilled(true);
         set1.setFillDrawable(ContextCompat.getDrawable(getContext(), R.drawable.gradient_chart));
 
-        set1.setFillAlpha(110);
+//        set1.setFillAlpha(110);
+//        set1.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+//        set1.setDrawCircleHole(true);
 
 //        set1.setFillColor(Color.RED);
         set1.setDrawCircles(false);
+
+        set1.setCubicIntensity(0.2f);
+
         set1.setLineWidth(1f);
 //        set1.setCircleRadius(5f);
 //        set1.setCircleHoleRadius(2.5f);
@@ -172,6 +177,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
         // enable touch gestures
         chart.setTouchEnabled(true);
+        chart.setVisibleXRangeMaximum(7);
 
         // enable scaling and dragging
         chart.setDragEnabled(true);
@@ -200,15 +206,14 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
         YAxis yAxis = chart.getAxisLeft();
         yAxis.setEnabled(true);
-        yAxis.setSpaceBottom(0f);
-        yAxis.setSpaceTop(0f);
+//        yAxis.setSpaceBottom(0f);
+//        yAxis.setSpaceTop(0f);
         yAxis.setYOffset(-7f);
-        yAxis.setAxisMinimum(data.getDataSetByIndex(0).getYMin());
+        yAxis.setAxisMinimum(data.getDataSetByIndex(0).getYMin() - data.getDataSetByIndex(0).getYMin() / 2000);
         yAxis.setAxisMaximum(data.getDataSetByIndex(0).getYMax());
         yAxis.enableGridDashedLine(10f, 10f, 0f);
         yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
         yAxis.setTextColor(getResources().getColor(R.color.colorTextDefault));
-
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setEnabled(true);
@@ -216,11 +221,23 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         xAxis.setDrawAxisLine(true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextColor(getResources().getColor(R.color.colorTextDefault));
+        xAxis.setAvoidFirstLastClipping(true);
+//        xAxis.setAxisMinimum();
 
         IAxisValueFormatter xAxisFormatter = new HourAxisValueFormatter(Long.parseLong(mPointList.get(0).getUnixTime()));
         xAxis.setValueFormatter(xAxisFormatter);
 
+//        SimpleDateFormat mDataFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+//        mDataFormat.setTimeZone(TimeZone.getDefault());
+//        Date date = new Date(Long.parseLong(mPointList.get(0).getUnixTime()));
+//
+//        Log.d(TAG, mDataFormat.format(date));
+
 //        chart.moveViewToX(200f);
+
+//        chart.setDrawBorders(true);
+//        chart.setBorderWidth(1f);
+//        chart.setBorderColor(ContextCompat.getColor(getContext(), R.color.red));
 
         // animate calls invalidate()...
         chart.animateX(700);

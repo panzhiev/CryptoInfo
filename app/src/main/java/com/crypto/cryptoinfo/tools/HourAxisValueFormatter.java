@@ -16,13 +16,13 @@ public class HourAxisValueFormatter implements IAxisValueFormatter {
     private Date mDate;
 
     public HourAxisValueFormatter(long referenceTimestamp) {
-        this.referenceTimestamp = referenceTimestamp;
+//        this.referenceTimestamp = referenceTimestamp;
         this.mDataFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         this.mDataFormat.setTimeZone(TimeZone.getDefault());
-        this.mDate = new Date();
+//        this.mDate = new Date();
 
-        TimeZone tz = TimeZone.getDefault();
-        System.out.println("TimeZone   "+tz.getDisplayName(false, TimeZone.SHORT)+" Timezon id :: " +tz.getID());
+//        TimeZone tz = TimeZone.getDefault();
+//        System.out.println("TimeZone   "+tz.getDisplayName(false, TimeZone.SHORT)+" Timezon id :: " +tz.getID());
 
     }
 
@@ -38,18 +38,20 @@ public class HourAxisValueFormatter implements IAxisValueFormatter {
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
         // convertedTimestamp = originalTimestamp - referenceTimestamp
-        long convertedTimestamp = (long) value;
+//        long convertedTimestamp = (long) value;
 
         // Retrieve original timestamp
-        long originalTimestamp = referenceTimestamp + convertedTimestamp;
+//        long originalTimestamp = referenceTimestamp + convertedTimestamp;
 
         // Convert timestamp to hour:minute
-        return getHour(originalTimestamp);
+        return getHour((long) value);
     }
 
     private String getHour(long timestamp) {
         try {
-            mDate.setTime(timestamp);
+
+            mDate = new Date(timestamp);
+//            mDate.setTime(timestamp);
             return mDataFormat.format(mDate);
         } catch (Exception ex) {
             return "xx";
