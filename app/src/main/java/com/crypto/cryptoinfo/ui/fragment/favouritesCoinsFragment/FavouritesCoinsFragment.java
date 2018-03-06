@@ -4,7 +4,9 @@ package com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -38,6 +40,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.crypto.cryptoinfo.utils.Constants.MAIN_SCREEN;
 
 public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, CoinsAdapter.OnCoinItemClickListener {
 
@@ -235,7 +239,14 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
 
     @Override
     public void onBackPressed() {
-        ((MainActivity) getActivity()).navigatorBackPressed(AllCoinsFragment.newInstance());
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        String valueMainScreen = prefs.getString(MAIN_SCREEN, "0");
+        if (valueMainScreen.equals("0")) {
+            ((MainActivity) getActivity()).navigatorBackPressed(AllCoinsFragment.newInstance());
+        } else {
+            getActivity().finishAffinity();
+        }
     }
 
     public String getCurrentTag() {

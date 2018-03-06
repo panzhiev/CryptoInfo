@@ -4,7 +4,9 @@ package com.crypto.cryptoinfo.ui.fragment.allCoinsFragment;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +30,7 @@ import com.crypto.cryptoinfo.ui.activity.MainActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter.CoinsAdapter;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.viewModel.CoinsListViewModel;
+import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.FavouritesCoinsFragment;
 import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.Utils;
@@ -40,6 +43,7 @@ import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 
 import static com.crypto.cryptoinfo.utils.Constants.COIN;
+import static com.crypto.cryptoinfo.utils.Constants.MAIN_SCREEN;
 import static com.jakewharton.rxbinding2.widget.RxTextView.textChanges;
 
 public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAdapter.OnCoinItemClickListener {
@@ -264,7 +268,14 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
 
     @Override
     public void onBackPressed() {
-        getActivity().finishAffinity();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        String valueMainScreen = prefs.getString(MAIN_SCREEN, "0");
+        if (valueMainScreen.equals("0")) {
+            getActivity().finishAffinity();
+        } else {
+            ((MainActivity) getActivity()).navigatorBackPressed(FavouritesCoinsFragment.newInstance());
+        }
     }
 
     public String getCurrentTag() {

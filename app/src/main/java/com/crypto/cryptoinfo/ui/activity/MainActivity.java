@@ -14,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.crypto.cryptoinfo.R;
@@ -23,9 +24,12 @@ import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.FavouritesCoins
 
 import static com.crypto.cryptoinfo.utils.Constants.ENABLE_AUTO_NIGHT_MODE;
 import static com.crypto.cryptoinfo.utils.Constants.ENABLE_NIGHT_MODE;
+import static com.crypto.cryptoinfo.utils.Constants.MAIN_SCREEN;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SharedPreferences.OnSharedPreferenceChangeListener {
+
+    public static final String TAG = MainActivity.class.getSimpleName();
 
     FragmentManager fragmentManager = getSupportFragmentManager();
     DrawerLayout drawer;
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume started");
 
         if (prefs == null) {
             prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -44,22 +49,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-        boolean isNightModeEnabled = prefs.getBoolean(ENABLE_NIGHT_MODE, false);
-        boolean isAutoNightModeEnabled = prefs.getBoolean(ENABLE_AUTO_NIGHT_MODE, false);
-
-        if (isNightModeEnabled) {
-            if (isAutoNightModeEnabled) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            }
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        Log.d(TAG, "onCreate started");
+        if (prefs == null) {
+            prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         }
-
+        checkingForNightMode();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -74,8 +68,21 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        AllCoinsFragment allCoinsFragment = AllCoinsFragment.newInstance();
-        navigator(allCoinsFragment, allCoinsFragment.getCurrentTag());
+        navigateOnFragment();
+
+//        AllCoinsFragment allCoinsFragment = AllCoinsFragment.newInstance();
+//        navigator(allCoinsFragment, allCoinsFragment.getCurrentTag());
+    }
+
+    private void navigateOnFragment() {
+        String valueMainScreen = prefs.getString(MAIN_SCREEN, "0");
+        if (valueMainScreen.equals("0")) {
+            AllCoinsFragment allCoinsFragment = AllCoinsFragment.newInstance();
+            navigator(allCoinsFragment, allCoinsFragment.getCurrentTag());
+        } else {
+            FavouritesCoinsFragment favouritesCoinsFragment = FavouritesCoinsFragment.newInstance();
+            navigator(favouritesCoinsFragment, favouritesCoinsFragment.getCurrentTag());
+        }
     }
 
     public void setToolbarTitle(String title) {
@@ -224,6 +231,8 @@ public class MainActivity extends AppCompatActivity
                 AppCompatDelegate.setDefaultNightMode(b1 ? AppCompatDelegate.MODE_NIGHT_AUTO : AppCompatDelegate.MODE_NIGHT_YES);
                 recreate();
                 break;
+            default:
+                break;
         }
     }
 
@@ -232,5 +241,21 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
         if (prefs != null)
             prefs.unregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    private void checkingForNightMode() {
+
+        boolean isNightModeEnabled = prefs.getBoolean(ENABLE_NIGHT_MODE, false);
+        boolean isAutoNightModeEnabled = prefs.getBoolean(ENABLE_AUTO_NIGHT_MODE, false);
+
+        if (isNightModeEnabled) {
+            if (isAutoNightModeEnabled) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
     }
 }

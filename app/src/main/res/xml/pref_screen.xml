@@ -13,10 +13,24 @@
             android:title="@string/enable_night_mode"/>
 
         <SwitchPreference
+            android:dependency="enable_night_mode"
             android:key="enable_auto_night_mode"
             android:summaryOff="@string/automatically_toggles_night_mode"
             android:summaryOn="@string/automatically_toggles_night_mode"
-            android:dependency="enable_night_mode"
             android:title="@string/automatic_night_mode"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="categ_other"
+        android:title="@string/categ_other">
+
+        <ListPreference
+            android:defaultValue="@string/pref_all_screen_value"
+            android:entries="@array/array_main_screen_labels"
+            android:entryValues="@array/array_main_screen_values"
+            android:key="pref_key_main_screen_list"
+            android:summary="@string/tap_to_select_the_main_screen"
+            android:title="@string/main_screen_title"/>
+
     </PreferenceCategory>
 </PreferenceScreen>

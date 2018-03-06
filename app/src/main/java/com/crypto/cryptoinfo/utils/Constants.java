@@ -20,4 +20,5 @@ public class Constants {
     //SharedPrefs Keys
     public static final String ENABLE_NIGHT_MODE = "enable_night_mode";
     public static final String ENABLE_AUTO_NIGHT_MODE = "enable_auto_night_mode";
+    public static final String MAIN_SCREEN = "pref_key_main_screen_list";
 }

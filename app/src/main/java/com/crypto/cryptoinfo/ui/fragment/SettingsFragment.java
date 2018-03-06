@@ -22,7 +22,7 @@ public class SettingsFragment extends PreferenceFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        super.onCreate(savedInstanceState );
         addPreferencesFromResource(R.xml.pref_screen);
 
         mSwitchPreferenceNightMode = (SwitchPreference) findPreference(Constants.ENABLE_NIGHT_MODE);
