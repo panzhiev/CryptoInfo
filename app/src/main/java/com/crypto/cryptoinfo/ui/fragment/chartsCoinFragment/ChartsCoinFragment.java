@@ -206,10 +206,11 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
         YAxis yAxis = chart.getAxisLeft();
         yAxis.setEnabled(true);
-//        yAxis.setSpaceBottom(0f);
-//        yAxis.setSpaceTop(0f);
+        yAxis.setSpaceBottom(0);
+        yAxis.setSpaceTop(0);
         yAxis.setYOffset(-7f);
-        yAxis.setAxisMinimum(data.getDataSetByIndex(0).getYMin() - data.getDataSetByIndex(0).getYMin() / 2000);
+//        yAxis.setAxisMinimum(data.getDataSetByIndex(0).getYMin() - data.getDataSetByIndex(0).getYMin() / 2000);
+        yAxis.setAxisMinimum(data.getDataSetByIndex(0).getYMin());
         yAxis.setAxisMaximum(data.getDataSetByIndex(0).getYMax());
         yAxis.enableGridDashedLine(10f, 10f, 0f);
         yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
@@ -221,7 +222,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         xAxis.setDrawAxisLine(true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextColor(getResources().getColor(R.color.colorTextDefault));
-        xAxis.setAvoidFirstLastClipping(true);
+//        xAxis.setAvoidFirstLastClipping(true);
 //        xAxis.setAxisMinimum();
 
         IAxisValueFormatter xAxisFormatter = new HourAxisValueFormatter(Long.parseLong(mPointList.get(0).getUnixTime()));

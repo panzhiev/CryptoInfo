@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume started");
+        Log.d(TAG, "onResume: Started");
 
         if (prefs == null) {
             prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());

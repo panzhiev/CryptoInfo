@@ -29,7 +29,7 @@ import rx.subscriptions.CompositeSubscription;
 
 public class CoinsPresenter extends BasePresenter implements IPresenter {
 
-    private final String TAG = getClass().getSimpleName();
+    private static final String TAG = CoinsPresenter.class.getSimpleName();
     private ILoadingView fragment;
     private Subscription mSubscriptionCurrencies, mSubscriptionGetCharts, mSubscriptionGetCoinSnapshot;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
@@ -86,6 +86,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
         ArrayList<ExchangePojo> exchangePojoArrayList = new ArrayList<>();
 
         if (response.isSuccessful()) {
+
             Log.d(TAG, "responseCoinSnapshotHandler response.isSuccessful()");
             try {
 

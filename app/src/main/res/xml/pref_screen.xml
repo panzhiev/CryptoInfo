@@ -29,7 +29,6 @@
             android:entries="@array/array_main_screen_labels"
             android:entryValues="@array/array_main_screen_values"
             android:key="pref_key_main_screen_list"
-            android:summary="@string/tap_to_select_the_main_screen"
             android:title="@string/main_screen_title"/>
 
     </PreferenceCategory>
