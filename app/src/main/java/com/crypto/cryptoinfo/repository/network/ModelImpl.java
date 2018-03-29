@@ -4,6 +4,8 @@ package com.crypto.cryptoinfo.repository.network;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.google.gson.JsonElement;
 
+import org.json.JSONObject;
+
 import java.util.List;
 
 import retrofit2.Response;
@@ -12,6 +14,7 @@ import rx.Observable;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.BASE_URL_COINMARKETCAP;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.BASE_URL_CRYPTOCOMPARE_NEW;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.BASE_URL_GRAPHS;
+import static com.crypto.cryptoinfo.repository.network.ApiConstants.BASE_URL_S2;
 
 public class ModelImpl {
 
@@ -25,5 +28,9 @@ public class ModelImpl {
 
     public Observable<Response<JsonElement>> getCoinSnapshot(String fromSymbol, String toSymbol) {
         return RestClient.getApiInterface(BASE_URL_CRYPTOCOMPARE_NEW).getCoinSnapshot(fromSymbol, toSymbol);
+    }
+
+    public Observable<List<JsonElement>> getCoinIds() {
+        return RestClient.getApiInterface(BASE_URL_S2).getCoinIds();
     }
 }

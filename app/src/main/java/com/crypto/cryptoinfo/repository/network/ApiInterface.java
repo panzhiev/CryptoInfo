@@ -12,6 +12,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.COIN_SNAPSHOT;
+import static com.crypto.cryptoinfo.repository.network.ApiConstants.PATH_QUICK_SEARCH;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.TICKERS;
 
 public interface ApiInterface {
@@ -30,4 +31,7 @@ public interface ApiInterface {
 
     @GET(COIN_SNAPSHOT)
     Observable<Response<JsonElement>> getCoinSnapshot(@Query("fsym") String fromSymbol, @Query("tsym") String toSymbol);
+
+    @GET(PATH_QUICK_SEARCH)
+    Observable<List<JsonElement>> getCoinIds();
 }

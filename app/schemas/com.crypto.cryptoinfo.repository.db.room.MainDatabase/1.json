@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "02970c366f600b27e6ef182110ae3f65",
+    "identityHash": "c4bc26e68cf9cbe1fbe804b7c136bb8f",
     "entities": [
       {
         "tableName": "coin",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` TEXT, `name` TEXT, `symbol` TEXT, `rank` TEXT, `priceUsd` TEXT, `priceBtc` TEXT, `_24hVolumeUsd` TEXT, `marketCapUsd` TEXT, `availableSupply` TEXT, `maxSupply` TEXT, `totalSupply` TEXT, `percentChange1h` TEXT, `percentChange24h` TEXT, `percentChange7d` TEXT, `lastUpdated` TEXT, `isFavourite` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` TEXT, `name` TEXT, `symbol` TEXT, `rank` TEXT, `priceUsd` TEXT, `priceBtc` TEXT, `_24hVolumeUsd` TEXT, `marketCapUsd` TEXT, `availableSupply` TEXT, `maxSupply` TEXT, `totalSupply` TEXT, `percentChange1h` TEXT, `percentChange24h` TEXT, `percentChange7d` TEXT, `lastUpdated` TEXT, `numId` TEXT, `isFavourite` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -105,6 +105,12 @@
             "notNull": false
           },
           {
+            "fieldPath": "numId",
+            "columnName": "numId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "isFavourite",
             "columnName": "isFavourite",
             "affinity": "INTEGER",
@@ -149,7 +155,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"02970c366f600b27e6ef182110ae3f65\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c4bc26e68cf9cbe1fbe804b7c136bb8f\")"
     ]
   }
 }

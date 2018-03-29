@@ -118,6 +118,7 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     private void setUpRecyclerView() {
         mRvExchanges.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvExchanges.setHasFixedSize(true);
+        mRvExchanges.setNestedScrollingEnabled(false);
     }
 
     private String formattingDoubleValues(String rawValue) {

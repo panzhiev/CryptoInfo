@@ -63,6 +63,8 @@ public class CoinPojo implements Parcelable{
     @SerializedName("last_updated")
     @Expose
     private String lastUpdated;
+    @SerializedName("numId")
+    private String numId;
 
     private boolean isFavourite;
 
@@ -72,7 +74,11 @@ public class CoinPojo implements Parcelable{
     public CoinPojo() {
     }
 
-    public CoinPojo(String id, String name, String symbol, String rank, String priceUsd, String priceBtc, String _24hVolumeUsd, String marketCapUsd, String availableSupply, String maxSupply, String totalSupply, String percentChange1h, String percentChange24h, String percentChange7d, String lastUpdated) {
+    public CoinPojo(String id, String name, String symbol, String rank, String priceUsd,
+                    String priceBtc, String _24hVolumeUsd, String marketCapUsd,
+                    String availableSupply, String maxSupply, String totalSupply,
+                    String percentChange1h, String percentChange24h, String percentChange7d,
+                    String lastUpdated, String numId) {
         super();
         this.id = id;
         this.name = name;
@@ -89,6 +95,7 @@ public class CoinPojo implements Parcelable{
         this.percentChange24h = percentChange24h;
         this.percentChange7d = percentChange7d;
         this.lastUpdated = lastUpdated;
+        this.numId = numId;
     }
 
     private CoinPojo(Parcel in) {
@@ -108,6 +115,7 @@ public class CoinPojo implements Parcelable{
         this.percentChange24h = in.readString();
         this.percentChange7d = in.readString();
         this.lastUpdated = in.readString();
+        this.numId = in.readString();
     }
 
     public static final Creator<CoinPojo> CREATOR = new Creator<CoinPojo>() {
@@ -258,6 +266,14 @@ public class CoinPojo implements Parcelable{
         this.maxSupply = maxSupply;
     }
 
+    public String getNumId() {
+        return numId;
+    }
+
+    public void setNumId(String numId) {
+        this.numId = numId;
+    }
+
     @Override
     public String toString() {
         return "CoinPojo{" +
@@ -278,6 +294,7 @@ public class CoinPojo implements Parcelable{
                 ", percentChange7d='" + percentChange7d + '\'' +
                 ", lastUpdated='" + lastUpdated + '\'' +
                 ", isFavourite=" + isFavourite +
+                ", numId=" + numId +
                 '}' + "\n";
     }
 
@@ -407,5 +424,6 @@ public class CoinPojo implements Parcelable{
         parcel.writeString(percentChange24h);
         parcel.writeString(percentChange7d);
         parcel.writeString(lastUpdated);
+        parcel.writeString(numId);
     }
 }

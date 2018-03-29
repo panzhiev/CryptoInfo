@@ -131,6 +131,9 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @BindView(R.id.rl_item_coin)
         RelativeLayout mRlItemCoin;
 
+        @BindView(R.id.tv_numId)
+        TextView mTvNumId;
+
         ViewHolderDefaultCoinItem(View v) {
             super(v);
             ButterKnife.bind(this, v);
@@ -253,6 +256,8 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     .buildRoundRect(coinPojo.getSymbol().length() <= 3 ? coinPojo.getSymbol() : coinPojo.getSymbol().substring(0, 3), Color.LTGRAY, 64);
             holder.mImageViewIcon.setImageDrawable(drawable);
         }
+
+        holder.mTvNumId.setText(coinPojo.getNumId());
 
         holder.mRlItemCoin.setOnClickListener(view -> mOnCoinItemClickListener.onCoinItemClick(coinPojo));
     }

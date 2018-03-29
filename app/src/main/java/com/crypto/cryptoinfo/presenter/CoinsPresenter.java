@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import retrofit2.Response;
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -31,7 +32,10 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
 
     private static final String TAG = CoinsPresenter.class.getSimpleName();
     private ILoadingView fragment;
-    private Subscription mSubscriptionCurrencies, mSubscriptionGetCharts, mSubscriptionGetCoinSnapshot;
+    private Subscription mSubscriptionCurrencies,
+            mSubscriptionGetCharts,
+            mSubscriptionGetCoinSnapshot,
+            mSubscriptionZip;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     public CoinsPresenter(ILoadingView fragment) {
@@ -41,15 +45,29 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
 
     public void getCurrenciesList() {
 
-        mSubscriptionCurrencies = mModel
-                .getAllTickers()
-                .subscribeOn(Schedulers.newThread())
+        mSubscriptionZip = Observable
+                .zip(mModel.getAllTickers().subscribeOn(Schedulers.newThread()),
+                        mModel.getCoinIds().subscribeOn(Schedulers.newThread()),
+                        (responseTickers, responseIds) -> {
+                            for (int i = 0; i < responseTickers.size(); i++) {
+                                responseTickers.get(i).setNumId(responseIds.get(i).getAsJsonObject().get("id").toString());
+                            }
+                            return responseTickers;
+                        })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> fragment.showProgressIndicator())
                 .doOnTerminate(() -> fragment.hideProgressIndicator())
                 .subscribe(this::responseCurrenciesHandler, e -> fragment.showError());
 
-        mCompositeSubscription.add(mSubscriptionCurrencies);
+//        mSubscriptionCurrencies = mModel
+//                .getAllTickers()
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnSubscribe(() -> fragment.showProgressIndicator())
+//                .doOnTerminate(() -> fragment.hideProgressIndicator())
+//                .subscribe(this::responseCurrenciesHandler, e -> fragment.showError());
+
+        mCompositeSubscription.add(mSubscriptionZip);
     }
 
     private void responseCurrenciesHandler(List<CoinPojo> coinPojos) {
