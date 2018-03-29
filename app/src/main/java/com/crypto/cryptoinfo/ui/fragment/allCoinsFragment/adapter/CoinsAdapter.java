@@ -4,6 +4,8 @@ package com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.Target;
 import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinFavPojo;
@@ -131,8 +140,8 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @BindView(R.id.rl_item_coin)
         RelativeLayout mRlItemCoin;
 
-        @BindView(R.id.tv_numId)
-        TextView mTvNumId;
+        @BindView(R.id.iv_preview_chart)
+        ImageView mIvChart;
 
         ViewHolderDefaultCoinItem(View v) {
             super(v);
@@ -244,6 +253,26 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             holder.mTextView7d.setTextColor(context.getResources().getColor(R.color.colorTextDefault));
         }
 
+        Glide.with(context)
+                .load(Utils.getChartImageUrl(coinPojo.getNumId()))
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        holder.mIvChart.setVisibility(View.GONE);
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        holder.mIvChart.setVisibility(View.VISIBLE);
+                        return false;
+                    }
+                })
+                .apply(new RequestOptions()
+                        .centerCrop()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .into(holder.mIvChart);
+
         Bitmap bitmap = Utils.getBitmapFromCryptoIconsAssets(context, coinPojo.getSymbol().toLowerCase());
         if (bitmap != null) {
             holder.mImageViewIcon.setImageBitmap(bitmap);
@@ -256,8 +285,6 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     .buildRoundRect(coinPojo.getSymbol().length() <= 3 ? coinPojo.getSymbol() : coinPojo.getSymbol().substring(0, 3), Color.LTGRAY, 64);
             holder.mImageViewIcon.setImageDrawable(drawable);
         }
-
-        holder.mTvNumId.setText(coinPojo.getNumId());
 
         holder.mRlItemCoin.setOnClickListener(view -> mOnCoinItemClickListener.onCoinItemClick(coinPojo));
     }
@@ -288,7 +315,7 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 //            coinPojo.setFavourite(!coinPojo.isFavourite());
 //            holder.mCheckBox.setChecked(coinPojo.isFavourite());
 //            App.dbInstance.getCoinDao().insertAll(coinPojo);
-            if (!holder.mCheckBox.isChecked()){
+            if (!holder.mCheckBox.isChecked()) {
                 holder.mCheckBox.setChecked(false);
                 App.dbInstance.getCoinFavDao().deleteFav(coinPojo.getId());
             } else {

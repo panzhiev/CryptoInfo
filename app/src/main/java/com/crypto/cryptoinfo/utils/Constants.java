@@ -21,4 +21,6 @@ public class Constants {
     public static final String ENABLE_NIGHT_MODE = "enable_night_mode";
     public static final String ENABLE_AUTO_NIGHT_MODE = "enable_auto_night_mode";
     public static final String MAIN_SCREEN = "pref_key_main_screen_list";
+
+    public static final String CHART_IMAGE_URL = "https://s2.coinmarketcap.com/generated/sparklines/web/7d/usd/";
 }

@@ -3,7 +3,6 @@ package com.crypto.cryptoinfo.ui.activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.StyleRes;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -54,8 +53,8 @@ public class SettingsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-//                onBackPressed();
-                NavUtils.navigateUpFromSameTask(this);
+                onBackPressed();
+//                NavUtils.navigateUpFromSameTask(this);
                 return true;
         }
         return super.onOptionsItemSelected(item);
