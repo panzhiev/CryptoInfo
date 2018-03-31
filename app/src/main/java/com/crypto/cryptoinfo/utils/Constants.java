@@ -23,4 +23,5 @@ public class Constants {
     public static final String MAIN_SCREEN = "pref_key_main_screen_list";
 
     public static final String CHART_IMAGE_URL = "https://s2.coinmarketcap.com/generated/sparklines/web/7d/usd/";
+    public static final String COIN_IMAGE_URL_128x128 = "https://s2.coinmarketcap.com/static/img/coins/128x128/";
 }

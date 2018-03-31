@@ -315,27 +315,25 @@ public class CoinPojo implements Parcelable{
     public static Comparator<CoinPojo> sPriceCoinComparatorUp = (c1, c2) -> {
 
         String priceString1 = c1.getPriceUsd();
+        if (priceString1 == null || priceString1.isEmpty()) priceString1 = "0";
         String priceString2 = c2.getPriceUsd();
-        if (priceString1 != null && priceString2 != null) {
-            double price1 = Double.parseDouble(priceString1);
-            double price2 = Double.parseDouble(priceString2);
-            return Double.compare(price1, price2);
-        }
+        if (priceString2 == null || priceString2.isEmpty()) priceString2 = "0";
 
-        return 1;
+        double price1 = Double.parseDouble(priceString1);
+        double price2 = Double.parseDouble(priceString2);
+        return Double.compare(price1, price2);
     };
 
     public static Comparator<CoinPojo> sPriceCoinComparatorDown = (c1, c2) -> {
 
         String priceString1 = c1.getPriceUsd();
+        if (priceString1 == null || priceString1.isEmpty()) priceString1 = "0";
         String priceString2 = c2.getPriceUsd();
-        if (priceString1 != null && priceString2 != null) {
-            double price1 = Double.parseDouble(priceString1);
-            double price2 = Double.parseDouble(priceString2);
-            return Double.compare(price2, price1);
-        }
+        if (priceString2 == null || priceString2.isEmpty()) priceString2 = "0";
 
-        return 1;
+        double price1 = Double.parseDouble(priceString1);
+        double price2 = Double.parseDouble(priceString2);
+        return Double.compare(price2, price1);
     };
 
     public static Comparator<CoinPojo> sCapCoinComparatorUp = (c1, c2) -> {

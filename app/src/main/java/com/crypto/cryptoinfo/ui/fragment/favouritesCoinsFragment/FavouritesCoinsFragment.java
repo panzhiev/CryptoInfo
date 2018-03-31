@@ -20,11 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.activity.FavActivity;
 import com.crypto.cryptoinfo.ui.activity.MainActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
@@ -41,6 +41,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.crypto.cryptoinfo.utils.Constants.COIN;
 import static com.crypto.cryptoinfo.utils.Constants.MAIN_SCREEN;
 
 public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, CoinsAdapter.OnCoinItemClickListener {
@@ -306,6 +307,8 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
 
     @Override
     public void onCoinItemClick(CoinPojo coinPojo) {
-        Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), CoinInfoActivity.class);
+        intent.putExtra(COIN, coinPojo);
+        startActivity(intent);
     }
 }

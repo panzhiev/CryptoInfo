@@ -3,7 +3,6 @@ package com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -30,15 +28,14 @@ import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.Utils;
 
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final String TAG = "CoinsAdapter";
 
     private ArrayList<CoinPojo> mArrayList = new ArrayList<>();
     private ArrayList<CoinFavPojo> mCoinFavPojos = (ArrayList<CoinFavPojo>) App.dbInstance.getCoinFavDao().getAll();
@@ -73,8 +70,7 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 View v2 = layoutInflater.inflate(R.layout.item_coin_fav_settings, parent, false);
                 return new ViewHolderFavCoinSettingsItem(v2);
             default:
-                View v = layoutInflater.inflate(android.R.layout.simple_list_item_1, parent, false);
-                return new RecyclerViewSimpleTextViewHolder(v);
+                return null;
         }
     }
 
@@ -88,10 +84,6 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             case Constants.COIN_FAV_SETTINGS_VIEW_TYPE:
                 ViewHolderFavCoinSettingsItem vh2 = (ViewHolderFavCoinSettingsItem) holder;
                 configureViewHolderFavCoin(vh2, holder.getAdapterPosition());
-                break;
-            default:
-                RecyclerViewSimpleTextViewHolder vh = (RecyclerViewSimpleTextViewHolder) holder;
-                configureDefaultViewHolder(vh, position);
                 break;
         }
     }
@@ -163,95 +155,27 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @BindView(R.id.checkbox_fav)
         CheckBox mCheckBox;
 
-        public ViewHolderFavCoinSettingsItem(View itemView) {
+        ViewHolderFavCoinSettingsItem(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-    }
-
-    private class RecyclerViewSimpleTextViewHolder extends RecyclerView.ViewHolder {
-        public RecyclerViewSimpleTextViewHolder(View v) {
-            super(v);
-        }
-    }
-
-    private void configureDefaultViewHolder(RecyclerViewSimpleTextViewHolder vh, int position) {
-
     }
 
     private void configureViewHolderDefaultCoin(ViewHolderDefaultCoinItem holder, int position) {
         Context context = holder.mTextView1h.getContext();
         final CoinPojo coinPojo = mArrayList.get(position);
 
-        String price = coinPojo.getPriceUsd();
-        String formattingPrice;
-        if (price != null && !price.isEmpty()) {
-            formattingPrice = String.format(Locale.getDefault(), "%1$,.2f", Double.parseDouble(price))
-                    + " " + context.getString(R.string.usd_symbol);
-        } else {
-            formattingPrice = "";
-        }
-
         holder.mTextViewSymbol.setText(coinPojo.getSymbol());
         holder.mTextViewCurrencyName.setText(coinPojo.getName());
-        holder.mTextViewPrice.setText(formattingPrice);
-
-        String marketCap = coinPojo.getMarketCapUsd();
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setGroupingSeparator(' ');
-        DecimalFormat df = new DecimalFormat();
-        df.setDecimalFormatSymbols(symbols);
-        df.setGroupingSize(3);
-
-        if (marketCap != null && !marketCap.isEmpty()) {
-            marketCap = df.format(Double.parseDouble(marketCap)) + " " + context.getString(R.string.usd_symbol);
-        } else {
-            marketCap = "";
-        }
-
-        holder.mTextViewCoinmarketCap.setText(marketCap);
-
-        String percentChange1h = coinPojo.getPercentChange1h();
-        String percentChange24h = coinPojo.getPercentChange24h();
-        String percentChange7d = coinPojo.getPercentChange7d();
-
-        if (percentChange1h != null) {
-            if (percentChange1h.contains("-")) {
-                holder.mTextView1h.setText(percentChange1h);
-                holder.mTextView1h.setTextColor(context.getResources().getColor(R.color.red));
-            } else {
-                holder.mTextView1h.setText("+" + percentChange1h);
-                holder.mTextView1h.setTextColor(context.getResources().getColor(R.color.green));
-            }
-        } else {
-            holder.mTextView1h.setText("-");
-            holder.mTextView1h.setTextColor(context.getResources().getColor(R.color.colorTextDefault));
-        }
-
-        if (percentChange24h != null) {
-            if (percentChange24h.contains("-")) {
-                holder.mTextView24h.setText(percentChange24h);
-                holder.mTextView24h.setTextColor(context.getResources().getColor(R.color.red));
-            } else {
-                holder.mTextView24h.setText("+" + percentChange24h);
-                holder.mTextView24h.setTextColor(context.getResources().getColor(R.color.green));
-            }
-        } else {
-            holder.mTextView24h.setText("-");
-            holder.mTextView24h.setTextColor(context.getResources().getColor(R.color.colorTextDefault));
-        }
-        if (percentChange7d != null) {
-            if (percentChange7d.contains("-")) {
-                holder.mTextView7d.setText(percentChange7d);
-                holder.mTextView7d.setTextColor(context.getResources().getColor(R.color.red));
-            } else {
-                holder.mTextView7d.setText("+" + percentChange7d);
-                holder.mTextView7d.setTextColor(context.getResources().getColor(R.color.green));
-            }
-        } else {
-            holder.mTextView7d.setText("-");
-            holder.mTextView7d.setTextColor(context.getResources().getColor(R.color.colorTextDefault));
-        }
+        holder.mTextViewPrice.setText(
+                Utils.formatPrice(coinPojo.getPriceUsd())
+                        .concat(context.getString(R.string.usd_symbol)));
+        holder.mTextViewCoinmarketCap.setText(
+                Utils.formatMarketCap(coinPojo.getMarketCapUsd())
+                        .concat(context.getString(R.string.usd_symbol)));
+        Utils.formatPercentChange(context, holder.mTextView1h, coinPojo.getPercentChange1h());
+        Utils.formatPercentChange(context, holder.mTextView24h, coinPojo.getPercentChange24h());
+        Utils.formatPercentChange(context, holder.mTextView7d, coinPojo.getPercentChange7d());
 
         Glide.with(context)
                 .load(Utils.getChartImageUrl(coinPojo.getNumId()))
@@ -269,21 +193,20 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 })
                 .apply(new RequestOptions()
-                        .centerCrop()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                        .diskCacheStrategy(DiskCacheStrategy.NONE))
                 .into(holder.mIvChart);
 
         Bitmap bitmap = Utils.getBitmapFromCryptoIconsAssets(context, coinPojo.getSymbol().toLowerCase());
         if (bitmap != null) {
             holder.mImageViewIcon.setImageBitmap(bitmap);
         } else {
-            TextDrawable drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .textColor(context.getResources().getColor(R.color.textDisabled))
-                    .fontSize(35)
-                    .endConfig()
-                    .buildRoundRect(coinPojo.getSymbol().length() <= 3 ? coinPojo.getSymbol() : coinPojo.getSymbol().substring(0, 3), Color.LTGRAY, 64);
-            holder.mImageViewIcon.setImageDrawable(drawable);
+            Glide.with(context)
+                    .load(Utils.getCoinImageUrl(coinPojo.getNumId()))
+                    .apply(new RequestOptions()
+                            .centerCrop()
+                            .error(Utils.getTextDrawable(context, coinPojo.getSymbol()))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL))
+                    .into(holder.mImageViewIcon);
         }
 
         holder.mRlItemCoin.setOnClickListener(view -> mOnCoinItemClickListener.onCoinItemClick(coinPojo));
@@ -301,20 +224,17 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (bitmap != null) {
             holder.mImageViewIcon.setImageBitmap(bitmap);
         } else {
-            TextDrawable drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .textColor(context.getResources().getColor(R.color.textDisabled))
-                    .fontSize(35)
-                    .endConfig()
-                    .buildRoundRect(coinPojo.getSymbol().length() <= 3 ? coinPojo.getSymbol() : coinPojo.getSymbol().substring(0, 3), Color.LTGRAY, 64);
-            holder.mImageViewIcon.setImageDrawable(drawable);
+            Glide.with(context)
+                    .load(Utils.getCoinImageUrl(coinPojo.getNumId()))
+                    .apply(new RequestOptions()
+                            .centerCrop()
+                            .error(Utils.getTextDrawable(context, coinPojo.getSymbol()))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL))
+                    .into(holder.mImageViewIcon);
         }
 
         holder.mCheckBox.setChecked(mCoinFavString.contains(coinPojo.getId()));
         holder.mCheckBox.setOnClickListener(view -> {
-//            coinPojo.setFavourite(!coinPojo.isFavourite());
-//            holder.mCheckBox.setChecked(coinPojo.isFavourite());
-//            App.dbInstance.getCoinDao().insertAll(coinPojo);
             if (!holder.mCheckBox.isChecked()) {
                 holder.mCheckBox.setChecked(false);
                 App.dbInstance.getCoinFavDao().deleteFav(coinPojo.getId());

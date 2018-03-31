@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -54,6 +55,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                             }
                             return responseTickers;
                         })
+                .timeout(20, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> fragment.showProgressIndicator())
                 .doOnTerminate(() -> fragment.hideProgressIndicator())
