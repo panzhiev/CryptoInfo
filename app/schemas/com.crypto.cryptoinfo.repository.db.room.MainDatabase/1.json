@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c4bc26e68cf9cbe1fbe804b7c136bb8f",
+    "identityHash": "65061b4180805b7ed3e3582b1e96ba53",
     "entities": [
       {
         "tableName": "coin",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` TEXT, `name` TEXT, `symbol` TEXT, `rank` TEXT, `priceUsd` TEXT, `priceBtc` TEXT, `_24hVolumeUsd` TEXT, `marketCapUsd` TEXT, `availableSupply` TEXT, `maxSupply` TEXT, `totalSupply` TEXT, `percentChange1h` TEXT, `percentChange24h` TEXT, `percentChange7d` TEXT, `lastUpdated` TEXT, `numId` TEXT, `isFavourite` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` TEXT, `name` TEXT, `symbol` TEXT, `rank` TEXT, `priceUsd` TEXT, `priceBtc` TEXT, `_24hVolumeUsd` TEXT, `marketCapUsd` TEXT, `availableSupply` TEXT, `maxSupply` TEXT, `totalSupply` TEXT, `percentChange1h` TEXT, `percentChange24h` TEXT, `percentChange7d` TEXT, `lastUpdated` TEXT, `numId` TEXT, `isFavourite` INTEGER NOT NULL, `priceEur` TEXT, `_24hVolumeEur` TEXT, `marketCapEur` TEXT)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -115,6 +115,24 @@
             "columnName": "isFavourite",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "priceEur",
+            "columnName": "priceEur",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "_24hVolumeEur",
+            "columnName": "_24hVolumeEur",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "marketCapEur",
+            "columnName": "marketCapEur",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -155,7 +173,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c4bc26e68cf9cbe1fbe804b7c136bb8f\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"65061b4180805b7ed3e3582b1e96ba53\")"
     ]
   }
 }

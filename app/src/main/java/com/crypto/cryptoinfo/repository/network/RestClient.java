@@ -14,7 +14,7 @@ public class RestClient {
     public static ApiInterface getApiInterface(String baseUrl) {
 
         Gson gson = new GsonBuilder()
-                .setLenient()
+//                .setLenient()
                 .create();
 
         Retrofit retrofit = new Retrofit.Builder()

@@ -4,8 +4,6 @@ package com.crypto.cryptoinfo.repository.network;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.google.gson.JsonElement;
 
-import org.json.JSONObject;
-
 import java.util.List;
 
 import retrofit2.Response;
@@ -20,6 +18,10 @@ public class ModelImpl {
 
     public Observable<List<CoinPojo>> getAllTickers() {
         return RestClient.getApiInterface(BASE_URL_COINMARKETCAP).getAllTickers();
+    }
+
+    public Observable<List<CoinPojo>> getTickersWithConvert(String currencyToConvert) {
+        return RestClient.getApiInterface(BASE_URL_COINMARKETCAP).getTickersWithConvert(currencyToConvert);
     }
 
     public Observable<Response<JsonElement>> getGraphsPerPeriod(String coinFullName, String pastTime, String presentTime) {

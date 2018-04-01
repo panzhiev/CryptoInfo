@@ -47,7 +47,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
     public void getCurrenciesList() {
 
         mSubscriptionZip = Observable
-                .zip(mModel.getAllTickers().subscribeOn(Schedulers.newThread()),
+                .zip(mModel.getTickersWithConvert("EUR").subscribeOn(Schedulers.newThread()),
                         mModel.getCoinIds().subscribeOn(Schedulers.newThread()),
                         (responseTickers, responseIds) -> {
                             for (int i = 0; i < responseTickers.size(); i++) {

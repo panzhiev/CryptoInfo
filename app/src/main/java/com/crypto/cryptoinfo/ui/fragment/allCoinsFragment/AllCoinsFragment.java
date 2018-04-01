@@ -19,7 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.crypto.cryptoinfo.R;
@@ -77,11 +77,11 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     @BindView(R.id.swipe_refresh)
     public SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @BindView(R.id.iv_close_sort)
-    public ImageView mIvCloseSort;
+    @BindView(R.id.ib_close)
+    public ImageButton mIbClose;
 
-    @BindView(R.id.iv_close_search)
-    public ImageView mIvCloseSearch;
+    @BindView(R.id.ib_close_search)
+    public ImageButton mIbCloseSearch;
 
     private CoinsAdapter mCoinsAdapter;
     private CoinsListViewModel mCoinsListViewModel;
@@ -171,8 +171,8 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
                 mEtSearch.setText("");
             }
         });
-        mIvCloseSort.setOnClickListener(v -> setSortLayoutVisibility());
-        mIvCloseSearch.setOnClickListener(v -> setSearchLayoutVisibility());
+        mIbClose.setOnClickListener(v -> setSortLayoutVisibility());
+        mIbCloseSearch.setOnClickListener(v -> setSearchLayoutVisibility());
         mLlSortRank.setOnClickListener(v -> {
             selectRank();
             mCoinsPresenter.sortListByRank((ArrayList<CoinPojo>) mCoinPojoList, isSortRankUp);
@@ -251,6 +251,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
             mRvCurrencies.setAdapter(mCoinsAdapter);
         } else {
             Log.d(TAG, "mCoinsAdapter != null");
+            Log.d(TAG, "setList: " + list.get(0).toString());
             mCoinsAdapter.reloadList(list);
         }
     }

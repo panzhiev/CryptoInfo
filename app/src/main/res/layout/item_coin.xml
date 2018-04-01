@@ -78,7 +78,7 @@
                 android:layout_width="@dimen/chart_icon_width"
                 android:paddingTop="@dimen/divider_s"
                 android:layout_marginBottom="@dimen/divider_xs"
-                android:src="@mipmap/ic_launcher_round"
+                tools:src="@mipmap/ic_launcher_round"
                 android:layout_height="@dimen/chart_icon_height"/>
 
         </LinearLayout>

@@ -68,6 +68,16 @@ public class CoinPojo implements Parcelable{
 
     private boolean isFavourite;
 
+    @SerializedName("price_eur")
+    @Expose
+    private String priceEur;
+    @SerializedName("24h_volume_eur")
+    @Expose
+    private String _24hVolumeEur;
+    @SerializedName("market_cap_eur")
+    @Expose
+    private String marketCapEur;
+
     /**
      * No args constructor for use in serialization
      */
@@ -78,7 +88,7 @@ public class CoinPojo implements Parcelable{
                     String priceBtc, String _24hVolumeUsd, String marketCapUsd,
                     String availableSupply, String maxSupply, String totalSupply,
                     String percentChange1h, String percentChange24h, String percentChange7d,
-                    String lastUpdated, String numId) {
+                    String lastUpdated, String numId, String priceEur, String _24hVolumeEur, String marketCapEur) {
         super();
         this.id = id;
         this.name = name;
@@ -96,6 +106,9 @@ public class CoinPojo implements Parcelable{
         this.percentChange7d = percentChange7d;
         this.lastUpdated = lastUpdated;
         this.numId = numId;
+        this.priceEur = priceEur;
+        this._24hVolumeEur = _24hVolumeEur;
+        this.marketCapEur = marketCapEur;
     }
 
     private CoinPojo(Parcel in) {
@@ -116,6 +129,9 @@ public class CoinPojo implements Parcelable{
         this.percentChange7d = in.readString();
         this.lastUpdated = in.readString();
         this.numId = in.readString();
+        this.priceEur = in.readString();
+        this._24hVolumeEur = in.readString();
+        this.marketCapEur = in.readString();
     }
 
     public static final Creator<CoinPojo> CREATOR = new Creator<CoinPojo>() {
@@ -274,6 +290,30 @@ public class CoinPojo implements Parcelable{
         this.numId = numId;
     }
 
+    public String getPriceEur() {
+        return priceEur;
+    }
+
+    public void setPriceEur(String priceEur) {
+        this.priceEur = priceEur;
+    }
+
+    public String get_24hVolumeEur() {
+        return _24hVolumeEur;
+    }
+
+    public void set_24hVolumeEur(String _24hVolumeEur) {
+        this._24hVolumeEur = _24hVolumeEur;
+    }
+
+    public String getMarketCapEur() {
+        return marketCapEur;
+    }
+
+    public void setMarketCapEur(String marketCapEur) {
+        this.marketCapEur = marketCapEur;
+    }
+
     @Override
     public String toString() {
         return "CoinPojo{" +
@@ -293,8 +333,11 @@ public class CoinPojo implements Parcelable{
                 ", percentChange24h='" + percentChange24h + '\'' +
                 ", percentChange7d='" + percentChange7d + '\'' +
                 ", lastUpdated='" + lastUpdated + '\'' +
+                ", numId='" + numId + '\'' +
                 ", isFavourite=" + isFavourite +
-                ", numId=" + numId +
+                ", priceEur='" + priceEur + '\'' +
+                ", _24hVolumeEur='" + _24hVolumeEur + '\'' +
+                ", marketCapEur='" + marketCapEur + '\'' +
                 '}' + "\n";
     }
 
@@ -423,5 +466,8 @@ public class CoinPojo implements Parcelable{
         parcel.writeString(percentChange7d);
         parcel.writeString(lastUpdated);
         parcel.writeString(numId);
+        parcel.writeString(priceEur);
+        parcel.writeString(_24hVolumeEur);
+        parcel.writeString(marketCapEur);
     }
 }

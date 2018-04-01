@@ -18,7 +18,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.crypto.cryptoinfo.R;
@@ -69,8 +69,8 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
     @BindView(R.id.swipe_refresh_fav)
     public SwipeRefreshLayout mSwipeRefreshLayout;
 
-    @BindView(R.id.iv_close_sort_fav)
-    public ImageView mIvCloseSort;
+    @BindView(R.id.ib_close)
+    public ImageButton mIbClose;
 
     private CoinsAdapter mCoinsAdapter;
     private CoinsFavListViewModel mCoinsFavListViewModel;
@@ -153,7 +153,7 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
                 setSortLayoutVisibility();
             }
         });
-        mIvCloseSort.setOnClickListener(v -> setSortLayoutVisibility());
+        mIbClose.setOnClickListener(v -> setSortLayoutVisibility());
         mLlSortRank.setOnClickListener(v -> {
             selectRank();
             mCoinsPresenter.sortListByRank((ArrayList<CoinPojo>) mCoinPojoList, isSortRankUp);

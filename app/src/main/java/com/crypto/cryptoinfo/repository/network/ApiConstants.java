@@ -11,8 +11,9 @@ public class ApiConstants {
     public static final String BASE_URL_S2 = "https://s2.coinmarketcap.com/";
     public static final String PATH_QUICK_SEARCH = "generated/search/quick_search.json?limit=2000/";
 
-    public static final String TICKERS = "ticker/?start=0&limit=2000";
+    public static final String TICKERS = "ticker/?limit=2000";
     public static final String TICKER_SPECIFIC = "/ticker/{id}/";
+
 
     public static final String GLOBAL = "global/";
 }

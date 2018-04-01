@@ -18,7 +18,7 @@ import static com.crypto.cryptoinfo.repository.network.ApiConstants.TICKERS;
 public interface ApiInterface {
 
     @GET(TICKERS)
-    Observable<List<CoinPojo>> getTickersWithConvert(@Query("convert") String usd);
+    Observable<List<CoinPojo>> getTickersWithConvert(@Query("convert") String currency);
 
     @GET(TICKERS)
     Observable<List<CoinPojo>> getAllTickers();

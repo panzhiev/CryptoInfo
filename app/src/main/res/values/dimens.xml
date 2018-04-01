@@ -19,6 +19,10 @@
     <!-- Icons -->
     <dimen name="dimen_currency_icon">32dp</dimen>
 
+    <!-- ImageButtons -->
+    <dimen name="dimen_image_button">48dp</dimen>
+    <dimen name="dimen_padding_image_button">12dp</dimen>
+
     <!-- Dividers -->
     <dimen name="divider_xs">4dp</dimen>
     <dimen name="divider_s">8dp</dimen>
