@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.activity.FavActivity;
 import com.crypto.cryptoinfo.ui.activity.MainActivity;
@@ -43,6 +44,7 @@ import butterknife.ButterKnife;
 
 import static com.crypto.cryptoinfo.utils.Constants.COIN;
 import static com.crypto.cryptoinfo.utils.Constants.MAIN_SCREEN;
+import static com.crypto.cryptoinfo.utils.Constants.TIME_TO_UPD;
 
 public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, CoinsAdapter.OnCoinItemClickListener {
 
@@ -124,6 +126,20 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
 //                .subscribe(list -> setList((ArrayList) list), Throwable::printStackTrace);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mCoinsPresenter == null) {
+            mCoinsPresenter = new CoinsPresenter(this);
+        }
+
+        String lastUpd = SharedPreferencesHelper.getInstance().getLastUpdAllCoins();
+        if ((System.currentTimeMillis() - Long.parseLong(lastUpd) > TIME_TO_UPD)) {
+            mCoinsPresenter.getCurrenciesList();
+        }
     }
 
     private List<CoinPojo> filter(String input) {
@@ -262,7 +278,7 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.favourites_menu, menu);
-        Utils.setToolbarIconsColor(getContext(), menu, R.color.colorTextDefault);
+        Utils.setToolbarIconsColor(getContext(), menu, R.color.colorToolbarItems);
     }
 
     @Override

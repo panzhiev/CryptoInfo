@@ -9,6 +9,7 @@ import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.ExchangePojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.PointTimePrice;
+import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 import com.crypto.cryptoinfo.ui.fragment.ILoadingView;
 import com.google.gson.JsonElement;
 
@@ -218,6 +219,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
         protected Void doInBackground(List<CoinPojo>[] lists) {
             App.dbInstance.getCoinDao().deleteAll();
             App.dbInstance.getCoinDao().insertListCoinPojo(lists[0]);
+            SharedPreferencesHelper.getInstance().putLastUpdAllCoins(String.valueOf(System.currentTimeMillis()));
             return null;
         }
     }

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import static com.crypto.cryptoinfo.utils.Constants.LAST_UPD_ALL_COINS;
+
 public class SharedPreferencesHelper {
 
     private static final String TAG = "SharedPreferencesHelper";
@@ -43,6 +45,13 @@ public class SharedPreferencesHelper {
         return mSharedPreferences.getInt(key, -1);
     }
 
+    public void putLastUpdAllCoins (String lastUpd){
+        mSharedPreferences.edit().putString(LAST_UPD_ALL_COINS, lastUpd).apply();
+    }
+
+    public String getLastUpdAllCoins() {
+        return mSharedPreferences.getString(LAST_UPD_ALL_COINS, "0");
+    }
 
 //    public void putToken(String token) {
 //        mSharedPreferences.edit().putString(Config.TOKEN, token).apply();

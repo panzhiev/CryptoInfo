@@ -24,6 +24,8 @@
     <color name="colorTextDefault">#95000000</color>
     <color name="colorTextDefaultSecondary">#60000000</color>
 
+    <color name="colorToolbarItems">#5B4623</color>
+
     <color name="lightGray">#cfcfcf</color>
     <color name="navigation_drawer_bg">#E0E0E0</color>
     <color name="textDisabled">#3F3F3F</color>

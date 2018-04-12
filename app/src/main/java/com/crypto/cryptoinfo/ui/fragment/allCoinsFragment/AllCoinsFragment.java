@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.activity.MainActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
@@ -33,6 +34,7 @@ import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.viewModel.CoinsListVie
 import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.FavouritesCoinsFragment;
 import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.DialogFactory;
+import com.crypto.cryptoinfo.utils.KeyboardUtils;
 import com.crypto.cryptoinfo.utils.Utils;
 
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ import io.reactivex.disposables.Disposable;
 
 import static com.crypto.cryptoinfo.utils.Constants.COIN;
 import static com.crypto.cryptoinfo.utils.Constants.MAIN_SCREEN;
+import static com.crypto.cryptoinfo.utils.Constants.TIME_TO_UPD;
 import static com.jakewharton.rxbinding2.widget.RxTextView.textChanges;
 
 public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAdapter.OnCoinItemClickListener {
@@ -138,6 +141,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
         return view;
     }
 
+
     private List<CoinPojo> filter(String input) {
 
         List<CoinPojo> searchingCoinPogoList = new ArrayList<>();
@@ -155,6 +159,20 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     private void setUpRecyclerView() {
         mRvCurrencies.setLayoutManager(new LinearLayoutManager(getContext()));
         mRvCurrencies.setHasFixedSize(true);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (mCoinsPresenter == null) {
+            mCoinsPresenter = new CoinsPresenter(this);
+        }
+
+        String lastUpd = SharedPreferencesHelper.getInstance().getLastUpdAllCoins();
+        if ((System.currentTimeMillis() - Long.parseLong(lastUpd) > TIME_TO_UPD)) {
+            mCoinsPresenter.getCurrenciesList();
+        }
     }
 
     private void setListeners() {
@@ -208,8 +226,13 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     private void setSearchLayoutVisibility() {
         if (!isVisibleSearchLayout) {
             mLlSearch.setVisibility(View.VISIBLE);
+            mEtSearch.setFocusableInTouchMode(true);
+            mEtSearch.requestFocus();
+            KeyboardUtils.showKeyboard(mEtSearch);
         } else {
             mLlSearch.setVisibility(View.GONE);
+            mEtSearch.setFocusableInTouchMode(false);
+            KeyboardUtils.hideKeyboard(mEtSearch);
         }
         isVisibleSearchLayout = !isVisibleSearchLayout;
     }
@@ -251,7 +274,6 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
             mRvCurrencies.setAdapter(mCoinsAdapter);
         } else {
             Log.d(TAG, "mCoinsAdapter != null");
-            Log.d(TAG, "setList: " + list.get(0).toString());
             mCoinsAdapter.reloadList(list);
         }
     }
@@ -264,6 +286,9 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     @Override
     public void showError() {
         Log.d(TAG, "showError");
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
         DialogFactory.createGenericErrorDialog(getContext(), R.string.error_message).show();
     }
 
@@ -291,7 +316,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.all_menu, menu);
-        Utils.setToolbarIconsColor(getContext(), menu, R.color.colorTextDefault);
+        Utils.setToolbarIconsColor(getContext(), menu, R.color.colorToolbarItems);
     }
 
     @Override
@@ -316,6 +341,9 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
 
     @Override
     public void showProgressIndicator() {
+        if (mSwipeRefreshLayout != null) {
+            mSwipeRefreshLayout.setRefreshing(true);
+        }
 //        mProgressDialog = DialogFactory.createProgressDialog(getContext(), R.string.loading);
 //        mProgressDialog.show();
 //        mAVLoadingIndicatorView.setVisibility(View.VISIBLE);
