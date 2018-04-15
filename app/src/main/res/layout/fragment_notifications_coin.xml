@@ -9,26 +9,18 @@
               android:paddingStart="@dimen/activity_horizontal_margin"
               tools:context="ui.fragment.notificationsFragment.NotificationsCoinFragment">
 
-    <com.wang.avi.AVLoadingIndicatorView
-        android:id="@+id/loading_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        app:indicatorColor="@color/colorPrimary"
-        app:indicatorName="BallClipRotateMultipleIndicator"/>
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/divider_l"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <CheckBox
             android:id="@+id/checkbox_high"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="when the price will be more than"/>
+            android:text="@string/when_the_price_will_be_more_than"/>
 
         <View
             android:layout_width="@dimen/divider_s"
@@ -52,6 +44,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:layout_marginTop="@dimen/divider_l"
         android:orientation="horizontal">
 
@@ -59,7 +52,7 @@
             android:id="@+id/checkbox_low"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="when the price will be less than"/>
+            android:text="@string/when_the_price_will_be_less_than"/>
 
         <View
             android:layout_width="@dimen/divider_s"

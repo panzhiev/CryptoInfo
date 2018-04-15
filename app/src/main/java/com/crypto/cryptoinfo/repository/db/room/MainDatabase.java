@@ -3,17 +3,21 @@ package com.crypto.cryptoinfo.repository.db.room;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 
+import com.crypto.cryptoinfo.repository.db.room.dao.AlertCoinDao;
 import com.crypto.cryptoinfo.repository.db.room.dao.CoinDao;
 import com.crypto.cryptoinfo.repository.db.room.dao.CoinFavDao;
+import com.crypto.cryptoinfo.repository.db.room.entity.AlertCoinPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinFavPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 
-@Database(entities = {CoinPojo.class, CoinFavPojo.class}, version = 1)
+@Database(entities = {CoinPojo.class, CoinFavPojo.class, AlertCoinPojo.class}, version = 1)
 public abstract class MainDatabase extends RoomDatabase {
 
     public abstract CoinDao getCoinDao();
 
     public abstract CoinFavDao getCoinFavDao();
+
+    public abstract AlertCoinDao getAlertCoinDao();
 
 //    public static final Migration MIGRATION_1_2 = new Migration(1, 2) {
 //        @Override

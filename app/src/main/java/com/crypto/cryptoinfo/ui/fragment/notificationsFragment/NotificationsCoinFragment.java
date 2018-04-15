@@ -2,7 +2,6 @@ package com.crypto.cryptoinfo.ui.fragment.notificationsFragment;
 
 
 import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,8 +16,10 @@ import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.background.service.ChangeCoinsPriceJobService;
+import com.crypto.cryptoinfo.repository.db.room.entity.AlertCoinPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
@@ -61,11 +62,12 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
     double minValue;
     double currentValue;
     double maxValue;
+    double seekBarValueHigh;
+    double seekBarValueLow;
 
     private CoinPojo mCoinPojo;
-
+    private AlertCoinPojo mAlertCoinPojo = new AlertCoinPojo();
     private static int JOB_ID = 101;
-    private JobScheduler mJobScheduler;
     private JobInfo mJobInfo;
 
     public NotificationsCoinFragment() {
@@ -108,7 +110,6 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
                 tvPriceLow.setText(mCoinPojo.getPriceUsd());
                 break;
         }
-//        mJobScheduler = (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         return view;
     }
@@ -130,7 +131,7 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
                 seekBarLow.setEnabled(false);
             }
         });
-//        btnSaveChanges.setOnClickListener(v -> startJob());
+        btnSaveChanges.setOnClickListener(v -> saveChanges());
         seekBarHigh.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean byUser) {
@@ -165,6 +166,28 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
             }
         });
+    }
+
+    private void saveChanges() {
+
+        if (!checkBoxHigh.isChecked() && !checkBoxLow.isChecked()) {
+            App.dbInstance.getAlertCoinDao().deleteAlertCoinPojo(new AlertCoinPojo(mCoinPojo.getId(), 0.0, 0.0, true));
+            //cancelling job dispatcher if alert table is empty
+            if (App.dbInstance.getAlertCoinDao().getAll().isEmpty()) stopJob();
+            Log.d(TAG, "saveChanges: return");
+            return;
+        }
+
+        mAlertCoinPojo.setId(mCoinPojo.getId());
+        //TODO: add radio button for checking is one time alert or not
+        mAlertCoinPojo.setOneTime(true);
+        if (checkBoxHigh.isChecked()) mAlertCoinPojo
+                .setHigh(seekBarValueHigh);
+        if (checkBoxLow.isChecked()) mAlertCoinPojo
+                .setLow(seekBarValueLow);
+
+        App.dbInstance.getAlertCoinDao().insertAll(mAlertCoinPojo);
+        startJob();
     }
 
     @Override
@@ -216,12 +239,12 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
     private void prepareSeekBars() {
         seekBarLow.setProgress(seekBarLow.getMax());
-        if(checkBoxHigh.isChecked()){
+        if (checkBoxHigh.isChecked()) {
             seekBarHigh.setEnabled(true);
         } else {
             seekBarHigh.setEnabled(false);
         }
-        if(checkBoxLow.isChecked()){
+        if (checkBoxLow.isChecked()) {
             seekBarLow.setEnabled(true);
         } else {
             seekBarLow.setEnabled(false);
@@ -231,39 +254,32 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
     private void updateUIHigh(final int i) {
         new Handler(Looper.getMainLooper()).post(() -> {
             double percentChange = ((double) i) / 100.0d;
-            double seekBarValue = (currentValue * (100.0d + percentChange)) / 100.0d;
-            tvPriceHigh.setText(Utils.formatPrice(String.valueOf(seekBarValue)));
+            seekBarValueHigh = (currentValue * (100.0d + percentChange)) / 100.0d;
+            tvPriceHigh.setText(Utils.formatPrice(String.valueOf(seekBarValueHigh)));
         });
     }
 
     private void updateUILow(final int i) {
         new Handler(Looper.getMainLooper()).post(() -> {
             double percentChange = ((double) i) / 100.0d;
-            double seekBarValue = currentValue - (currentValue * (50.0d - percentChange)) / 100.0d;
-            tvPriceLow.setText(Utils.formatPrice(String.valueOf(seekBarValue)));
+            seekBarValueLow = currentValue - (currentValue * (50.0d - percentChange)) / 100.0d;
+            tvPriceLow.setText(Utils.formatPrice(String.valueOf(seekBarValueLow)));
         });
     }
 
     private void startJob() {
-        try {
-            JOB_ID = Integer.valueOf(((CoinInfoActivity) getActivity()).getCoinPojo().getNumId());
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
         ComponentName mComponentName = new ComponentName(getContext(), ChangeCoinsPriceJobService.class);
         JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, mComponentName);
-        mJobInfo = builder.setPeriodic(10000)
+        mJobInfo = builder.setPeriodic(20000)
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPersisted(true)
                 .build();
 
-        assert mJobScheduler != null;
-        mJobScheduler.schedule(mJobInfo);
+        App.getJobScheduler().schedule(mJobInfo);
     }
 
     private void stopJob() {
-        mJobScheduler.cancel(JOB_ID);
+        App.getJobScheduler().cancel(JOB_ID);
     }
 
     @Override

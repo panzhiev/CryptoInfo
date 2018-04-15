@@ -63,6 +63,8 @@
     <string name="pref_fav_screen_value">1</string>
     <string name="main_screen_title">Main Screen</string>
     <string name="tap_to_select_the_main_screen">Tap to select the main screen</string>
+    <string name="when_the_price_will_be_more_than">when the price will be more than</string>
+    <string name="when_the_price_will_be_less_than">when the price will be less than</string>
 
     <!-- // -->
     <string-array name="array_main_screen_labels">

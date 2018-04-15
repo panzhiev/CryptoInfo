@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.crypto.cryptoinfo.R;
+
 public class NotificationUtils {
 
     private static final String TAG = NotificationUtils.class.getSimpleName();
@@ -18,7 +20,6 @@ public class NotificationUtils {
     public static void create(Context context,
                               int id,
                               Intent intent,
-                              int smallIcon,
                               String contentTitle,
                               String contentText) {
         NotificationManager manager =
@@ -31,7 +32,7 @@ public class NotificationUtils {
                 .setContentIntent(p)
                 .setContentTitle(contentTitle)
                 .setContentText(contentText)
-                .setSmallIcon(smallIcon)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE);
 
