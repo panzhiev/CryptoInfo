@@ -1,19 +1,93 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:animateLayoutChanges="true"
-             tools:context="ui.fragment.notificationsFragment.NotificationsCoinFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:animateLayoutChanges="true"
+              android:orientation="vertical"
+              android:paddingEnd="@dimen/activity_horizontal_margin"
+              android:paddingStart="@dimen/activity_horizontal_margin"
+              tools:context="ui.fragment.notificationsFragment.NotificationsCoinFragment">
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/loading_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="visible"
+        android:visibility="gone"
         app:indicatorColor="@color/colorPrimary"
         app:indicatorName="BallClipRotateMultipleIndicator"/>
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/divider_l"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkbox_high"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="when the price will be more than"/>
+
+        <View
+            android:layout_width="@dimen/divider_s"
+            android:layout_height="1dp"/>
+
+        <TextView
+            android:id="@+id/tv_price_high"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="$ 8.314.28"/>
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/seekbar_high"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/divider_l"
+        android:max="5000"
+        android:progress="0"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/divider_l"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/checkbox_low"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="when the price will be less than"/>
+
+        <View
+            android:layout_width="@dimen/divider_s"
+            android:layout_height="1dp"/>
+
+        <TextView
+            android:id="@+id/tv_price_low"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="$ 8.314.28"/>
+
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/seekbar_low"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/divider_l"
+        android:max="5000"
+        android:progress="0"/>
+
+    <Button
+        android:id="@+id/btn_save_changes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/divider_l"
+        android:text="save changes"/>
+
+</LinearLayout>
 

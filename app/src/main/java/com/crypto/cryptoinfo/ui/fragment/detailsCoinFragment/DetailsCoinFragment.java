@@ -166,6 +166,11 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     }
 
     @Override
+    public void notifyForChanges() {
+
+    }
+
+    @Override
     public void onBackPressed() {
 
     }

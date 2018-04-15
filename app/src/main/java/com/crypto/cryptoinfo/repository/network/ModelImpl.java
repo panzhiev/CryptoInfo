@@ -16,6 +16,10 @@ import static com.crypto.cryptoinfo.repository.network.ApiConstants.BASE_URL_S2;
 
 public class ModelImpl {
 
+    public Observable<CoinPojo> getTicker(String coin) {
+        return RestClient.getApiInterface(BASE_URL_COINMARKETCAP).getTicker(coin);
+    }
+
     public Observable<List<CoinPojo>> getAllTickers() {
         return RestClient.getApiInterface(BASE_URL_COINMARKETCAP).getAllTickers();
     }

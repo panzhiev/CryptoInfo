@@ -22,9 +22,15 @@ public class Constants {
     public static final String ENABLE_AUTO_NIGHT_MODE = "enable_auto_night_mode";
     public static final String MAIN_SCREEN = "pref_key_main_screen_list";
     public static final String LAST_UPD_ALL_COINS = "LAST_UPD_ALL_COINS";
+    public static final String CURRENT_CURRENCY = "CURRENT_CURRENCY";
+
+    //Currencies
+    public static final String USD = "USD";
+    public static final String EUR = "EUR";
+    public static final String BTC = "BTC";
 
     //other
-    public static final long TIME_TO_UPD = 180000;
+    public static final long TIME_TO_UPD = 300000;
 
     public static final String CHART_IMAGE_URL = "https://s2.coinmarketcap.com/generated/sparklines/web/7d/usd/";
     public static final String COIN_IMAGE_URL_128x128 = "https://s2.coinmarketcap.com/static/img/coins/128x128/";

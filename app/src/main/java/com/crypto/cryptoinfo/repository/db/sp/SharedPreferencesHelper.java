@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import static com.crypto.cryptoinfo.utils.Constants.CURRENT_CURRENCY;
 import static com.crypto.cryptoinfo.utils.Constants.LAST_UPD_ALL_COINS;
 
 public class SharedPreferencesHelper {
@@ -61,6 +62,13 @@ public class SharedPreferencesHelper {
 //        return mSharedPreferences.getString(Config.TOKEN, "");
 //    }
 
+    public void putCurrentCurrency (String key, String value) {
+        mSharedPreferences.edit().putString(key, value).apply();
+    }
+
+    public String getCurrentCurrency() {
+        return mSharedPreferences.getString(CURRENT_CURRENCY, "USD");
+    }
 
     public SharedPreferences getSharedPreferencesLink() {
         return mSharedPreferences;

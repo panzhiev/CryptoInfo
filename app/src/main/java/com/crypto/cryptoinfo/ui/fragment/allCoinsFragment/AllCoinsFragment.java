@@ -134,6 +134,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
                 }
         );
 
+
         searchDisposable = textChanges(mEtSearch)
                 .map(inputText -> filter(inputText.toString()))
                 .subscribe(list -> setList((ArrayList) list), Throwable::printStackTrace);
@@ -141,14 +142,20 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
         return view;
     }
 
-
     private List<CoinPojo> filter(String input) {
 
         List<CoinPojo> searchingCoinPogoList = new ArrayList<>();
 
         if (!mCoinPojoList.isEmpty()) {
             for (CoinPojo coinPojo : mCoinPojoList) {
-                if (coinPojo.getSymbol().toLowerCase().contains(input.toLowerCase()) || coinPojo.getName().toLowerCase().contains(input.toLowerCase())) {
+                if (coinPojo
+                        .getSymbol()
+                        .toLowerCase()
+                        .contains(input.toLowerCase())
+                        || coinPojo
+                        .getName()
+                        .toLowerCase()
+                        .contains(input.toLowerCase())) {
                     searchingCoinPogoList.add(coinPojo);
                 }
             }
@@ -168,6 +175,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
         if (mCoinsPresenter == null) {
             mCoinsPresenter = new CoinsPresenter(this);
         }
+
 
         String lastUpd = SharedPreferencesHelper.getInstance().getLastUpdAllCoins();
         if ((System.currentTimeMillis() - Long.parseLong(lastUpd) > TIME_TO_UPD)) {
@@ -293,6 +301,11 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     }
 
     @Override
+    public void notifyForChanges() {
+
+    }
+
+    @Override
     public void onBackPressed() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -378,4 +391,5 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
         intent.putExtra(COIN, coinPojo);
         startActivity(intent);
     }
+
 }

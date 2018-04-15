@@ -14,6 +14,7 @@ import rx.Observable;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.COIN_SNAPSHOT;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.PATH_QUICK_SEARCH;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.TICKERS;
+import static com.crypto.cryptoinfo.repository.network.ApiConstants.TICKER_SPECIFIC;
 
 public interface ApiInterface {
 
@@ -22,6 +23,9 @@ public interface ApiInterface {
 
     @GET(TICKERS)
     Observable<List<CoinPojo>> getAllTickers();
+
+    @GET(TICKER_SPECIFIC)
+    Observable<CoinPojo> getTicker(@Path("id") String id);
 
     @GET("{coin}/{pastTime}/{presentTime}/")
     Observable<Response<JsonElement>> getGraphsPerPeriod(

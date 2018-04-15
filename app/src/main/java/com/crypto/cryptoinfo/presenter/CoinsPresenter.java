@@ -37,12 +37,30 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
     private Subscription mSubscriptionCurrencies,
             mSubscriptionGetCharts,
             mSubscriptionGetCoinSnapshot,
-            mSubscriptionZip;
+            mSubscriptionZip,
+            mSubscriptionGetCoinTicker;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     public CoinsPresenter(ILoadingView fragment) {
         super();
-        this.fragment = fragment;
+        if (fragment == null){
+            this.fragment = new ILoadingView() {
+                @Override
+                public void showProgressIndicator() {}
+                @Override
+                public void hideProgressIndicator() {}
+                @Override
+                public void setList(ArrayList list) {}
+                @Override
+                public void reloadList(ArrayList list) {}
+                @Override
+                public void showError() {}
+                @Override
+                public void notifyForChanges() {}
+            };
+        } else {
+            this.fragment = fragment;
+        }
     }
 
     public void getCurrenciesList() {
@@ -74,7 +92,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
     }
 
     private void responseCurrenciesHandler(List<CoinPojo> coinPojos) {
-        new SaveCoinsAsync().execute(coinPojos);
+        new SaveCoinsAsync(fragment).execute(coinPojos);
     }
 
     public void getChartsData(String coin, String pastTime) {
@@ -99,6 +117,23 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                 .subscribe(this::responseCoinSnapshotHandler, e -> fragment.showError());
 
         mCompositeSubscription.add(mSubscriptionGetCoinSnapshot);
+    }
+
+    public void getCoinTicker (String coin){
+
+        mSubscriptionGetCoinTicker = mModel.getTicker(coin)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> fragment.showProgressIndicator())
+                .doOnTerminate(() -> fragment.hideProgressIndicator())
+                .subscribe(this::responseCoinTicker, e -> fragment.showError());
+
+        mCompositeSubscription.add(mSubscriptionGetCoinTicker);
+
+    }
+
+    private void responseCoinTicker(CoinPojo coinPojo) {
+        //TODO:
     }
 
     private void responseCoinSnapshotHandler(Response<JsonElement> response) {
@@ -215,11 +250,18 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
     }
 
     private static class SaveCoinsAsync extends AsyncTask<List<CoinPojo>, Void, Void> {
+
+        ILoadingView f;
+        SaveCoinsAsync(ILoadingView f) {
+            this.f = f;
+        }
+
         @Override
         protected Void doInBackground(List<CoinPojo>[] lists) {
             App.dbInstance.getCoinDao().deleteAll();
             App.dbInstance.getCoinDao().insertListCoinPojo(lists[0]);
             SharedPreferencesHelper.getInstance().putLastUpdAllCoins(String.valueOf(System.currentTimeMillis()));
+            f.notifyForChanges();
             return null;
         }
     }

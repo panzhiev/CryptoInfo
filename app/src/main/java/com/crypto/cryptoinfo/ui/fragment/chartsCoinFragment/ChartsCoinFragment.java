@@ -135,6 +135,11 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
     }
 
     @Override
+    public void notifyForChanges() {
+
+    }
+
+    @Override
     public void onBackPressed() {
 
     }

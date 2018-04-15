@@ -14,4 +14,6 @@ public interface ILoadingView {
     void reloadList(ArrayList list);
 
     void showError();
+
+    void notifyForChanges();
 }
