@@ -43,5 +43,20 @@
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE">
         </service>
+
+        <service
+            android:name=".background.service.NotificationService"
+            android:enabled="true" >
+        </service>
+
+        <receiver
+            android:name=".background.br.NotificationBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true"
+            android:label="RestartServiceWhenStopped">
+            <intent-filter>
+                <action android:name="ACTION_RESTART_SERVICE"/>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

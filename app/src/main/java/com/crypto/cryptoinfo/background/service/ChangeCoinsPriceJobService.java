@@ -4,6 +4,7 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.R;
@@ -19,25 +20,29 @@ import com.crypto.cryptoinfo.utils.Utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.crypto.cryptoinfo.utils.Constants.COIN;
 import static com.crypto.cryptoinfo.utils.Constants.USD;
 
 
 public class ChangeCoinsPriceJobService extends JobService implements ILoadingView {
 
     private static final String TAG = ChangeCoinsPriceJobService.class.getSimpleName();
-    CoinsPresenter mCoinsPresenter = new CoinsPresenter(this);
+    JobParameters jobParameters;
 
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         Log.d(TAG, "onStartJob: ...");
-        mCoinsPresenter.getCurrenciesList();
-        return false;
+        this.jobParameters = jobParameters;
+        new CoinsPresenter(this).getCurrenciesList();
+        Toast.makeText(this, "onStartJob", Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
-        Log.d(TAG, "onStopJob: ...");
-        return false;
+//        Log.d(TAG, "onStopJob: ...");
+        Toast.makeText(this, "onStopJob", Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     @Override
@@ -67,29 +72,38 @@ public class ChangeCoinsPriceJobService extends JobService implements ILoadingVi
 
     @Override
     public void notifyForChanges() {
+        Log.d(TAG, "notifyForChanges: ");
         String currentCurrency = SharedPreferencesHelper.getInstance().getCurrentCurrency();
         List<CoinPojo> coinPojos = App.dbInstance.getCoinDao().getAlerts();
 
         for (CoinPojo cp : coinPojos) {
-            AlertCoinPojo alertCoinPojo = App.dbInstance.getAlertCoinDao().getAlertCoin(cp.getId());
+            AlertCoinPojo alertCoinPojo = App.dbInstance.getAlertCoinDao().getAlertCoin(cp.getSymbol());
             if (alertCoinPojo != null) {
                 switch (currentCurrency) {
                     case USD:
+                        Log.d(TAG, "notifyForChanges: case: USD");
                         double priceUsd = Double.parseDouble(cp.getPriceUsd());
                         if (priceUsd > alertCoinPojo.getHigh()) {
-                            sendNotification(alertCoinPojo.getId(), alertCoinPojo.getId() + " > " +
+                            Log.d(TAG, "notifyForChanges: priceUsd > alertCoinPojo.getHigh()");
+                            sendNotification(cp, alertCoinPojo.getSymbol(), alertCoinPojo.getSymbol() + " > " +
                                     Utils.formatPrice(String.valueOf(alertCoinPojo.getHigh())));
                         } else if (priceUsd < alertCoinPojo.getLow()) {
-                            sendNotification(alertCoinPojo.getId(), alertCoinPojo.getId() + " < " +
+                            Log.d(TAG, "notifyForChanges: priceUsd < alertCoinPojo.getLow()");
+                            sendNotification(cp, alertCoinPojo.getSymbol(), alertCoinPojo.getSymbol() + " < " +
                                     Utils.formatPrice(String.valueOf(alertCoinPojo.getLow())));
                         }
                 }
             }
         }
+
+        jobFinished(jobParameters, true);
     }
 
-    private void sendNotification(String id, String message) {
+    private void sendNotification(CoinPojo coinPojo, String symbol, String message) {
+        Log.d(TAG, "sendNotification: ");
         Intent intent = new Intent(this, CoinInfoActivity.class);
-        NotificationUtils.create(this, id.hashCode(), intent, this.getString(R.string.app_name), message);
+        intent.putExtra(COIN, coinPojo);
+        NotificationUtils.create(this, symbol.hashCode(), intent, this.getString(R.string.app_name), message);
+        App.dbInstance.getAlertCoinDao().deleteAlert(symbol);
     }
 }

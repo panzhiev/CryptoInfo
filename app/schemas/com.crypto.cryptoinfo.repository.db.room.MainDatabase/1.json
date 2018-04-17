@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a8d54f9f0f3fac6bc13b4224e48f4fad",
+    "identityHash": "09ebd9eacdb0c90ebc12e68032979afc",
     "entities": [
       {
         "tableName": "coin",
@@ -172,19 +172,13 @@
       },
       {
         "tableName": "alert_coin",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` TEXT, `high` REAL NOT NULL, `low` REAL NOT NULL, `oneTime` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`symbol` TEXT NOT NULL, `high` REAL NOT NULL, `low` REAL NOT NULL, `oneTime` INTEGER NOT NULL, PRIMARY KEY(`symbol`))",
         "fields": [
           {
-            "fieldPath": "uid",
-            "columnName": "uid",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "id",
-            "columnName": "id",
+            "fieldPath": "symbol",
+            "columnName": "symbol",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "high",
@@ -207,9 +201,9 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "uid"
+            "symbol"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -217,7 +211,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a8d54f9f0f3fac6bc13b4224e48f4fad\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"09ebd9eacdb0c90ebc12e68032979afc\")"
     ]
   }
 }

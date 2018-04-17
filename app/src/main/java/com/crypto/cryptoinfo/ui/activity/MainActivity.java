@@ -1,5 +1,7 @@
 package com.crypto.cryptoinfo.ui.activity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +20,7 @@ import android.util.Log;
 import android.view.MenuItem;
 
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.background.service.NotificationService;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.AllCoinsFragment;
 import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.FavouritesCoinsFragment;
@@ -68,10 +71,25 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        navigateOnFragment();
+        Intent serviceIntent = new Intent(this, NotificationService.class);
 
-//        AllCoinsFragment allCoinsFragment = AllCoinsFragment.newInstance();
-//        navigator(allCoinsFragment, allCoinsFragment.getCurrentTag());
+        if (!isNotificationServiceRunning(NotificationService.class)) {
+            startService(serviceIntent);
+        }
+
+        navigateOnFragment();
+    }
+
+    private boolean isNotificationServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i("isServiceRunning?", true + "");
+                return true;
+            }
+        }
+        Log.i("isServiceRunning?", false + "");
+        return false;
     }
 
     private void navigateOnFragment() {

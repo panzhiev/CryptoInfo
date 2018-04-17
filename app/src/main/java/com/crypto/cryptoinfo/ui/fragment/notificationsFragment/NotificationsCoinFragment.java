@@ -1,8 +1,11 @@
 package com.crypto.cryptoinfo.ui.fragment.notificationsFragment;
 
 
+import android.annotation.SuppressLint;
 import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -59,9 +62,7 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
     @BindView(R.id.checkbox_low)
     CheckBox checkBoxLow;
 
-    double minValue;
     double currentValue;
-    double maxValue;
     double seekBarValueHigh;
     double seekBarValueLow;
 
@@ -69,6 +70,7 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
     private AlertCoinPojo mAlertCoinPojo = new AlertCoinPojo();
     private static int JOB_ID = 101;
     private JobInfo mJobInfo;
+    private JobScheduler mJobScheduler;
 
     public NotificationsCoinFragment() {
         // Required empty public constructor
@@ -93,8 +95,9 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
         prepareSeekBars();
 
         mCoinPojo = ((CoinInfoActivity) getActivity()).getCoinPojo();
-        String currentCurrency = SharedPreferencesHelper.getInstance().getCurrentCurrency();
+//        mJobScheduler = (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
+        String currentCurrency = SharedPreferencesHelper.getInstance().getCurrentCurrency();
         String price;
         switch (currentCurrency) {
             case USD:
@@ -102,8 +105,6 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
                 tvPriceHigh.setText(price);
                 tvPriceLow.setText(price);
                 currentValue = Double.parseDouble(mCoinPojo.getPriceUsd());
-                minValue = currentValue / 2.0;
-                maxValue = currentValue * 2.0;
                 break;
             default:
                 tvPriceHigh.setText(mCoinPojo.getPriceUsd());
@@ -118,6 +119,8 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
         checkBoxHigh.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (isChecked) {
+                seekBarValueHigh = currentValue;
+                Log.d(TAG, "setListeners: seekBarValueHigh" + seekBarValueHigh);
                 seekBarHigh.setEnabled(true);
             } else {
                 seekBarHigh.setEnabled(false);
@@ -126,12 +129,14 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
         checkBoxLow.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (isChecked) {
+                seekBarValueLow = currentValue - (currentValue * 0.5d);
+                Log.d(TAG, "setListeners: seekBarValueLow" + seekBarValueLow);
                 seekBarLow.setEnabled(true);
             } else {
                 seekBarLow.setEnabled(false);
             }
         });
-        btnSaveChanges.setOnClickListener(v -> saveChanges());
+//        btnSaveChanges.setOnClickListener(v -> saveChanges());
         seekBarHigh.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean byUser) {
@@ -168,26 +173,29 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
         });
     }
 
+    @SuppressLint("StaticFieldLeak")
     private void saveChanges() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                if (!checkBoxHigh.isChecked() && !checkBoxLow.isChecked()) {
+                    App.dbInstance.getAlertCoinDao().deleteAlert(mCoinPojo.getSymbol());
+                    Log.d(TAG, "saveChanges: return");
+                    return null;
+                }
 
-        if (!checkBoxHigh.isChecked() && !checkBoxLow.isChecked()) {
-            App.dbInstance.getAlertCoinDao().deleteAlertCoinPojo(new AlertCoinPojo(mCoinPojo.getId(), 0.0, 0.0, true));
-            //cancelling job dispatcher if alert table is empty
-            if (App.dbInstance.getAlertCoinDao().getAll().isEmpty()) stopJob();
-            Log.d(TAG, "saveChanges: return");
-            return;
-        }
+                mAlertCoinPojo.setSymbol(mCoinPojo.getSymbol());
+                //TODO: add radio button for checking is one time alert or not
+                mAlertCoinPojo.setOneTime(true);
+                if (checkBoxHigh.isChecked()) mAlertCoinPojo
+                        .setHigh(seekBarValueHigh);
+                if (checkBoxLow.isChecked()) mAlertCoinPojo
+                        .setLow(seekBarValueLow);
 
-        mAlertCoinPojo.setId(mCoinPojo.getId());
-        //TODO: add radio button for checking is one time alert or not
-        mAlertCoinPojo.setOneTime(true);
-        if (checkBoxHigh.isChecked()) mAlertCoinPojo
-                .setHigh(seekBarValueHigh);
-        if (checkBoxLow.isChecked()) mAlertCoinPojo
-                .setLow(seekBarValueLow);
-
-        App.dbInstance.getAlertCoinDao().insertAll(mAlertCoinPojo);
-        startJob();
+                App.dbInstance.getAlertCoinDao().insertAll(mAlertCoinPojo);
+                return null;
+            }
+        }.execute();
     }
 
     @Override
@@ -237,6 +245,15 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        Log.d(TAG, "onHiddenChanged: started. Hidden = " + hidden);
+        if (hidden) {
+            saveChanges();
+        }
+    }
+
     private void prepareSeekBars() {
         seekBarLow.setProgress(seekBarLow.getMax());
         if (checkBoxHigh.isChecked()) {
@@ -268,6 +285,7 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
     }
 
     private void startJob() {
+        Log.d(TAG, "startJob: ");
         ComponentName mComponentName = new ComponentName(getContext(), ChangeCoinsPriceJobService.class);
         JobInfo.Builder builder = new JobInfo.Builder(JOB_ID, mComponentName);
         mJobInfo = builder.setPeriodic(20000)
@@ -275,11 +293,12 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
                 .setPersisted(true)
                 .build();
 
-        App.getJobScheduler().schedule(mJobInfo);
+        mJobScheduler.schedule(mJobInfo);
     }
 
     private void stopJob() {
-        App.getJobScheduler().cancel(JOB_ID);
+        Log.d(TAG, "stopJob: ");
+        mJobScheduler.cancel(JOB_ID);
     }
 
     @Override

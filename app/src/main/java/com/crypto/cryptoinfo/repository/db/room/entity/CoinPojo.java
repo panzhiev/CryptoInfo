@@ -2,6 +2,7 @@ package com.crypto.cryptoinfo.repository.db.room.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -26,6 +27,7 @@ public class CoinPojo implements Parcelable{
     private String name;
     @SerializedName("symbol")
     @Expose
+    @ColumnInfo(name = "symbol")
     private String symbol;
     @SerializedName("rank")
     @Expose
@@ -84,6 +86,7 @@ public class CoinPojo implements Parcelable{
     public CoinPojo() {
     }
 
+    @Ignore
     public CoinPojo(String id, String name, String symbol, String rank, String priceUsd,
                     String priceBtc, String _24hVolumeUsd, String marketCapUsd,
                     String availableSupply, String maxSupply, String totalSupply,

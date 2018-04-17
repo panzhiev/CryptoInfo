@@ -30,7 +30,7 @@ public interface CoinDao {
     LiveData<List<CoinPojo>> getFavourites();
 
     @Query("SELECT * FROM coin "
-            + "INNER JOIN alert_coin ON coin.id = alert_coin.id")
+            + "INNER JOIN alert_coin ON coin.symbol = alert_coin.symbol")
     List<CoinPojo> getAlerts();
 
     @Insert(onConflict = REPLACE)

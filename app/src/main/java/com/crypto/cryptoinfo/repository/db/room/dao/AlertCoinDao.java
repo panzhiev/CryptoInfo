@@ -19,8 +19,8 @@ public interface AlertCoinDao {
     @Query("SELECT * FROM alert_coin")
     List<AlertCoinPojo> getAll();
 
-    @Query ("SELECT * FROM alert_coin WHERE id LIKE :id")
-    AlertCoinPojo getAlertCoin(String id);
+    @Query ("SELECT * FROM alert_coin WHERE symbol LIKE :symbol")
+    AlertCoinPojo getAlertCoin(String symbol);
 
     @Query("SELECT * FROM alert_coin")
     LiveData<List<AlertCoinPojo>> getAllAsLiveData();
@@ -40,6 +40,9 @@ public interface AlertCoinDao {
 
     @Delete
     void deleteAlertCoinPojo(AlertCoinPojo alertCoinPojo);
+
+    @Query("DELETE FROM alert_coin WHERE symbol = :symbol")
+    void deleteAlert(String symbol);
 
     @Query("DELETE FROM alert_coin")
     void deleteAll();
