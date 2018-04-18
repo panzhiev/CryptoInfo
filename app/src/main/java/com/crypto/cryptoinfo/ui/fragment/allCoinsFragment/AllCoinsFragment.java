@@ -36,6 +36,9 @@ import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.KeyboardUtils;
 import com.crypto.cryptoinfo.utils.Utils;
+import com.skydoves.powermenu.MenuAnimation;
+import com.skydoves.powermenu.PowerMenu;
+import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,9 +47,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 
+import static com.crypto.cryptoinfo.utils.Constants.BTC;
 import static com.crypto.cryptoinfo.utils.Constants.COIN;
+import static com.crypto.cryptoinfo.utils.Constants.CURRENT_CURRENCY;
+import static com.crypto.cryptoinfo.utils.Constants.EUR;
 import static com.crypto.cryptoinfo.utils.Constants.MAIN_SCREEN;
 import static com.crypto.cryptoinfo.utils.Constants.TIME_TO_UPD;
+import static com.crypto.cryptoinfo.utils.Constants.USD;
+import static com.crypto.cryptoinfo.utils.Constants.currencies;
+import static com.crypto.cryptoinfo.utils.ScreenUtils.convertDIPToPixels;
+import static com.crypto.cryptoinfo.utils.ScreenUtils.getScreenDimensionsInPx;
 import static com.jakewharton.rxbinding2.widget.RxTextView.textChanges;
 
 public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAdapter.OnCoinItemClickListener {
@@ -86,6 +96,9 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     @BindView(R.id.ib_close_search)
     public ImageButton mIbCloseSearch;
 
+    @BindView(R.id.empty_view)
+    public View emptyView;
+
     private CoinsAdapter mCoinsAdapter;
     private CoinsListViewModel mCoinsListViewModel;
     private CoinsPresenter mCoinsPresenter;
@@ -99,6 +112,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     private boolean isSortCapUp = false;
     private boolean isSort1hUp = false;
     private Disposable searchDisposable;
+    private PowerMenu mPowerMenu;
 
     public AllCoinsFragment() {
         // Required empty public constructor
@@ -329,12 +343,78 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.all_menu, menu);
+        MenuItem menuItem = menu.getItem(0);
+        menuItem.setTitle(SharedPreferencesHelper.getInstance().getCurrentCurrency());
+        buildDropDownMenu(menuItem);
         Utils.setToolbarIconsColor(getContext(), menu, R.color.colorToolbarItems);
+    }
+
+    public void buildDropDownMenu(MenuItem menuItem) {
+        mPowerMenu = new PowerMenu.Builder(getContext())
+                .addItem(new PowerMenuItem(USD, false))
+                .addItem(new PowerMenuItem(EUR, false))
+                .addItem(new PowerMenuItem(BTC, false))
+                .setWidth(300)
+                .setLifecycleOwner(this)
+                .setMenuRadius(10f)
+                .setMenuShadow(10f)
+                .setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT)
+                .setTextColor(getContext().getResources().getColor(R.color.colorTextDefault))
+                .setSelectedTextColor(getContext().getResources().getColor(R.color.colorTextDefault))
+                .setMenuColor(getContext().getResources().getColor(R.color.color_fragment_bg))
+                .setSelectedMenuColor(getContext().getResources().getColor(R.color.colorPrimary))
+                .setOnMenuItemClickListener((position, item) -> {
+                    switch (position) {
+                        case 0:
+                            menuItem.setTitle(USD);
+                            break;
+                        case 1:
+                            menuItem.setTitle(EUR);
+                            break;
+                        case 2:
+                            menuItem.setTitle(BTC);
+                            break;
+                        default:
+                            break;
+                    }
+                    SharedPreferencesHelper.getInstance().putCurrentCurrency(CURRENT_CURRENCY, currencies[position]);
+                    mPowerMenu.setSelectedPosition(position);
+                    mPowerMenu.dismiss();
+                    mCoinsAdapter.notifyDataSetChanged();
+                })
+                .build();
+
+        int pos;
+        switch (SharedPreferencesHelper.getInstance().getCurrentCurrency()) {
+            case USD:
+                pos = 0;
+                break;
+            case EUR:
+                pos = 1;
+                break;
+            case BTC:
+                pos = 2;
+                break;
+            default:
+                pos = 0;
+                break;
+        }
+        mPowerMenu.setSelectedPosition(pos);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_currency:
+                // view is an anchor
+
+
+                mPowerMenu.showAsDropDown(emptyView,
+                        getScreenDimensionsInPx(getActivity())
+                                - convertDIPToPixels(getContext(), 120)
+                                - mPowerMenu.getContentViewWidth(),
+                        0);
+                return true;
             case R.id.action_sort:
                 if (isVisibleSearchLayout) {
                     setSearchLayoutVisibility();
@@ -391,5 +471,4 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
         intent.putExtra(COIN, coinPojo);
         startActivity(intent);
     }
-
 }

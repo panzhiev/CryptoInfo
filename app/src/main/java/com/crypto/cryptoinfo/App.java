@@ -14,6 +14,8 @@ public class App extends Application {
 
     public static MainDatabase dbInstance;
     private static ApplicationComponent sApplicationComponent;
+    private static Application INSTANCE;
+
 
     static {
         AppCompatDelegate.setDefaultNightMode(
@@ -25,6 +27,7 @@ public class App extends Application {
         super.onCreate();
         SharedPreferencesHelper.getInstance().initialize(this);
         initComponent();
+        INSTANCE = this;
         dbInstance = Room
                 .databaseBuilder(getApplicationContext(), MainDatabase.class, "main_database")
                 .allowMainThreadQueries()
@@ -41,4 +44,8 @@ public class App extends Application {
     public static ApplicationComponent getApplicationComponent() {
         return sApplicationComponent;
     }
+    public static Application getInstance() {
+        return INSTANCE;
+    }
+
 }

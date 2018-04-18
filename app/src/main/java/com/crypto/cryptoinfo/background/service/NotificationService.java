@@ -29,6 +29,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static com.crypto.cryptoinfo.utils.Constants.COIN;
+import static com.crypto.cryptoinfo.utils.Constants.TIME_TO_UPD;
 import static com.crypto.cryptoinfo.utils.Constants.USD;
 
 public class NotificationService extends Service implements ILoadingView {
@@ -69,8 +70,8 @@ public class NotificationService extends Service implements ILoadingView {
         //initialize the TimerTask's job
         initializeTimerTask();
 
-        //schedule the timer, to wake up every 20 second
-        timer.schedule(timerTask, 1000, 20000);
+        //schedule the timer, to wake up every 5 minutes
+        timer.schedule(timerTask, 1000, TIME_TO_UPD);
     }
 
     /**

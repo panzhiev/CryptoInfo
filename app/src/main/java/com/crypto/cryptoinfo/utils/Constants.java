@@ -28,6 +28,13 @@ public class Constants {
     public static final String USD = "USD";
     public static final String EUR = "EUR";
     public static final String BTC = "BTC";
+    public static final String[] currencies = new String[]{USD, EUR, BTC};
+
+
+    public static final String USD_SYMBOL = "$";
+    public static final String EUR_SYMBOL = "€";
+    public static final String BTC_SYMBOL = "฿";
+
 
     //other
     public static final long TIME_TO_UPD = 300000;

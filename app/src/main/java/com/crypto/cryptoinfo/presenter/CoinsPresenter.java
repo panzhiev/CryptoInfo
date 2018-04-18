@@ -30,6 +30,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.crypto.cryptoinfo.utils.Constants.EUR;
+
 public class CoinsPresenter extends BasePresenter implements IPresenter {
 
     private static final String TAG = CoinsPresenter.class.getSimpleName();
@@ -66,7 +68,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
     public void getCurrenciesList() {
 
         mSubscriptionZip = Observable
-                .zip(mModel.getTickersWithConvert("EUR").subscribeOn(Schedulers.newThread()),
+                .zip(mModel.getTickersWithConvert(EUR).subscribeOn(Schedulers.newThread()),
                         mModel.getCoinIds().subscribeOn(Schedulers.newThread()),
                         (responseTickers, responseIds) -> {
                             for (int i = 0; i < responseTickers.size(); i++) {

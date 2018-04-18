@@ -76,6 +76,7 @@ public class Utils {
         return COIN_IMAGE_URL_128x128 + coinNumId + ".png";
     }
 
+
     public static String formatPrice(String unformattedPrice) {
 
         if (unformattedPrice != null && !unformattedPrice.isEmpty() && unformattedPrice.startsWith("0")) {
@@ -103,6 +104,33 @@ public class Utils {
         } else {
             return "? ";
         }
+    }
+
+    public static String formatMarketCapForBtc(String priceUsd, String priceBtc, String marketCapUsd) {
+
+        if (priceUsd == null || priceBtc == null || marketCapUsd == null) {
+            return "? ";
+        }
+
+        Double priceUsdDouble = Double.parseDouble(priceUsd);
+        Double priceBtcDouble = Double.parseDouble(priceBtc);
+        Double marketCapUsdDouble = Double.parseDouble(marketCapUsd);
+
+        String unformattedMarketCap = String.valueOf(priceBtcDouble * marketCapUsdDouble / priceUsdDouble);
+
+        if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty() && unformattedMarketCap.startsWith("0")) {
+            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ");
+        } else if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty()) {
+
+            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+            symbols.setGroupingSeparator(' ');
+            DecimalFormat df = new DecimalFormat();
+            df.setDecimalFormatSymbols(symbols);
+            df.setGroupingSize(3);
+
+            return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ");
+        }
+        return "? ";
     }
 
     public static void formatPercentChange(Context context, TextView tv, String percentChange) {

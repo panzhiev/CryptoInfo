@@ -25,6 +25,7 @@ import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinFavPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.Utils;
 
@@ -33,14 +34,22 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.crypto.cryptoinfo.utils.Constants.BTC;
+import static com.crypto.cryptoinfo.utils.Constants.BTC_SYMBOL;
+import static com.crypto.cryptoinfo.utils.Constants.EUR;
+import static com.crypto.cryptoinfo.utils.Constants.EUR_SYMBOL;
+import static com.crypto.cryptoinfo.utils.Constants.USD;
+import static com.crypto.cryptoinfo.utils.Constants.USD_SYMBOL;
+
 public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final String TAG = "CoinsAdapter";
 
-    private ArrayList<CoinPojo> mArrayList = new ArrayList<>();
+    private ArrayList<CoinPojo> mArrayList;
     private ArrayList<CoinFavPojo> mCoinFavPojos = (ArrayList<CoinFavPojo>) App.dbInstance.getCoinFavDao().getAll();
     private ArrayList<String> mCoinFavString = new ArrayList<>();
     private OnCoinItemClickListener mOnCoinItemClickListener;
+    private String currentCurrency;
 
     private int viewType;
 
@@ -56,6 +65,8 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
         mOnCoinItemClickListener = listener;
     }
+
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -76,6 +87,8 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+
+        currentCurrency = SharedPreferencesHelper.getInstance().getCurrentCurrency();
         switch (holder.getItemViewType()) {
             case Constants.COIN_DEFAULT_VIEW_TYPE:
                 ViewHolderDefaultCoinItem vh1 = (ViewHolderDefaultCoinItem) holder;
@@ -165,14 +178,41 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         Context context = holder.mTextView1h.getContext();
         final CoinPojo coinPojo = mArrayList.get(position);
 
+        String formatPrice = "0";
+        String formatMarketCap = "0";
+
+        switch (currentCurrency) {
+            case USD:
+                formatPrice = Utils.formatPrice(coinPojo.getPriceUsd())
+                        .concat(USD_SYMBOL);
+                formatMarketCap = Utils.formatMarketCap(coinPojo.getMarketCapUsd())
+                        .concat(USD_SYMBOL);
+                break;
+            case EUR:
+                formatPrice = Utils.formatPrice(coinPojo.getPriceEur())
+                        .concat(EUR_SYMBOL);
+                formatMarketCap = Utils.formatMarketCap(coinPojo.getMarketCapEur())
+                        .concat(EUR_SYMBOL);
+                break;
+            case BTC:
+                formatPrice = Utils.formatPrice(coinPojo.getPriceBtc())
+                        .concat(BTC_SYMBOL);
+
+                String priceUsd = coinPojo.getPriceUsd();
+                String marketCapUsd = coinPojo.getMarketCapUsd();
+                String priceBtc = coinPojo.getPriceBtc();
+
+                formatMarketCap = Utils.formatMarketCapForBtc(priceUsd, priceBtc, marketCapUsd)
+                        .concat(BTC_SYMBOL);
+                break;
+            default:
+                break;
+        }
+
         holder.mTextViewSymbol.setText(coinPojo.getSymbol());
         holder.mTextViewCurrencyName.setText(coinPojo.getName());
-        holder.mTextViewPrice.setText(
-                Utils.formatPrice(coinPojo.getPriceUsd())
-                        .concat(context.getString(R.string.usd_symbol)));
-        holder.mTextViewCoinmarketCap.setText(
-                Utils.formatMarketCap(coinPojo.getMarketCapUsd())
-                        .concat(context.getString(R.string.usd_symbol)));
+        holder.mTextViewPrice.setText(formatPrice);
+        holder.mTextViewCoinmarketCap.setText(formatMarketCap);
         Utils.formatPercentChange(context, holder.mTextView1h, coinPojo.getPercentChange1h());
         Utils.formatPercentChange(context, holder.mTextView24h, coinPojo.getPercentChange24h());
         Utils.formatPercentChange(context, holder.mTextView7d, coinPojo.getPercentChange7d());

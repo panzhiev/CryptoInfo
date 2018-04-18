@@ -27,6 +27,7 @@
     <string name="cap">Cap</string>
     <string name="item_1h">1h %</string>
     <string name="sort">Sorting</string>
+    <string name="currency">Currency</string>
     <string name="edit">Favourites</string>
 
     <!-- Coin info card -->
