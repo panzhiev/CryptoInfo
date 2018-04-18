@@ -24,9 +24,11 @@ import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.AllCoinsFragment;
 import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.FavouritesCoinsFragment;
 import com.crypto.cryptoinfo.utils.AndroidUtils;
 
+import static com.crypto.cryptoinfo.utils.Constants.EMAIL_FOR_CONTACT;
 import static com.crypto.cryptoinfo.utils.Constants.ENABLE_AUTO_NIGHT_MODE;
 import static com.crypto.cryptoinfo.utils.Constants.ENABLE_NIGHT_MODE;
 import static com.crypto.cryptoinfo.utils.Constants.MAIN_SCREEN;
+import static com.crypto.cryptoinfo.utils.Constants.PLAY_MARKET_PATH;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SharedPreferences.OnSharedPreferenceChangeListener {
@@ -37,17 +39,6 @@ public class MainActivity extends AppCompatActivity
     DrawerLayout drawer;
 
     SharedPreferences prefs;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: Started");
-
-        if (prefs == null) {
-            prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        }
-        prefs.registerOnSharedPreferenceChangeListener(this);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +67,17 @@ public class MainActivity extends AppCompatActivity
         }
 
         navigateOnFragment();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: Started");
+
+        if (prefs == null) {
+            prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        }
+        prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     private void navigateOnFragment() {
@@ -180,9 +182,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_convert) {
 
         } else if (id == R.id.nav_share) {
-
+            AndroidUtils.share(this, PLAY_MARKET_PATH + getPackageName());
         } else if (id == R.id.nav_connect) {
-
+            AndroidUtils.sendEmail(this, EMAIL_FOR_CONTACT, "");
         } else if (id == R.id.nav_settings) {
             onCloseNavigationDrawer();
             new Thread(() -> {

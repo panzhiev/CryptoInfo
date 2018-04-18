@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Toast;
 
 import com.crypto.cryptoinfo.App;
+import com.crypto.cryptoinfo.R;
 
 import java.util.List;
 
@@ -61,6 +62,7 @@ public class AndroidUtils {
         try {
             context.startActivity(sendIntent);
         } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
             //do nothing
         }
     }
@@ -71,8 +73,9 @@ public class AndroidUtils {
         intent.putExtra(Intent.EXTRA_SUBJECT, reportSubject);
         intent.putExtra(Intent.EXTRA_TEXT, "");
         try {
-//            context.startActivity(Intent.createChooser(intent, context.getString(R.string.send_email)));
+            context.startActivity(Intent.createChooser(intent, context.getString(R.string.send_email)));
         } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
             //do nothing
         }
     }

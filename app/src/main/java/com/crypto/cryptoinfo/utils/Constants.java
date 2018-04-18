@@ -29,16 +29,15 @@ public class Constants {
     public static final String EUR = "EUR";
     public static final String BTC = "BTC";
     public static final String[] currencies = new String[]{USD, EUR, BTC};
-
-
     public static final String USD_SYMBOL = "$";
     public static final String EUR_SYMBOL = "€";
     public static final String BTC_SYMBOL = "฿";
-
 
     //other
     public static final long TIME_TO_UPD = 300000;
 
     public static final String CHART_IMAGE_URL = "https://s2.coinmarketcap.com/generated/sparklines/web/7d/usd/";
     public static final String COIN_IMAGE_URL_128x128 = "https://s2.coinmarketcap.com/static/img/coins/128x128/";
+    public static final String PLAY_MARKET_PATH = "https://play.google.com/store/apps/details?id=";
+    public static final String EMAIL_FOR_CONTACT = "panzhiev.timur@gmail.com";
 }

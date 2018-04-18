@@ -82,14 +82,6 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                 .doOnTerminate(() -> fragment.hideProgressIndicator())
                 .subscribe(this::responseCurrenciesHandler, e -> fragment.showError());
 
-//        mSubscriptionCurrencies = mModel
-//                .getAllTickers()
-//                .subscribeOn(Schedulers.newThread())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnSubscribe(() -> fragment.showProgressIndicator())
-//                .doOnTerminate(() -> fragment.hideProgressIndicator())
-//                .subscribe(this::responseCurrenciesHandler, e -> fragment.showError());
-
         mCompositeSubscription.add(mSubscriptionZip);
     }
 
@@ -256,6 +248,8 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
         ILoadingView f;
         SaveCoinsAsync(ILoadingView f) {
             this.f = f;
+
+
         }
 
         @Override

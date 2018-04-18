@@ -1,6 +1,7 @@
 package com.crypto.cryptoinfo.ui.activity;
 
-import android.arch.lifecycle.ViewModelProviders;
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,10 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter.CoinsAdapter;
-import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.viewModel.CoinsListViewModel;
 import com.crypto.cryptoinfo.utils.Constants;
 
 import java.util.ArrayList;
@@ -28,8 +29,8 @@ public class FavActivity extends AppCompatActivity implements CoinsAdapter.OnCoi
     public RecyclerView mRvCoins;
 
     private CoinsAdapter mCoinsAdapter;
-    private CoinsListViewModel mCoinsListViewModel;
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,11 +46,13 @@ public class FavActivity extends AppCompatActivity implements CoinsAdapter.OnCoi
             npe.printStackTrace();
         }
 
-        mCoinsListViewModel = ViewModelProviders.of(this).get(CoinsListViewModel.class);
-        mCoinsListViewModel.getCoinsList().observe(this, coins -> {
-                    setList((ArrayList) coins);
-                }
-        );
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                setList((ArrayList) App.dbInstance.getCoinDao().getAll());
+                return null;
+            }
+        }.execute();
     }
 
     @Override

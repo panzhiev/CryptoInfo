@@ -190,7 +190,6 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
             mCoinsPresenter = new CoinsPresenter(this);
         }
 
-
         String lastUpd = SharedPreferencesHelper.getInstance().getLastUpdAllCoins();
         if ((System.currentTimeMillis() - Long.parseLong(lastUpd) > TIME_TO_UPD)) {
             mCoinsPresenter.getCurrenciesList();
@@ -200,12 +199,6 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     private void setListeners() {
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             mCoinsPresenter.getCurrenciesList();
-//            mCoinsPresenter.getChartsData("bitcoin", "1517915664000");
-//            if (isVisibleSortLayout) {
-//                selectRank();
-//                setSortLayoutVisibility();
-//            }
-
             if (isVisibleSearchLayout) {
                 setSearchLayoutVisibility();
                 mEtSearch.setText("");
