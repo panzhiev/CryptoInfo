@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.crypto.cryptoinfo.utils.Constants.BTC;
+import static com.crypto.cryptoinfo.utils.Constants.EUR;
 import static com.crypto.cryptoinfo.utils.Constants.USD;
 
 public class NotificationsCoinFragment extends Fragment implements IBaseFragment {
@@ -95,22 +97,29 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
         prepareSeekBars();
 
         mCoinPojo = ((CoinInfoActivity) getActivity()).getCoinPojo();
-//        mJobScheduler = (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
         String currentCurrency = SharedPreferencesHelper.getInstance().getCurrentCurrency();
         String price;
         switch (currentCurrency) {
             case USD:
                 price = Utils.formatPrice(mCoinPojo.getPriceUsd());
-                tvPriceHigh.setText(price);
-                tvPriceLow.setText(price);
                 currentValue = Double.parseDouble(mCoinPojo.getPriceUsd());
                 break;
+            case EUR:
+                price = Utils.formatPrice(mCoinPojo.getPriceEur());
+                currentValue = Double.parseDouble(mCoinPojo.getPriceEur());
+                break;
+            case BTC:
+                price = Utils.formatPrice(mCoinPojo.getPriceBtc());
+                currentValue = Double.parseDouble(mCoinPojo.getPriceBtc());
+                break;
             default:
-                tvPriceHigh.setText(mCoinPojo.getPriceUsd());
-                tvPriceLow.setText(mCoinPojo.getPriceUsd());
+                price = Utils.formatPrice(mCoinPojo.getPriceUsd());
                 break;
         }
+
+        tvPriceHigh.setText(price);
+        tvPriceLow.setText(price);
 
         return view;
     }
