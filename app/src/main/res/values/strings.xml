@@ -49,7 +49,7 @@
     <string name="_1_year">1y</string>
     <string name="arrow_up">ꜛ</string>
     <string name="arrow_down">ꜜ</string>
-    <string name="no_available_exchanges">No available exchanges</string>
+    <string name="no_available_markets">No available markets</string>
 
     <!-- Settings Strings -->
     <string name="night_mode">Night Mode</string>
@@ -79,5 +79,7 @@
 
     <!-- /Intent strings/ -->
     <string name="send_email" translatable="false">Send email</string>
+    <string name="market">Market</string>
+    <string name="change">Change</string>
 
 </resources>

@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import static com.crypto.cryptoinfo.utils.Constants.BTC;
 import static com.crypto.cryptoinfo.utils.Constants.CURRENT_CURRENCY;
+import static com.crypto.cryptoinfo.utils.Constants.CURRENT_CURRENCY_SYMBOL;
+import static com.crypto.cryptoinfo.utils.Constants.EUR;
 import static com.crypto.cryptoinfo.utils.Constants.LAST_UPD_ALL_COINS;
 import static com.crypto.cryptoinfo.utils.Constants.LAST_UPD_MARKETS;
+import static com.crypto.cryptoinfo.utils.Constants.USD;
 
 public class SharedPreferencesHelper {
 
@@ -73,10 +77,30 @@ public class SharedPreferencesHelper {
 
     public void putCurrentCurrency(String key, String value) {
         mSharedPreferences.edit().putString(key, value).apply();
+        switch (value) {
+            case USD:
+                putCurrentCurrencySymbol(CURRENT_CURRENCY_SYMBOL, "$");
+                break;
+            case EUR:
+                putCurrentCurrencySymbol(CURRENT_CURRENCY_SYMBOL, "€");
+                break;
+            case BTC:
+                putCurrentCurrencySymbol(CURRENT_CURRENCY_SYMBOL, "฿");
+                break;
+        }
+
     }
 
     public String getCurrentCurrency() {
         return mSharedPreferences.getString(CURRENT_CURRENCY, "USD");
+    }
+
+    public void putCurrentCurrencySymbol(String key, String value) {
+        mSharedPreferences.edit().putString(key, value).apply();
+    }
+
+    public String getCurrentCurrencySymbol() {
+        return mSharedPreferences.getString(CURRENT_CURRENCY_SYMBOL, "$");
     }
 
     public SharedPreferences getSharedPreferencesLink() {

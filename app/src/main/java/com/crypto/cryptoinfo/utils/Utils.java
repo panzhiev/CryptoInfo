@@ -12,9 +12,12 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -24,6 +27,7 @@ import java.util.Locale;
 
 import static com.crypto.cryptoinfo.utils.Constants.CHART_IMAGE_URL;
 import static com.crypto.cryptoinfo.utils.Constants.COIN_IMAGE_URL_128x128;
+import static com.crypto.cryptoinfo.utils.Constants.PERCENT_SYMBOL;
 
 
 public class Utils {
@@ -79,22 +83,25 @@ public class Utils {
         return COIN_IMAGE_URL_128x128 + coinNumId + ".png";
     }
 
-
     public static String formatPrice(String unformattedPrice) {
 
+        String symbol = SharedPreferencesHelper.getInstance().getCurrentCurrencySymbol();
+
         if (unformattedPrice != null && !unformattedPrice.isEmpty() && unformattedPrice.startsWith("0")) {
-            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedPrice)).concat(" ");
+            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedPrice)).concat(" ").concat(symbol);
         } else if (unformattedPrice != null && !unformattedPrice.isEmpty()) {
-            return String.format(Locale.getDefault(), "%1$,.2f", Double.parseDouble(unformattedPrice)).concat(" ");
+            return String.format(Locale.getDefault(), "%1$,.2f", Double.parseDouble(unformattedPrice)).concat(" ").concat(symbol);
         } else {
-            return "? ";
+            return "? ".concat(symbol);
         }
     }
 
     public static String formatMarketCap(String unformattedMarketCap) {
 
+        String symbol = SharedPreferencesHelper.getInstance().getCurrentCurrencySymbol();
+
         if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty() && unformattedMarketCap.startsWith("0")) {
-            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ");
+            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
         } else if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty()) {
 
             DecimalFormatSymbols symbols = new DecimalFormatSymbols();
@@ -103,9 +110,9 @@ public class Utils {
             df.setDecimalFormatSymbols(symbols);
             df.setGroupingSize(3);
 
-            return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ");
+            return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
         } else {
-            return "? ";
+            return "? ".concat(symbol);
         }
     }
 
@@ -152,8 +159,23 @@ public class Utils {
         }
     }
 
-    public static Drawable getTextDrawable(Context context, String symbol) {
+    public static String formatPercentChangeForMarkets(Double percentChange) {
 
+        String formattedValue = "-%";
+        if (percentChange != null) {
+            formattedValue = String.format(Locale.US, "%.3f", percentChange).concat(PERCENT_SYMBOL);
+        }
+        return formattedValue;
+    }
+
+    public static String capitalizeFirstLetter(String original) {
+        if (original == null || original.length() == 0) {
+            return original;
+        }
+        return original.substring(0, 1).toUpperCase() + original.substring(1);
+    }
+
+    public static Drawable getTextDrawable(Context context, String symbol) {
         return TextDrawable.builder()
                 .beginConfig()
                 .textColor(context.getResources().getColor(R.color.textDisabled))

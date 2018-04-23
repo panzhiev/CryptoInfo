@@ -35,4 +35,6 @@
     <dimen name="tab_layout_height">48dp</dimen>
     <dimen name="chart_icon_height">36dp</dimen>
     <dimen name="chart_icon_width">100dp</dimen>
+    <dimen name="item_markets_height">42dp</dimen>
+    <dimen name="margin_price_market">96dp</dimen>
 </resources>

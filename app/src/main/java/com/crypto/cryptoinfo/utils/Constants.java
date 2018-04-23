@@ -24,6 +24,7 @@ public class Constants {
     public static final String LAST_UPD_ALL_COINS = "LAST_UPD_ALL_COINS";
     public static final String LAST_UPD_MARKETS = "LAST_UPD_ALL_MARKETS";
     public static final String CURRENT_CURRENCY = "CURRENT_CURRENCY";
+    public static final String CURRENT_CURRENCY_SYMBOL = "CURRENT_CURRENCY_SYMBOL";
 
     //Currencies
     public static final String USD = "USD";
@@ -33,6 +34,7 @@ public class Constants {
     public static final String USD_SYMBOL = "$";
     public static final String EUR_SYMBOL = "€";
     public static final String BTC_SYMBOL = "฿";
+    public static final String PERCENT_SYMBOL = "%";
 
     //other
     public static final long TIME_TO_UPD = 300000;

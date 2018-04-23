@@ -20,6 +20,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/divider_s"
+                android:focusableInTouchMode="true"
                 app:cardCornerRadius="3dp">
 
                 <FrameLayout
@@ -275,132 +276,160 @@
                 android:layout_marginStart="@dimen/divider_s"
                 app:cardCornerRadius="3dp">
 
-                <FrameLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/gradient_high">
+                    android:background="@color/gradient_high"
+                    android:orientation="vertical">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?attr/selectableItemBackground"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                        <ImageView
+                            android:id="@+id/iv_coin_icon_markets"
+                            android:layout_width="@dimen/dimen_currency_icon"
+                            android:layout_height="@dimen/dimen_currency_icon"
+                            android:layout_centerVertical="true"
+                            android:layout_marginBottom="@dimen/divider_xs"
+                            android:layout_marginEnd="@dimen/divider_s"
+                            android:layout_marginStart="@dimen/divider_s"
+                            android:layout_marginTop="@dimen/divider_xs"
+                            tools:background="@drawable/btc" />
 
-                            <ImageView
-                                android:id="@+id/iv_coin_icon_markets"
-                                android:layout_width="@dimen/dimen_currency_icon"
-                                android:layout_height="@dimen/dimen_currency_icon"
-                                android:layout_centerVertical="true"
-                                android:layout_marginBottom="@dimen/divider_xs"
-                                android:layout_marginEnd="@dimen/divider_s"
-                                android:layout_marginStart="@dimen/divider_s"
-                                android:layout_marginTop="@dimen/divider_xs"
-                                tools:background="@drawable/btc" />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toEndOf="@+id/iv_coin_icon_markets"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/markets"
+                                android:textSize="@dimen/textSizeMedium" />
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:layout_toEndOf="@+id/iv_coin_icon_markets"
-                                android:orientation="vertical">
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:background="@drawable/ic_sync_black_24dp"
+                                    android:backgroundTint="@color/colorToolbarItems" />
 
                                 <TextView
+                                    android:id="@+id/tv_last_upd_markets"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/markets"
-                                    android:textSize="@dimen/textSizeMedium" />
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="2dp"
+                                    android:layout_marginTop="-1dp"
+                                    android:fontFamily="sans-serif-light"
                                     android:gravity="center_vertical"
-                                    android:orientation="horizontal">
-
-                                    <ImageView
-                                        android:layout_width="10dp"
-                                        android:layout_height="10dp"
-                                        android:background="@drawable/ic_sync_black_24dp"
-                                        android:backgroundTint="@color/colorToolbarItems" />
-
-                                    <TextView
-                                        android:id="@+id/tv_last_upd_markets"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginStart="2dp"
-                                        android:layout_marginTop="-1dp"
-                                        android:fontFamily="sans-serif-light"
-                                        android:gravity="center_vertical"
-                                        android:textSize="@dimen/textSizeXXSmall"
-                                        tools:text="11.12.2017" />
-                                </LinearLayout>
-
+                                    android:textSize="@dimen/textSizeXXSmall"
+                                    tools:text="11.12.2017" />
                             </LinearLayout>
 
-                            <FrameLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentEnd="true"
-                                android:layout_centerVertical="true"
-                                android:animateLayoutChanges="true">
-
-                                <com.wang.avi.AVLoadingIndicatorView
-                                    android:id="@+id/loading_indicator_markets"
-                                    android:layout_width="@dimen/dimen_currency_icon"
-                                    android:layout_height="24dp"
-                                    android:layout_gravity="center"
-                                    android:visibility="gone"
-                                    app:indicatorColor="@color/color_progress_bar"
-                                    app:indicatorName="BallPulseIndicator" />
-
-                                <ImageButton
-                                    android:id="@+id/ib_refresh"
-                                    android:layout_width="@dimen/dimen_image_button"
-                                    android:layout_height="@dimen/dimen_image_button"
-                                    android:background="?attr/selectableItemBackgroundBorderless"
-                                    android:padding="@dimen/dimen_padding_image_button"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/ic_sync_black_24dp"
-                                    android:tint="@color/color_progress_bar"
-                                    android:visibility="visible" />
-                            </FrameLayout>
-
-                        </RelativeLayout>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="0.2dp"
-                            android:background="@color/colorPrimary" />
+                        </LinearLayout>
 
                         <FrameLayout
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
                             android:animateLayoutChanges="true">
 
-                            <android.support.v7.widget.RecyclerView
-                                android:id="@+id/rv_markets"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-
-                            <TextView
-                                android:id="@+id/tv_no_exchanges"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                            <com.wang.avi.AVLoadingIndicatorView
+                                android:id="@+id/loading_indicator_markets"
+                                android:layout_width="@dimen/dimen_currency_icon"
+                                android:layout_height="24dp"
                                 android:layout_gravity="center"
-                                android:layout_margin="@dimen/divider_s"
-                                android:fontFamily="sans-serif-light"
-                                android:text="@string/no_available_exchanges"
-                                android:visibility="gone" />
+                                android:visibility="gone"
+                                app:indicatorColor="@color/color_progress_bar"
+                                app:indicatorName="BallPulseIndicator" />
 
+                            <ImageButton
+                                android:id="@+id/ib_refresh"
+                                android:layout_width="@dimen/dimen_image_button"
+                                android:layout_height="@dimen/dimen_image_button"
+                                android:background="?attr/selectableItemBackgroundBorderless"
+                                android:padding="@dimen/dimen_padding_image_button"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/ic_sync_black_24dp"
+                                android:tint="@color/color_progress_bar"
+                                android:visibility="visible" />
                         </FrameLayout>
 
-                    </LinearLayout>
-                </FrameLayout>
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.2dp"
+                        android:background="@color/colorPrimary" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:padding="@dimen/divider_s">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="sans-serif-light"
+                            android:text="@string/market"
+                            android:textSize="@dimen/textSizeSmall" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginEnd="@dimen/margin_price_market"
+                            android:fontFamily="sans-serif-light"
+                            android:text="@string/price"
+                            android:textSize="@dimen/textSizeSmall" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:fontFamily="sans-serif-light"
+                            android:text="@string/change"
+                            android:textSize="@dimen/textSizeSmall" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/colorPrimary" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:animateLayoutChanges="true">
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_markets"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/tv_no_exchanges"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="@dimen/divider_s"
+                            android:fontFamily="sans-serif-light"
+                            android:text="@string/no_available_markets"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

@@ -1,30 +1,30 @@
 package com.crypto.cryptoinfo.ui.fragment.detailsCoinFragment.adapter;
 
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.crypto.cryptoinfo.R;
-import com.crypto.cryptoinfo.repository.db.room.entity.ExchangePojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.marketsPrices.MarketPrice;
+import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
+import com.crypto.cryptoinfo.utils.Utils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ExchangesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class MarketsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private ArrayList<MarketPrice> mArrayList;
 
-    public ExchangesAdapter(ArrayList<MarketPrice> list) {
+    public MarketsAdapter(ArrayList<MarketPrice> list) {
         mArrayList = list;
     }
 
@@ -63,8 +63,8 @@ public class ExchangesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         @BindView(R.id.tv_market_price)
         TextView mTvPrice;
 
-        @BindView(R.id.tv_market_last_update)
-        TextView mTvLastUpdate;
+        @BindView(R.id.tv_market_change_percentage)
+        TextView mTvPercentage;
 
         ViewHolder(View v) {
             super(v);
@@ -75,22 +75,18 @@ public class ExchangesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private void configureViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         ViewHolder viewHolder = (ViewHolder) holder;
+        Context context = viewHolder.mTvPercentage.getContext();
         final MarketPrice marketPrice = mArrayList.get(position);
 
-        viewHolder.mTvName.setText(marketPrice.getName());
-        viewHolder.mTvPrice.setText("$" + marketPrice.getPrice().getLast());
-
-//        try {
-//            Date date = new Date(Long.parseLong(exchangePojo.getLastUpdate()) * 1000L);
-//            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
-//            sdf.setTimeZone(TimeZone.getDefault());
-//            String formattedDate = sdf.format(date);
-//            viewHolder.mTvLastUpdate.setText(formattedDate);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-        viewHolder.mTvLastUpdate.setText("" + marketPrice.getPrice().getChange().getPercentage());
-
+        String name = marketPrice.getName();
+        String lastPrice = Utils.formatPrice(String.valueOf(marketPrice.getPrice().getLast()));
+        Double percentageChange = marketPrice.getPrice().getChange().getPercentage();
+        String percentageString = Utils.formatPercentChangeForMarkets(percentageChange);
+        if (percentageString.contains("-")) {
+            viewHolder.mTvPercentage.setBackground(context.getDrawable(R.drawable.gradient_market_item_red));
+        }
+        viewHolder.mTvName.setText(name);
+        viewHolder.mTvPrice.setText(lastPrice);
+        viewHolder.mTvPercentage.setText(percentageString);
     }
 }

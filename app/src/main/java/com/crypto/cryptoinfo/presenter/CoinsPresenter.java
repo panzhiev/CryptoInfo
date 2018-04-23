@@ -15,6 +15,7 @@ import com.crypto.cryptoinfo.repository.db.room.entity.marketsPrices.MarketPrice
 import com.crypto.cryptoinfo.repository.db.room.entity.marketsPrices.Price;
 import com.crypto.cryptoinfo.ui.fragment.ILoadingView;
 import com.crypto.cryptoinfo.utils.JsonUtils;
+import com.crypto.cryptoinfo.utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -142,7 +143,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
 
                     for (Map.Entry<String, Object> entry : map.entrySet()) {
                         String[] namePair = entry.getKey().split(":");
-                        String name = namePair[0];
+                        String name = Utils.capitalizeFirstLetter(namePair[0]);
                         String pair = namePair[1];
                         try {
                             JSONObject jsonObjectPrice = new JSONObject(gson.toJson(entry.getValue()));

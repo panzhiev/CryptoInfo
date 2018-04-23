@@ -67,7 +67,6 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
 
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -183,27 +182,20 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         switch (currentCurrency) {
             case USD:
-                formatPrice = Utils.formatPrice(coinPojo.getPriceUsd())
-                        .concat(USD_SYMBOL);
-                formatMarketCap = Utils.formatMarketCap(coinPojo.getMarketCapUsd())
-                        .concat(USD_SYMBOL);
+                formatPrice = Utils.formatPrice(coinPojo.getPriceUsd());
+                formatMarketCap = Utils.formatMarketCap(coinPojo.getMarketCapUsd());
                 break;
             case EUR:
-                formatPrice = Utils.formatPrice(coinPojo.getPriceEur())
-                        .concat(EUR_SYMBOL);
-                formatMarketCap = Utils.formatMarketCap(coinPojo.getMarketCapEur())
-                        .concat(EUR_SYMBOL);
+                formatPrice = Utils.formatPrice(coinPojo.getPriceEur());
+                formatMarketCap = Utils.formatMarketCap(coinPojo.getMarketCapEur());
                 break;
             case BTC:
-                formatPrice = Utils.formatPrice(coinPojo.getPriceBtc())
-                        .concat(BTC_SYMBOL);
+                formatPrice = Utils.formatPrice(coinPojo.getPriceBtc());
 
                 String priceUsd = coinPojo.getPriceUsd();
                 String marketCapUsd = coinPojo.getMarketCapUsd();
                 String priceBtc = coinPojo.getPriceBtc();
-
-                formatMarketCap = Utils.formatMarketCapForBtc(priceUsd, priceBtc, marketCapUsd)
-                        .concat(BTC_SYMBOL);
+                formatMarketCap = Utils.formatMarketCapForBtc(priceUsd, priceBtc, marketCapUsd);
                 break;
             default:
                 break;
