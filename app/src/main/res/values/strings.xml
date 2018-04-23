@@ -32,7 +32,7 @@
 
     <!-- Coin info card -->
     <string name="global_info">Global Info</string>
-    <string name="exchanges">Exchanges</string>
+    <string name="markets">Markets</string>
     <string name="price">Price</string>
     <string name="market_cap">Market Cap</string>
     <string name="available_supply">Available Supply</string>

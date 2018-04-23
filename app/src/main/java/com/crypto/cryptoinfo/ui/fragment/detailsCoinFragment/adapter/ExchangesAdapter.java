@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.repository.db.room.entity.ExchangePojo;
+import com.crypto.cryptoinfo.repository.db.room.entity.marketsPrices.MarketPrice;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,9 +22,9 @@ import butterknife.ButterKnife;
 
 public class ExchangesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private ArrayList<ExchangePojo> mArrayList = new ArrayList<>();
+    private ArrayList<MarketPrice> mArrayList;
 
-    public ExchangesAdapter(ArrayList<ExchangePojo> list) {
+    public ExchangesAdapter(ArrayList<MarketPrice> list) {
         mArrayList = list;
     }
 
@@ -39,7 +40,7 @@ public class ExchangesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         configureViewHolder(holder, position);
     }
 
-    public void reloadList(ArrayList<ExchangePojo> list) {
+    public void reloadList(ArrayList<MarketPrice> list) {
         mArrayList = list;
         notifyDataSetChanged();
     }
@@ -74,19 +75,22 @@ public class ExchangesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private void configureViewHolder(RecyclerView.ViewHolder holder, int position) {
 
         ViewHolder viewHolder = (ViewHolder) holder;
-        final ExchangePojo exchangePojo = mArrayList.get(position);
+        final MarketPrice marketPrice = mArrayList.get(position);
 
-        viewHolder.mTvName.setText(exchangePojo.getName());
-        viewHolder.mTvPrice.setText("$" + exchangePojo.getPrice());
+        viewHolder.mTvName.setText(marketPrice.getName());
+        viewHolder.mTvPrice.setText("$" + marketPrice.getPrice().getLast());
 
-        try {
-            Date date = new Date(Long.parseLong(exchangePojo.getLastUpdate()) * 1000L);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
-            sdf.setTimeZone(TimeZone.getDefault());
-            String formattedDate = sdf.format(date);
-            viewHolder.mTvLastUpdate.setText(formattedDate);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Date date = new Date(Long.parseLong(exchangePojo.getLastUpdate()) * 1000L);
+//            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault());
+//            sdf.setTimeZone(TimeZone.getDefault());
+//            String formattedDate = sdf.format(date);
+//            viewHolder.mTvLastUpdate.setText(formattedDate);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+        viewHolder.mTvLastUpdate.setText("" + marketPrice.getPrice().getChange().getPercentage());
+
     }
 }

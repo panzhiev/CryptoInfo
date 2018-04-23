@@ -1,6 +1,7 @@
 package com.crypto.cryptoinfo.presenter;
 
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -10,8 +11,13 @@ import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.ExchangePojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.PointTimePrice;
 import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
+import com.crypto.cryptoinfo.repository.db.room.entity.marketsPrices.MarketPrice;
+import com.crypto.cryptoinfo.repository.db.room.entity.marketsPrices.Price;
 import com.crypto.cryptoinfo.ui.fragment.ILoadingView;
+import com.crypto.cryptoinfo.utils.JsonUtils;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
@@ -40,25 +47,37 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
             mSubscriptionGetCharts,
             mSubscriptionGetCoinSnapshot,
             mSubscriptionZip,
-            mSubscriptionGetCoinTicker;
+            mSubscriptionGetCoinTicker,
+            mSubscriptionGetMarketsPrices;
     private CompositeSubscription mCompositeSubscription = new CompositeSubscription();
 
     public CoinsPresenter(ILoadingView fragment) {
         super();
-        if (fragment == null){
+        if (fragment == null) {
             this.fragment = new ILoadingView() {
                 @Override
-                public void showProgressIndicator() {}
+                public void showProgressIndicator() {
+                }
+
                 @Override
-                public void hideProgressIndicator() {}
+                public void hideProgressIndicator() {
+                }
+
                 @Override
-                public void setList(ArrayList list) {}
+                public void setList(ArrayList list) {
+                }
+
                 @Override
-                public void reloadList(ArrayList list) {}
+                public void reloadList(ArrayList list) {
+                }
+
                 @Override
-                public void showError() {}
+                public void showError() {
+                }
+
                 @Override
-                public void notifyForChanges() {}
+                public void notifyForChanges() {
+                }
             };
         } else {
             this.fragment = fragment;
@@ -89,6 +108,58 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
         new SaveCoinsAsync(fragment).execute(coinPojos);
     }
 
+    public void getMarketsPrices() {
+        mSubscriptionGetMarketsPrices = mModel
+                .getMarketsPrices()
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(() -> fragment.showProgressIndicator())
+                .doOnTerminate(() -> fragment.hideProgressIndicator())
+                .subscribe(this::responseMarketsPricesHandler, e -> {
+                    fragment.showError();
+                    e.printStackTrace();
+                });
+
+        mCompositeSubscription.add(mSubscriptionGetMarketsPrices);
+
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private void responseMarketsPricesHandler(JsonElement jsonElement) {
+
+        Log.d(TAG, "responseMarketsPricesHandler: " + jsonElement.toString());
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                ArrayList<MarketPrice> marketPrices = new ArrayList<>();
+                Gson gson = new Gson();
+                if (jsonObject.has("result")) {
+                    String jsonResult = jsonObject.get("result").toString();
+                    Map<String, Object> map = JsonUtils.jsonToMap(jsonResult);
+
+                    for (Map.Entry<String, Object> entry : map.entrySet()) {
+                        String[] namePair = entry.getKey().split(":");
+                        String name = namePair[0];
+                        String pair = namePair[1];
+                        try {
+                            JSONObject jsonObjectPrice = new JSONObject(gson.toJson(entry.getValue()));
+                            Price price = gson.fromJson(jsonObjectPrice.getString("price"), Price.class);
+                            marketPrices.add(new MarketPrice(price, entry.getKey(), name, pair));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    App.dbInstance.getMarketPriceDao().insertList(marketPrices);
+                    SharedPreferencesHelper.getInstance().putLastUpdMarkets(String.valueOf(System.currentTimeMillis()));
+                }
+                return null;
+            }
+        }.execute();
+    }
+
     public void getChartsData(String coin, String pastTime) {
         mSubscriptionGetCharts = mModel
                 .getGraphsPerPeriod(coin, pastTime, String.valueOf(System.currentTimeMillis()))
@@ -113,7 +184,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
         mCompositeSubscription.add(mSubscriptionGetCoinSnapshot);
     }
 
-    public void getCoinTicker (String coin){
+    public void getCoinTicker(String coin) {
 
         mSubscriptionGetCoinTicker = mModel.getTicker(coin)
                 .subscribeOn(Schedulers.newThread())
@@ -185,7 +256,6 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                 }
 
                 fragment.setList(list);
-//                Log.d(TAG, list.toString());
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -246,10 +316,9 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
     private static class SaveCoinsAsync extends AsyncTask<List<CoinPojo>, Void, Void> {
 
         ILoadingView f;
+
         SaveCoinsAsync(ILoadingView f) {
             this.f = f;
-
-
         }
 
         @Override

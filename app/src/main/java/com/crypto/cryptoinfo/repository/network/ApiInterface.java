@@ -12,6 +12,7 @@ import retrofit2.http.Query;
 import rx.Observable;
 
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.COIN_SNAPSHOT;
+import static com.crypto.cryptoinfo.repository.network.ApiConstants.CRYPTOWAT_PATH_MARKETS_PRICES;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.PATH_QUICK_SEARCH;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.TICKERS;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.TICKER_SPECIFIC;
@@ -38,4 +39,7 @@ public interface ApiInterface {
 
     @GET(PATH_QUICK_SEARCH)
     Observable<List<JsonElement>> getCoinIds();
+
+    @GET(CRYPTOWAT_PATH_MARKETS_PRICES)
+    Observable<JsonElement> getMarketsPrices();
 }

@@ -13,6 +13,7 @@ import static com.crypto.cryptoinfo.repository.network.ApiConstants.BASE_URL_COI
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.BASE_URL_CRYPTOCOMPARE_NEW;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.BASE_URL_GRAPHS;
 import static com.crypto.cryptoinfo.repository.network.ApiConstants.BASE_URL_S2;
+import static com.crypto.cryptoinfo.repository.network.ApiConstants.CRYPTOWAT_BASE_URL;
 
 public class ModelImpl {
 
@@ -38,5 +39,9 @@ public class ModelImpl {
 
     public Observable<List<JsonElement>> getCoinIds() {
         return RestClient.getApiInterface(BASE_URL_S2).getCoinIds();
+    }
+
+    public Observable<JsonElement> getMarketsPrices() {
+        return RestClient.getApiInterface(CRYPTOWAT_BASE_URL).getMarketsPrices();
     }
 }

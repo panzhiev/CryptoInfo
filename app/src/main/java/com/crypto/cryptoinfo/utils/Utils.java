@@ -1,5 +1,6 @@
 package com.crypto.cryptoinfo.utils;
 
+import android.arch.persistence.room.util.StringUtil;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -47,9 +48,7 @@ public class Utils {
             bitmap = BitmapFactory.decodeStream(istr);
         } catch (IOException e) {
             e.printStackTrace();
-            // handle exception
         }
-
         return bitmap;
     }
 
@@ -63,8 +62,12 @@ public class Utils {
     }
 
     public static String longToDateTime(long timestamp) {
-        Date date = new Date(timestamp * 1000);
-        DateFormat formatter = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.getDefault());
+        return longToDateTime(timestamp, "dd.MM.yyyy HH:mm:ss");
+    }
+
+    public static String longToDateTime(long timestamp, String dateFormatPattern) {
+        Date date = new Date(timestamp);
+        DateFormat formatter = new SimpleDateFormat(dateFormatPattern, Locale.getDefault());
         return formatter.format(date);
     }
 

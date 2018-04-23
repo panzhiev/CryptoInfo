@@ -17,6 +17,7 @@ import com.crypto.cryptoinfo.ui.fragment.allCoinsFragment.adapter.CoinsAdapter;
 import com.crypto.cryptoinfo.utils.Constants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,7 +50,8 @@ public class FavActivity extends AppCompatActivity implements CoinsAdapter.OnCoi
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
-                setList((ArrayList) App.dbInstance.getCoinDao().getAll());
+                List<CoinPojo> list = App.dbInstance.getCoinDao().getAll();
+                runOnUiThread(() -> setList((ArrayList) list));
                 return null;
             }
         }.execute();

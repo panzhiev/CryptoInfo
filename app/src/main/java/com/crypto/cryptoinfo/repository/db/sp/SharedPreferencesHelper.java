@@ -6,6 +6,7 @@ import android.util.Log;
 
 import static com.crypto.cryptoinfo.utils.Constants.CURRENT_CURRENCY;
 import static com.crypto.cryptoinfo.utils.Constants.LAST_UPD_ALL_COINS;
+import static com.crypto.cryptoinfo.utils.Constants.LAST_UPD_MARKETS;
 
 public class SharedPreferencesHelper {
 
@@ -46,12 +47,20 @@ public class SharedPreferencesHelper {
         return mSharedPreferences.getInt(key, -1);
     }
 
-    public void putLastUpdAllCoins (String lastUpd){
+    public void putLastUpdAllCoins(String lastUpd) {
         mSharedPreferences.edit().putString(LAST_UPD_ALL_COINS, lastUpd).apply();
     }
 
     public String getLastUpdAllCoins() {
         return mSharedPreferences.getString(LAST_UPD_ALL_COINS, "0");
+    }
+
+    public void putLastUpdMarkets(String lastUpd) {
+        mSharedPreferences.edit().putString(LAST_UPD_MARKETS, lastUpd).apply();
+    }
+
+    public String getLastUpdMarkets() {
+        return mSharedPreferences.getString(LAST_UPD_MARKETS, "0");
     }
 
 //    public void putToken(String token) {
@@ -62,7 +71,7 @@ public class SharedPreferencesHelper {
 //        return mSharedPreferences.getString(Config.TOKEN, "");
 //    }
 
-    public void putCurrentCurrency (String key, String value) {
+    public void putCurrentCurrency(String key, String value) {
         mSharedPreferences.edit().putString(key, value).apply();
     }
 

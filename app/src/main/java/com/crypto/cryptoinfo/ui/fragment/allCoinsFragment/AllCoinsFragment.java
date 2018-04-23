@@ -148,7 +148,6 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
                 }
         );
 
-
         searchDisposable = textChanges(mEtSearch)
                 .map(inputText -> filter(inputText.toString()))
                 .subscribe(list -> setList((ArrayList) list), Throwable::printStackTrace);
@@ -191,7 +190,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
         }
 
         String lastUpd = SharedPreferencesHelper.getInstance().getLastUpdAllCoins();
-        if ((System.currentTimeMillis() - Long.parseLong(lastUpd) > TIME_TO_UPD)) {
+        if (System.currentTimeMillis() - Long.parseLong(lastUpd) > TIME_TO_UPD) {
             mCoinsPresenter.getCurrenciesList();
         }
     }
@@ -400,8 +399,6 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
         switch (item.getItemId()) {
             case R.id.action_currency:
                 // view is an anchor
-
-
                 mPowerMenu.showAsDropDown(emptyView,
                         getScreenDimensionsInPx(getActivity())
                                 - convertDIPToPixels(getContext(), 120)
@@ -430,16 +427,10 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.setRefreshing(true);
         }
-//        mProgressDialog = DialogFactory.createProgressDialog(getContext(), R.string.loading);
-//        mProgressDialog.show();
-//        mAVLoadingIndicatorView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressIndicator() {
-//        if (mProgressDialog != null) {
-//            mProgressDialog.dismiss();
-//        }
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.setRefreshing(false);
         }

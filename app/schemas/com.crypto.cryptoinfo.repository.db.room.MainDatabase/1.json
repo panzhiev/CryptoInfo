@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "09ebd9eacdb0c90ebc12e68032979afc",
+    "identityHash": "d619dd67420073d137356cfcbe33fb63",
     "entities": [
       {
         "tableName": "coin",
@@ -207,11 +207,49 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "market_price",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`price` TEXT, `name` TEXT, `pair` TEXT, `namePair` TEXT NOT NULL, PRIMARY KEY(`namePair`))",
+        "fields": [
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pair",
+            "columnName": "pair",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "namePair",
+            "columnName": "namePair",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "namePair"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"09ebd9eacdb0c90ebc12e68032979afc\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d619dd67420073d137356cfcbe33fb63\")"
     ]
   }
 }

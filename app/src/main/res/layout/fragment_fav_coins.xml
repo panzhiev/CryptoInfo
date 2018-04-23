@@ -7,6 +7,11 @@
     android:orientation="vertical"
     tools:context=".ui.fragment.favouritesCoinsFragment.FavouritesCoinsFragment">
 
+    <View
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+
     <LinearLayout
         android:id="@+id/ll_sort_fav"
         android:layout_width="match_parent"

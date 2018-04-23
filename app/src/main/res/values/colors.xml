@@ -16,7 +16,7 @@
     <color name="color_fragment_bg">#F5F5F5</color>
 
     <!-- progress bar -->
-    <color name="color_progress_bar">#c49c45</color>
+    <color name="color_progress_bar">@color/colorPrimary</color>
 
     <color name="colorYellowLight">#F6F5D1</color>
     <color name="buttonDisabled">#a0a0a0</color>

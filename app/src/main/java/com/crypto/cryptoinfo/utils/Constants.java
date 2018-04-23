@@ -22,6 +22,7 @@ public class Constants {
     public static final String ENABLE_AUTO_NIGHT_MODE = "enable_auto_night_mode";
     public static final String MAIN_SCREEN = "pref_key_main_screen_list";
     public static final String LAST_UPD_ALL_COINS = "LAST_UPD_ALL_COINS";
+    public static final String LAST_UPD_MARKETS = "LAST_UPD_ALL_MARKETS";
     public static final String CURRENT_CURRENCY = "CURRENT_CURRENCY";
 
     //Currencies
