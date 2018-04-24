@@ -19,7 +19,7 @@ public interface AlertCoinDao {
     @Query("SELECT * FROM alert_coin")
     List<AlertCoinPojo> getAll();
 
-    @Query ("SELECT * FROM alert_coin WHERE symbol LIKE :symbol")
+    @Query("SELECT * FROM alert_coin WHERE symbol LIKE :symbol")
     AlertCoinPojo getAlertCoin(String symbol);
 
     @Query("SELECT * FROM alert_coin")

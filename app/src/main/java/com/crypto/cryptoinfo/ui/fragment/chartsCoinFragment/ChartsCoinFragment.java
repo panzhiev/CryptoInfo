@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
@@ -26,6 +27,7 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 
@@ -41,6 +43,9 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
     @BindView(R.id.chart_coin)
     LineChart lineChart;
+
+    @BindView(R.id.loading_indicator)
+    AVLoadingIndicatorView progressBar;
 
     public ChartsCoinFragment() {
         // Required empty public constructor
@@ -81,6 +86,9 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
     @Override
     public void setList(ArrayList list) {
 
+        progressBar.setVisibility(View.INVISIBLE);
+        lineChart.setVisibility(View.VISIBLE);
+
         mPointList = list;
 
         ArrayList<Entry> yVals = new ArrayList<>();
@@ -90,7 +98,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         }
 
         // create a dataset and give it a type
-        LineDataSet set1 = new LineDataSet(yVals,"DataSet 1");
+        LineDataSet set1 = new LineDataSet(yVals, "DataSet 1");
 
         set1.setDrawFilled(true);
         set1.setFillDrawable(ContextCompat.getDrawable(getContext(), R.drawable.gradient_chart));

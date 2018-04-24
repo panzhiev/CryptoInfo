@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
@@ -31,6 +32,8 @@ import static com.crypto.cryptoinfo.utils.Constants.PERCENT_SYMBOL;
 
 
 public class Utils {
+
+    private static final String TAG = "Utils";
 
     public static void setToolbarIconsColor(Context context, Menu menu, int color) {
         for (int i = 0; i < menu.size(); i++) {
@@ -87,12 +90,14 @@ public class Utils {
 
         String symbol = SharedPreferencesHelper.getInstance().getCurrentCurrencySymbol();
 
-        if (unformattedPrice != null && !unformattedPrice.isEmpty() && unformattedPrice.startsWith("0")) {
+        if (unformattedPrice == null || unformattedPrice.isEmpty()) return "? ".concat(symbol);
+
+        unformattedPrice = unformattedPrice.toLowerCase();
+
+        if (unformattedPrice.startsWith("0") || unformattedPrice.contains("e-")) {
             return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedPrice)).concat(" ").concat(symbol);
-        } else if (unformattedPrice != null && !unformattedPrice.isEmpty()) {
-            return String.format(Locale.getDefault(), "%1$,.2f", Double.parseDouble(unformattedPrice)).concat(" ").concat(symbol);
         } else {
-            return "? ".concat(symbol);
+            return String.format(Locale.getDefault(), "%1$,.2f", Double.parseDouble(unformattedPrice)).concat(" ").concat(symbol);
         }
     }
 
@@ -118,8 +123,10 @@ public class Utils {
 
     public static String formatMarketCapForBtc(String priceUsd, String priceBtc, String marketCapUsd) {
 
+        String symbol = SharedPreferencesHelper.getInstance().getCurrentCurrencySymbol();
+
         if (priceUsd == null || priceBtc == null || marketCapUsd == null) {
-            return "? ";
+            return "? ".concat(symbol);
         }
 
         Double priceUsdDouble = Double.parseDouble(priceUsd);
@@ -129,7 +136,7 @@ public class Utils {
         String unformattedMarketCap = String.valueOf(priceBtcDouble * marketCapUsdDouble / priceUsdDouble);
 
         if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty() && unformattedMarketCap.startsWith("0")) {
-            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ");
+            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
         } else if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty()) {
 
             DecimalFormatSymbols symbols = new DecimalFormatSymbols();
@@ -138,9 +145,9 @@ public class Utils {
             df.setDecimalFormatSymbols(symbols);
             df.setGroupingSize(3);
 
-            return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ");
+            return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
         }
-        return "? ";
+        return "? ".concat(symbol);
     }
 
     public static void formatPercentChange(Context context, TextView tv, String percentChange) {

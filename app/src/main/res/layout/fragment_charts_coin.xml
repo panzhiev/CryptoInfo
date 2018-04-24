@@ -1,11 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_marginBottom="@dimen/divider_m"
-              android:orientation="vertical"
-              tools:context=".ui.fragment.chartsCoinFragment.ChartsCoinFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/divider_m"
+    android:orientation="vertical"
+    tools:context=".ui.fragment.chartsCoinFragment.ChartsCoinFragment">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -30,12 +30,12 @@
                 android:checked="true"
                 android:gravity="center"
                 android:padding="@dimen/divider_xs"
-                android:text="@string/_6_hours"/>
+                android:text="@string/_6_hours" />
 
             <View
                 android:layout_width="0.3dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark"/>
+                android:background="@color/colorPrimaryDark" />
 
             <RadioButton
                 android:id="@+id/rb_2"
@@ -46,12 +46,12 @@
                 android:button="@android:color/transparent"
                 android:gravity="center"
                 android:padding="@dimen/divider_xs"
-                android:text="@string/_1_day"/>
+                android:text="@string/_1_day" />
 
             <View
                 android:layout_width="0.3dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark"/>
+                android:background="@color/colorPrimaryDark" />
 
             <RadioButton
                 android:id="@+id/rb_3"
@@ -62,12 +62,12 @@
                 android:button="@android:color/transparent"
                 android:gravity="center"
                 android:padding="@dimen/divider_xs"
-                android:text="@string/_7_days"/>
+                android:text="@string/_7_days" />
 
             <View
                 android:layout_width="0.3dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark"/>
+                android:background="@color/colorPrimaryDark" />
 
             <RadioButton
                 android:id="@+id/rb_4"
@@ -78,12 +78,12 @@
                 android:button="@android:color/transparent"
                 android:gravity="center"
                 android:padding="@dimen/divider_xs"
-                android:text="@string/_1_month"/>
+                android:text="@string/_1_month" />
 
             <View
                 android:layout_width="0.3dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark"/>
+                android:background="@color/colorPrimaryDark" />
 
             <RadioButton
                 android:id="@+id/rb_5"
@@ -94,12 +94,12 @@
                 android:button="@android:color/transparent"
                 android:gravity="center"
                 android:padding="@dimen/divider_xs"
-                android:text="@string/_6_months"/>
+                android:text="@string/_6_months" />
 
             <View
                 android:layout_width="0.3dp"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark"/>
+                android:background="@color/colorPrimaryDark" />
 
             <RadioButton
                 android:id="@+id/rb_6"
@@ -110,19 +110,32 @@
                 android:button="@android:color/transparent"
                 android:gravity="center"
                 android:padding="@dimen/divider_xs"
-                android:text="@string/_1_year"/>
+                android:text="@string/_1_year" />
 
         </RadioGroup>
     </android.support.v7.widget.CardView>
 
-    <com.github.mikephil.charting.charts.LineChart
-        android:id="@+id/chart_coin"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginBottom="?attr/actionBarSize"
-        android:layout_marginEnd="@dimen/divider_m"
-        android:layout_marginStart="@dimen/divider_m"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart_coin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:id="@+id/loading_indicator"
+            android:layout_width="@dimen/dimen_currency_icon"
+            android:layout_height="@dimen/dimen_currency_icon"
+            android:layout_gravity="center"
+            android:visibility="visible"
+            app:indicatorColor="@color/colorPrimary"
+            app:indicatorName="BallPulseSyncIndicator" />
+    </FrameLayout>
 </LinearLayout>
 
     <!--
@@ -206,4 +219,3 @@
 
     -->
 
-    <!--<com.wang.avi.AVLoadingIndicatorView--><!--android:id="@+id/loading_indicator"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--app:indicatorColor="@color/colorPrimary"--><!--android:layout_gravity="center"--><!--android:visibility="visible"--><!--app:indicatorName="BallPulseSyncIndicator" />-->

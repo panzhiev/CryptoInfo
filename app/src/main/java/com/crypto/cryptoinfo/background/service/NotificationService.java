@@ -72,6 +72,7 @@ public class NotificationService extends Service implements ILoadingView {
 
         //schedule the timer, to wake up every 5 minutes
         timer.schedule(timerTask, 1000, TIME_TO_UPD);
+//        timer.schedule(timerTask, 1000, 20000);
     }
 
     /**
@@ -82,7 +83,11 @@ public class NotificationService extends Service implements ILoadingView {
         timerTask = new TimerTask() {
             public void run() {
                 //TODO: do your staff here
-                new CoinsPresenter(NotificationService.this).getCurrenciesList();
+
+                if (!App.dbInstance.getAlertCoinDao().getAll().isEmpty()) {
+                    Log.d(TAG, "run: list !isEmpty");
+                    new CoinsPresenter(NotificationService.this).getCurrenciesList();
+                }
                 new Handler(Looper.getMainLooper())
                         .post(() -> Toast
                                 .makeText(NotificationService.this, "Send Request!", Toast.LENGTH_SHORT)
@@ -152,6 +157,7 @@ public class NotificationService extends Service implements ILoadingView {
 
         @Override
         protected Void doInBackground(Void... params) {
+
             String currentCurrency = SharedPreferencesHelper.getInstance().getCurrentCurrency();
             List<CoinPojo> coinPojos = App.dbInstance.getCoinDao().getAlerts();
 
@@ -162,14 +168,28 @@ public class NotificationService extends Service implements ILoadingView {
                         case USD:
                             Log.d(TAG, "notifyForChanges: case: USD");
                             double priceUsd = Double.parseDouble(cp.getPriceUsd());
-                            if (priceUsd > alertCoinPojo.getHigh()) {
+                            double high = alertCoinPojo.getHigh();
+                            double low = alertCoinPojo.getLow();
+
+                            if (priceUsd > high && high != 0.0) {
                                 Log.d(TAG, "notifyForChanges: priceUsd > alertCoinPojo.getHigh()");
                                 sendNotification(cp, alertCoinPojo.getSymbol(), alertCoinPojo.getSymbol() + " > " +
                                         Utils.formatPrice(String.valueOf(alertCoinPojo.getHigh())));
-                            } else if (priceUsd < alertCoinPojo.getLow()) {
+                                alertCoinPojo.setHigh(0.0);
+                            }
+
+                            if (priceUsd < low && low != 0.0) {
                                 Log.d(TAG, "notifyForChanges: priceUsd < alertCoinPojo.getLow()");
                                 sendNotification(cp, alertCoinPojo.getSymbol(), alertCoinPojo.getSymbol() + " < " +
                                         Utils.formatPrice(String.valueOf(alertCoinPojo.getLow())));
+                                alertCoinPojo.setLow(0.0);
+                            }
+
+                            if (alertCoinPojo.getHigh() == 0.0 && alertCoinPojo.getLow() == 0.0) {
+                                App.dbInstance.getAlertCoinDao().deleteAlertCoinPojo(alertCoinPojo);
+
+                            } else {
+                                App.dbInstance.getAlertCoinDao().insertAll(alertCoinPojo);
                             }
                     }
                 }

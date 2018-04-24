@@ -43,9 +43,6 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
     private final String TAG = getClass().getSimpleName();
 
-    @BindView(R.id.btn_save_changes)
-    Button btnSaveChanges;
-
     @BindView(R.id.tv_price_high)
     TextView tvPriceHigh;
 
@@ -145,7 +142,6 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
                 seekBarLow.setEnabled(false);
             }
         });
-//        btnSaveChanges.setOnClickListener(v -> saveChanges());
         seekBarHigh.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean byUser) {
@@ -189,7 +185,6 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
             protected Void doInBackground(Void... voids) {
                 if (!checkBoxHigh.isChecked() && !checkBoxLow.isChecked()) {
                     App.dbInstance.getAlertCoinDao().deleteAlert(mCoinPojo.getSymbol());
-                    Log.d(TAG, "saveChanges: return");
                     return null;
                 }
 
@@ -254,15 +249,6 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        Log.d(TAG, "onHiddenChanged: started. Hidden = " + hidden);
-        if (hidden) {
-            saveChanges();
-        }
-    }
-
     private void prepareSeekBars() {
         seekBarLow.setProgress(seekBarLow.getMax());
         if (checkBoxHigh.isChecked()) {
@@ -311,7 +297,27 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+    }
+
+    @Override
     public void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
+
+        if (!checkBoxHigh.isChecked() && !checkBoxLow.isChecked()) {
+            Log.d(TAG, "onDestroy: !checkBoxHigh.isChecked() && !checkBoxLow.isChecked()");
+            App.dbInstance.getAlertCoinDao().deleteAlert(mCoinPojo.getSymbol());
+        } else {
+            Log.d(TAG, "onDestroy: SAVE");
+            AlertCoinPojo alertCoinPojo = new AlertCoinPojo();
+            alertCoinPojo.setSymbol(mCoinPojo.getSymbol());
+            if (checkBoxHigh.isChecked()) alertCoinPojo.setHigh(seekBarValueHigh);
+            if (checkBoxLow.isChecked()) alertCoinPojo.setHigh(seekBarValueLow);
+            App.dbInstance.getAlertCoinDao().insertAll(alertCoinPojo);
+        }
+
         super.onDestroy();
 //        if (mCoinsPresenter != null) {
 //            mCoinsPresenter.unsubscribe();

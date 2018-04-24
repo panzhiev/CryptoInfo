@@ -21,6 +21,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.repository.db.room.entity.marketsPrices.MarketPrice;
 import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
@@ -110,6 +111,7 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
         if (mCoinsPresenter == null) {
             mCoinsPresenter = new CoinsPresenter(this);
         }
@@ -142,6 +144,7 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume: ");
         String lastUpd = SharedPreferencesHelper.getInstance().getLastUpdMarkets();
         mTvLastUpdMarkets.setText(Utils.longToDateTime(Long.parseLong(lastUpd)));
         if (System.currentTimeMillis() - Long.parseLong(lastUpd) > TIME_TO_UPD) {
@@ -162,9 +165,7 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     @Override
     public void setList(ArrayList list) {
         Log.d(TAG, "setList started");
-
         if (list == null || list.isEmpty()) {
-            Log.d(TAG, "list null or empty");
             mTvNoExchanges.setVisibility(View.VISIBLE);
             return;
         } else {
@@ -177,6 +178,8 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
             mRvExchanges.setAdapter(mMarketsAdapter);
         } else {
             Log.d(TAG, "mMarketsAdapter != null");
+            // should to set adapter again because of losing adapter after state lose
+            mRvExchanges.setAdapter(mMarketsAdapter);
             mMarketsAdapter.reloadList(list);
         }
     }

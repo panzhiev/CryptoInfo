@@ -36,7 +36,7 @@ public interface CoinDao {
     @Insert(onConflict = REPLACE)
     void insertAll(CoinPojo... coinPojos);
 
-    @Insert
+    @Insert (onConflict = REPLACE)
     void insertListCoinPojo(List<CoinPojo> coinPojoList);
 
     @Delete

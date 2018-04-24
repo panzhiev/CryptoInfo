@@ -41,8 +41,8 @@ public class CoinInfoActivity extends AppCompatActivity {
 
         coinPojo = getIntent().getParcelableExtra(COIN);
 
+        ActionBar actionBar = getSupportActionBar();
         try {
-            ActionBar actionBar = getSupportActionBar();
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(coinPojo.getName() + " (" + coinPojo.getSymbol() + ")");
         } catch (NullPointerException npe) {
@@ -78,10 +78,11 @@ public class CoinInfoActivity extends AppCompatActivity {
             tabLayout.getTabAt(0).getIcon().mutate().setColorFilter(getResources().getColor(R.color.colorTextDefault), PorterDuff.Mode.SRC_IN);
             tabLayout.getTabAt(1).getIcon().mutate().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_IN);
             tabLayout.getTabAt(2).getIcon().mutate().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.SRC_IN);
-        } catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
             npe.printStackTrace();
         }
     }
+
     private void setupTabLayoutListener() {
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
