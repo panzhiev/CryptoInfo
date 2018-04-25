@@ -324,7 +324,6 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
 
         @Override
         protected Void doInBackground(List<CoinPojo>[] lists) {
-            App.dbInstance.getCoinDao().deleteAll();
             App.dbInstance.getCoinDao().insertListCoinPojo(lists[0]);
             SharedPreferencesHelper.getInstance().putLastUpdAllCoins(String.valueOf(System.currentTimeMillis()));
             f.notifyForChanges();

@@ -307,15 +307,19 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
         Log.d(TAG, "onDestroy: ");
 
         if (!checkBoxHigh.isChecked() && !checkBoxLow.isChecked()) {
-            Log.d(TAG, "onDestroy: !checkBoxHigh.isChecked() && !checkBoxLow.isChecked()");
             App.dbInstance.getAlertCoinDao().deleteAlert(mCoinPojo.getSymbol());
         } else {
             Log.d(TAG, "onDestroy: SAVE");
             AlertCoinPojo alertCoinPojo = new AlertCoinPojo();
             alertCoinPojo.setSymbol(mCoinPojo.getSymbol());
-            if (checkBoxHigh.isChecked()) alertCoinPojo.setHigh(seekBarValueHigh);
-            if (checkBoxLow.isChecked()) alertCoinPojo.setHigh(seekBarValueLow);
+            if (checkBoxHigh.isChecked()) {
+                alertCoinPojo.setHigh(seekBarValueHigh);
+            }
+            if (checkBoxLow.isChecked()) {
+                alertCoinPojo.setLow(seekBarValueLow);
+            }
             App.dbInstance.getAlertCoinDao().insertAll(alertCoinPojo);
+            Log.d(TAG, "onDestroy: alertCoinPojo " + alertCoinPojo);
         }
 
         super.onDestroy();

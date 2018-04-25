@@ -6,10 +6,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
+
+import java.util.Objects;
+
+import static com.crypto.cryptoinfo.utils.Constants.COIN;
 
 public class NotificationUtils {
 
@@ -54,7 +62,7 @@ public class NotificationUtils {
 
         PendingIntent p = intent != null
                 ? PendingIntent.getActivity(
-                        context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
                 : null;
 
         Notification.Builder builder = new Notification.Builder(context)
@@ -87,6 +95,15 @@ public class NotificationUtils {
         manager.notify(0, n);
 
         Log.d(TAG, "Notification create successfully");
+    }
+
+    public static void sendNotificationForPriceChange(@NonNull Context context, CoinPojo coinPojo, String symbol, String message) {
+        Log.d(TAG, "sendNotification: ");
+        Intent intent = new Intent(context, CoinInfoActivity.class);
+        intent.putExtra(COIN, coinPojo);
+        NotificationUtils.create(context, symbol.hashCode(), intent, context.getString(R.string.app_name), message);
+        App.dbInstance.getAlertCoinDao().deleteAlert(symbol);
+
     }
 
     public static void cancel(Context context, int id) {

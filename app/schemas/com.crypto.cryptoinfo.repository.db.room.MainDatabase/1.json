@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ebe85977736fa7b690b05dd0057f4b45",
+    "identityHash": "3b0687fb0f5946b273037832ca9ad46f",
     "entities": [
       {
         "tableName": "coin",
@@ -166,7 +166,7 @@
       },
       {
         "tableName": "alert_coin",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`symbol` TEXT NOT NULL, `high` REAL NOT NULL, `low` REAL NOT NULL, `oneTime` INTEGER NOT NULL, PRIMARY KEY(`symbol`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`symbol` TEXT NOT NULL, `high` REAL NOT NULL, `low` REAL NOT NULL, `oneTime` INTEGER NOT NULL, `toCurrency` TEXT, PRIMARY KEY(`symbol`))",
         "fields": [
           {
             "fieldPath": "symbol",
@@ -191,6 +191,12 @@
             "columnName": "oneTime",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "toCurrency",
+            "columnName": "toCurrency",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -243,7 +249,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"ebe85977736fa7b690b05dd0057f4b45\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"3b0687fb0f5946b273037832ca9ad46f\")"
     ]
   }
 }

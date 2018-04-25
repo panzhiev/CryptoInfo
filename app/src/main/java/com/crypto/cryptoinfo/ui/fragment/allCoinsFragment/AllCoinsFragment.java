@@ -1,10 +1,12 @@
 package com.crypto.cryptoinfo.ui.fragment.allCoinsFragment;
 
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -22,8 +24,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.background.asyncTask.NotificationAsyncTask;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
+import com.crypto.cryptoinfo.repository.db.room.entity.AlertCoinPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
@@ -35,6 +40,7 @@ import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.FavouritesCoins
 import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.KeyboardUtils;
+import com.crypto.cryptoinfo.utils.NotificationUtils;
 import com.crypto.cryptoinfo.utils.Utils;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.PowerMenu;
@@ -42,6 +48,7 @@ import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +62,7 @@ import static com.crypto.cryptoinfo.utils.Constants.MAIN_SCREEN;
 import static com.crypto.cryptoinfo.utils.Constants.TIME_TO_UPD;
 import static com.crypto.cryptoinfo.utils.Constants.USD;
 import static com.crypto.cryptoinfo.utils.Constants.currencies;
+import static com.crypto.cryptoinfo.utils.NotificationUtils.sendNotificationForPriceChange;
 import static com.crypto.cryptoinfo.utils.ScreenUtils.convertDIPToPixels;
 import static com.crypto.cryptoinfo.utils.ScreenUtils.getScreenDimensionsInPx;
 import static com.jakewharton.rxbinding2.widget.RxTextView.textChanges;
@@ -294,7 +302,6 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
 
     @Override
     public void reloadList(ArrayList list) {
-
     }
 
     @Override
@@ -308,7 +315,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
 
     @Override
     public void notifyForChanges() {
-
+        new NotificationAsyncTask(getContext()).execute();
     }
 
     @Override
@@ -400,8 +407,8 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
             case R.id.action_currency:
                 // view is an anchor
                 mPowerMenu.showAsDropDown(emptyView,
-                        getScreenDimensionsInPx(getActivity())
-                                - convertDIPToPixels(getContext(), 120)
+                        getScreenDimensionsInPx(Objects.requireNonNull(getActivity()))
+                                - convertDIPToPixels(Objects.requireNonNull(getContext()), 120)
                                 - mPowerMenu.getContentViewWidth(),
                         0);
                 return true;
@@ -434,7 +441,6 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
-//        mAVLoadingIndicatorView.setVisibility(View.GONE);
     }
 
     @Override

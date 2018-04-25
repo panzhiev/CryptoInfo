@@ -38,26 +38,21 @@ public class MarketsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder: ");
         configureViewHolder(holder, position);
     }
 
     public void reloadList(ArrayList<MarketPrice> list) {
-        Log.d(TAG, "reloadList: ");
         mArrayList = list;
-        Log.d(TAG, "reloadList: " + mArrayList.toString());
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount: " + mArrayList.size());
         return mArrayList.size();
     }
 
     @Override
     public int getItemViewType(int position) {
-        Log.d(TAG, "getItemViewType: ");
         return position;
     }
 
@@ -79,13 +74,10 @@ public class MarketsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     private void configureViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Log.d(TAG, "configureViewHolder: ");
 
         ViewHolder viewHolder = (ViewHolder) holder;
         Context context = viewHolder.mTvPercentage.getContext();
         final MarketPrice marketPrice = mArrayList.get(position);
-
-        Log.d(TAG, "configureViewHolder: " + marketPrice.toString());
 
         String name = marketPrice.getName();
         String lastPrice = Utils.formatPrice(String.valueOf(marketPrice.getPrice().getLast()));

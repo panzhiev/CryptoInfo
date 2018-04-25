@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.background.asyncTask.NotificationAsyncTask;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
@@ -270,7 +271,7 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
 
     @Override
     public void notifyForChanges() {
-
+        new NotificationAsyncTask(getContext()).execute();
     }
 
     @Override
