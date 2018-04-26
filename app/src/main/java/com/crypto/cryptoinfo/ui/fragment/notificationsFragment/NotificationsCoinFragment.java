@@ -116,6 +116,12 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
                 break;
         }
 
+        tvPriceHigh.setText(price);
+        tvPriceLow.setText(price);
+
+//        seekBarValueHigh = currentValue;
+//        seekBarValueLow = currentValue;
+
         if (alertCoinPojo != null) {
             if (alertCoinPojo.getHigh() != 0.0) {
                 checkBoxHigh.setChecked(true);
@@ -126,12 +132,13 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
             if (alertCoinPojo.getLow() != 0.0) {
                 checkBoxLow.setChecked(true);
                 int progress = (int) (((alertCoinPojo.getLow() - 0.5 * currentValue) * 5000d) / (0.5 * currentValue));
+
+                Log.d(TAG, "currentValue: " + currentValue);
+                Log.d(TAG, "alertCoinPojo.getLow(): " + alertCoinPojo.getLow());
+                Log.d(TAG, "progress: " + progress);
                 seekBarLow.setProgress(progress);
             }
         }
-
-        tvPriceHigh.setText(price);
-        tvPriceLow.setText(price);
 
         return view;
     }
@@ -140,20 +147,19 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
         checkBoxHigh.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (isChecked) {
-                seekBarValueHigh = currentValue;
-                Log.d(TAG, "setListeners: seekBarValueHigh" + seekBarValueHigh);
+                Log.d(TAG, "setListeners: seekBarValueHigh " + seekBarValueHigh);
                 seekBarHigh.setEnabled(true);
             } else {
                 seekBarHigh.setEnabled(false);
+                seekBarHigh.setProgress(0);
             }
         });
         checkBoxLow.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (isChecked) {
-                seekBarValueLow = currentValue - (currentValue * 0.5d);
-                Log.d(TAG, "setListeners: seekBarValueLow" + seekBarValueLow);
                 seekBarLow.setEnabled(true);
             } else {
                 seekBarLow.setEnabled(false);
+                seekBarLow.setProgress(seekBarLow.getMax());
             }
         });
         seekBarHigh.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
