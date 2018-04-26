@@ -10,6 +10,7 @@ import static com.crypto.cryptoinfo.utils.Constants.CURRENT_CURRENCY_SYMBOL;
 import static com.crypto.cryptoinfo.utils.Constants.EUR;
 import static com.crypto.cryptoinfo.utils.Constants.LAST_UPD_ALL_COINS;
 import static com.crypto.cryptoinfo.utils.Constants.LAST_UPD_MARKETS;
+import static com.crypto.cryptoinfo.utils.Constants.SKIP;
 import static com.crypto.cryptoinfo.utils.Constants.USD;
 
 public class SharedPreferencesHelper {
@@ -45,6 +46,14 @@ public class SharedPreferencesHelper {
 
     public void putIntValue(String key, int value) {
         mSharedPreferences.edit().putInt(key, value).apply();
+    }
+
+    public int getSkip() {
+        return mSharedPreferences.getInt(SKIP, 0);
+    }
+
+    public void putSkip(int value) {
+        mSharedPreferences.edit().putInt(SKIP, value).apply();
     }
 
     public int getIntValue(String key) {

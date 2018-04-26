@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.background.asyncTask.DeleteAlertsAsync;
 import com.crypto.cryptoinfo.background.asyncTask.NotificationAsyncTask;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
@@ -42,6 +43,7 @@ import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -309,11 +311,21 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
         switch (item.getItemId()) {
             case R.id.action_currency:
                 // view is an anchor
-                mPowerMenu.showAsDropDown(emptyView,
-                        getScreenDimensionsInPx(getActivity())
-                                - convertDIPToPixels(getContext(), 120)
-                                - mPowerMenu.getContentViewWidth(),
-                        0);
+                if (SharedPreferencesHelper.getInstance().getSkip() == 0) {
+                    DialogFactory.createAttentionDialog(getContext(), () ->
+                            mPowerMenu.showAsDropDown(emptyView,
+                                    getScreenDimensionsInPx(Objects.requireNonNull(getActivity()))
+                                            - convertDIPToPixels(Objects.requireNonNull(getContext()), 120)
+                                            - mPowerMenu.getContentViewWidth(),
+                                    0))
+                            .show();
+                } else {
+                    mPowerMenu.showAsDropDown(emptyView,
+                            getScreenDimensionsInPx(Objects.requireNonNull(getActivity()))
+                                    - convertDIPToPixels(Objects.requireNonNull(getContext()), 120)
+                                    - mPowerMenu.getContentViewWidth(),
+                            0);
+                }
                 return true;
             case R.id.action_sort:
                 setSortLayoutVisibility();
@@ -387,10 +399,13 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
                         default:
                             break;
                     }
-                    SharedPreferencesHelper.getInstance().putCurrentCurrency(CURRENT_CURRENCY, currencies[position]);
-                    mPowerMenu.setSelectedPosition(position);
+                    if (!Objects.equals(SharedPreferencesHelper.getInstance().getCurrentCurrency(), currencies[position])) {
+                        SharedPreferencesHelper.getInstance().putCurrentCurrency(CURRENT_CURRENCY, currencies[position]);
+                        mPowerMenu.setSelectedPosition(position);
+                        mCoinsAdapter.notifyDataSetChanged();
+                        new DeleteAlertsAsync().execute();
+                    }
                     mPowerMenu.dismiss();
-                    mCoinsAdapter.notifyDataSetChanged();
                 })
                 .build();
 

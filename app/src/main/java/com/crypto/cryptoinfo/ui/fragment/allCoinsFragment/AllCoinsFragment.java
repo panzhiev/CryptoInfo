@@ -26,11 +26,13 @@ import android.widget.LinearLayout;
 
 import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.background.asyncTask.DeleteAlertsAsync;
 import com.crypto.cryptoinfo.background.asyncTask.NotificationAsyncTask;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.AlertCoinPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
+import com.crypto.cryptoinfo.ui.ChangeCurrencyListener;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.activity.MainActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
@@ -363,6 +365,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
                 .setMenuColor(getContext().getResources().getColor(R.color.color_fragment_bg))
                 .setSelectedMenuColor(getContext().getResources().getColor(R.color.colorPrimary))
                 .setOnMenuItemClickListener((position, item) -> {
+
                     switch (position) {
                         case 0:
                             menuItem.setTitle(USD);
@@ -376,10 +379,14 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
                         default:
                             break;
                     }
-                    SharedPreferencesHelper.getInstance().putCurrentCurrency(CURRENT_CURRENCY, currencies[position]);
-                    mPowerMenu.setSelectedPosition(position);
+
+                    if (!Objects.equals(SharedPreferencesHelper.getInstance().getCurrentCurrency(), currencies[position])) {
+                        SharedPreferencesHelper.getInstance().putCurrentCurrency(CURRENT_CURRENCY, currencies[position]);
+                        mPowerMenu.setSelectedPosition(position);
+                        mCoinsAdapter.notifyDataSetChanged();
+                        new DeleteAlertsAsync().execute();
+                    }
                     mPowerMenu.dismiss();
-                    mCoinsAdapter.notifyDataSetChanged();
                 })
                 .build();
 
@@ -405,12 +412,21 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_currency:
-                // view is an anchor
-                mPowerMenu.showAsDropDown(emptyView,
-                        getScreenDimensionsInPx(Objects.requireNonNull(getActivity()))
-                                - convertDIPToPixels(Objects.requireNonNull(getContext()), 120)
-                                - mPowerMenu.getContentViewWidth(),
-                        0);
+                if (SharedPreferencesHelper.getInstance().getSkip() == 0) {
+                    DialogFactory.createAttentionDialog(getContext(), () ->
+                            mPowerMenu.showAsDropDown(emptyView,
+                                    getScreenDimensionsInPx(Objects.requireNonNull(getActivity()))
+                                            - convertDIPToPixels(Objects.requireNonNull(getContext()), 120)
+                                            - mPowerMenu.getContentViewWidth(),
+                                    0))
+                            .show();
+                } else {
+                    mPowerMenu.showAsDropDown(emptyView,
+                            getScreenDimensionsInPx(Objects.requireNonNull(getActivity()))
+                                    - convertDIPToPixels(Objects.requireNonNull(getContext()), 120)
+                                    - mPowerMenu.getContentViewWidth(),
+                            0);
+                }
                 return true;
             case R.id.action_sort:
                 if (isVisibleSearchLayout) {

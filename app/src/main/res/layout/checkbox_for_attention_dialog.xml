@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/dimen_dialog_content_padding"
+    android:paddingTop="@dimen/dimen_dialog_between_elements">
+
+    <CheckBox
+        android:id="@+id/checkbox_skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/don_t_ask_me_again" />
+</FrameLayout>

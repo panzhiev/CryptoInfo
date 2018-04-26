@@ -59,8 +59,8 @@
     <string name="automatic_night_mode">Automatic Night Mode</string>
     <string name="automatically_toggles_night_mode">Automatically toggles Night Mode depending on the time</string>
     <string name="categ_other">Other</string>
-    <string name="pref_all_screen_value" translatable="false">0</string>
-    <string name="pref_fav_screen_value" translatable="false">1</string>
+    <string name="pref_all_screen_value">0</string>
+    <string name="pref_fav_screen_value">1</string>
     <string name="main_screen_title">Main Screen</string>
     <string name="tap_to_select_the_main_screen">Tap to select the main screen</string>
     <string name="when_the_price_will_be_more_than">when the price will be more than</string>
@@ -78,8 +78,15 @@
     </string-array>
 
     <!-- /Intent strings/ -->
-    <string name="send_email" translatable="false">Send email</string>
+    <string name="send_email">Send email</string>
     <string name="market">Market</string>
     <string name="change">Change</string>
+
+    <!--Others-->
+    <string name="attention">Attention</string>
+    <string name="attention_message">After changing the current currency, all the notification settings will be lost. Continue?</string>
+    <string name="no">no</string>
+    <string name="yes">yes</string>
+    <string name="don_t_ask_me_again">Don`t ask me again</string>
 
 </resources>

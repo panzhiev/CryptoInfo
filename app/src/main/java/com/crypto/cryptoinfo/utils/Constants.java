@@ -25,6 +25,7 @@ public class Constants {
     public static final String LAST_UPD_MARKETS = "LAST_UPD_ALL_MARKETS";
     public static final String CURRENT_CURRENCY = "CURRENT_CURRENCY";
     public static final String CURRENT_CURRENCY_SYMBOL = "CURRENT_CURRENCY_SYMBOL";
+    public static final String SKIP = "SKIP";
 
     //Currencies
     public static final String USD = "USD";
