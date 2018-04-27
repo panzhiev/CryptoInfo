@@ -116,21 +116,20 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
                 break;
         }
 
-        tvPriceHigh.setText(price);
-        tvPriceLow.setText(price);
-
-//        seekBarValueHigh = currentValue;
-//        seekBarValueLow = currentValue;
+//        tvPriceHigh.setText(price);
+//        tvPriceLow.setText(price);
 
         if (alertCoinPojo != null) {
             if (alertCoinPojo.getHigh() != 0.0) {
                 checkBoxHigh.setChecked(true);
+                seekBarValueHigh = alertCoinPojo.getHigh();
                 int progress = (int) (((alertCoinPojo.getHigh() - currentValue) * 5000d) / (0.5 * currentValue));
                 seekBarHigh.setProgress(progress);
             }
 
             if (alertCoinPojo.getLow() != 0.0) {
                 checkBoxLow.setChecked(true);
+                seekBarValueLow = alertCoinPojo.getLow();
                 int progress = (int) (((alertCoinPojo.getLow() - 0.5 * currentValue) * 5000d) / (0.5 * currentValue));
 
                 Log.d(TAG, "currentValue: " + currentValue);
@@ -181,9 +180,7 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
         seekBarLow.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean byUser) {
-                if (byUser) {
-                    updateUILow(i);
-                }
+                updateUILow(i);
             }
 
             @Override
@@ -246,6 +243,10 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
     }
 
     private void prepareSeekBars() {
+        //changing progress of seekBarHigh to call seekBar listener and update ui
+        seekBarHigh.setProgress(50);
+        seekBarHigh.setProgress(0);
+
         seekBarLow.setProgress(seekBarLow.getMax());
         if (checkBoxHigh.isChecked()) {
             seekBarHigh.setEnabled(true);
