@@ -232,9 +232,6 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
     @Override
     public void showProgressIndicator() {
-//        mProgressDialog = DialogFactory.createProgressDialog(getContext(), R.string.loading);
-//        mProgressDialog.show();
-//        mAVLoadingIndicatorView.setVisibility(View.VISIBLE);
     }
 
     @Override

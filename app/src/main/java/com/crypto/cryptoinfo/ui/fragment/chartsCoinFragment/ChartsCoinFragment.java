@@ -14,6 +14,7 @@ import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.PointTimePrice;
+import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 import com.crypto.cryptoinfo.tools.HourAxisValueFormatter;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
@@ -76,6 +77,8 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         String pastTime = String.valueOf(System.currentTimeMillis() / 1000L - Constants.SIX_HOURS) + "000";
         Log.d(TAG, pastTime);
 
+//        String chartPeriod = SharedPreferencesHelper.getInstance().
+
         mCoinsPresenter.getChartsData(mCoinPojo.getId(), pastTime);
         return view;
     }
@@ -106,7 +109,6 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 //        set1.setFillAlpha(110);
 //        set1.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
 //        set1.setDrawCircleHole(true);
-
 //        set1.setFillColor(Color.RED);
         set1.setDrawCircles(false);
 
