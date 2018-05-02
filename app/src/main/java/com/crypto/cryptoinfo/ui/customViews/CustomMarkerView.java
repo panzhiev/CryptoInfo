@@ -6,6 +6,7 @@ import android.support.annotation.LayoutRes;
 import android.widget.TextView;
 
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.utils.ScreenUtils;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
@@ -64,7 +65,16 @@ public class CustomMarkerView extends MarkerView {
     }
 
     @Override
-    public void draw(Canvas canvas, float posX, float posY) {
-        super.draw(canvas, posX, posY);
+    public void draw(Canvas canvas, float posx, float posy) {
+        // Check marker position and update offsets.
+        int w = getWidth();
+        if ((getResources().getDisplayMetrics().widthPixels - posx - w) < w) {
+            posx -= w;
+        }
+
+        // translate to the correct position and draw
+        canvas.translate(posx, posy);
+        draw(canvas);
+        canvas.translate(-posx, -posy);
     }
 }

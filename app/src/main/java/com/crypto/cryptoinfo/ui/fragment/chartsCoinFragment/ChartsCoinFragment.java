@@ -197,7 +197,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
         // no description text
         chart.getDescription().setEnabled(false);
-        chart.setDrawMarkerViews(true);
+        chart.setDrawMarkers(true);
         CustomMarkerView customMarkerView = new CustomMarkerView(getContext(), R.layout.marker_view);
         chart.setMarker(customMarkerView);
 
