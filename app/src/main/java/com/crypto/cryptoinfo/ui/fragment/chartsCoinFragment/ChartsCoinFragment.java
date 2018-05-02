@@ -1,6 +1,7 @@
 package com.crypto.cryptoinfo.ui.fragment.chartsCoinFragment;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -16,24 +17,31 @@ import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.PointTimePrice;
 import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 import com.crypto.cryptoinfo.tools.HourAxisValueFormatter;
+import com.crypto.cryptoinfo.tools.YValueFormatter;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
+import com.crypto.cryptoinfo.ui.customViews.CustomMarkerView;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
 import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.MarkerImage;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.crypto.cryptoinfo.utils.Constants.BTC;
 
 public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
@@ -91,13 +99,20 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
         progressBar.setVisibility(View.INVISIBLE);
         lineChart.setVisibility(View.VISIBLE);
-
         mPointList = list;
 
         ArrayList<Entry> yVals = new ArrayList<>();
 
-        for (PointTimePrice p : mPointList) {
-            yVals.add(new Entry(Float.parseFloat(p.getUnixTime()), Float.parseFloat(p.getPriceUsd())));
+        if (mCoinPojo.getSymbol().equals(BTC) && SharedPreferencesHelper.getInstance().getCurrentCurrency().equals(BTC)) {
+            yVals.add(new Entry(Float.parseFloat(mPointList.get(0).getUnixTime()), 0.0f));
+            for (PointTimePrice p : mPointList) {
+                yVals.add(new Entry(Float.parseFloat(p.getUnixTime()), Float.parseFloat(p.getPriceUsd())));
+            }
+            yVals.add(new Entry(Float.parseFloat(mPointList.get(0).getUnixTime()), 2.0f));
+        } else {
+            for (PointTimePrice p : mPointList) {
+                yVals.add(new Entry(Float.parseFloat(p.getUnixTime()), Float.parseFloat(p.getPriceUsd())));
+            }
         }
 
         // create a dataset and give it a type
@@ -108,17 +123,17 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
 //        set1.setFillAlpha(110);
 //        set1.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-//        set1.setDrawCircleHole(true);
+        set1.setDrawCircleHole(true);
 //        set1.setFillColor(Color.RED);
         set1.setDrawCircles(false);
 
         set1.setCubicIntensity(0.2f);
 
         set1.setLineWidth(1f);
-//        set1.setCircleRadius(5f);
-//        set1.setCircleHoleRadius(2.5f);
+        set1.setCircleRadius(5f);
+        set1.setCircleHoleRadius(2.5f);
         set1.setColor(ContextCompat.getColor(getContext(), R.color.colorTextDefault));
-//        set1.setCircleColor(Color.WHITE);
+        set1.setCircleColor(Color.WHITE);
         set1.setHighlightEnabled(true);
         set1.setHighLightColor(ContextCompat.getColor(getContext(), R.color.colorTextDefault));
         set1.setDrawHorizontalHighlightIndicator(false);
@@ -182,6 +197,10 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
         // no description text
         chart.getDescription().setEnabled(false);
+        chart.setDrawMarkerViews(true);
+        CustomMarkerView customMarkerView = new CustomMarkerView(getContext(), R.layout.marker_view);
+        chart.setMarker(customMarkerView);
+
 //        chart.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.transparent));
 
 //         mChart.setDrawHorizontalGrid(false);
@@ -224,6 +243,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         yAxis.setSpaceBottom(0);
         yAxis.setSpaceTop(0);
         yAxis.setYOffset(-7f);
+        yAxis.setValueFormatter(new YValueFormatter());
 //        yAxis.setAxisMinimum(data.getDataSetByIndex(0).getYMin() - data.getDataSetByIndex(0).getYMin() / 2000);
         yAxis.setAxisMinimum(data.getDataSetByIndex(0).getYMin());
         yAxis.setAxisMaximum(data.getDataSetByIndex(0).getYMax());
@@ -256,7 +276,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 //        chart.setBorderColor(ContextCompat.getColor(getContext(), R.color.red));
 
         // animate calls invalidate()...
-        chart.animateX(700);
+        chart.animateX(500);
 //        chart.invalidate();
 //        chart.animateY(1000);
     }

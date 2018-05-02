@@ -400,7 +400,7 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
                             break;
                     }
                     if (!Objects.equals(SharedPreferencesHelper.getInstance().getCurrentCurrency(), currencies[position])) {
-                        SharedPreferencesHelper.getInstance().putCurrentCurrency(CURRENT_CURRENCY, currencies[position]);
+                        SharedPreferencesHelper.getInstance().putCurrentCurrency(currencies[position]);
                         mPowerMenu.setSelectedPosition(position);
                         mCoinsAdapter.notifyDataSetChanged();
                         new DeleteAlertsAsync().execute();

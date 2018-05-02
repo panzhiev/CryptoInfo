@@ -4,6 +4,7 @@ package com.crypto.cryptoinfo.presenter;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 
 import com.crypto.cryptoinfo.App;
@@ -39,6 +40,7 @@ import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.crypto.cryptoinfo.utils.Constants.EUR;
+import static com.crypto.cryptoinfo.utils.Constants.USD;
 
 public class CoinsPresenter extends BasePresenter implements IPresenter {
 
@@ -91,12 +93,22 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                 .zip(mModel.getTickersWithConvert(EUR).subscribeOn(Schedulers.newThread()),
                         mModel.getCoinIds().subscribeOn(Schedulers.newThread()),
                         (responseTickers, responseIds) -> {
+                            CoinPojo coinPojo = responseTickers.get(0);
+
+                            String priceUsd = coinPojo.getPriceUsd();
+                            String priceEur = coinPojo.getPriceEur();
+
+                            if (priceUsd != null && priceEur != null) {
+                                float coefficientUsdEur = Float.parseFloat(coinPojo.getPriceUsd())
+                                        / Float.parseFloat(coinPojo.getPriceEur());
+                                SharedPreferencesHelper.getInstance().putCoefficent(coefficientUsdEur);
+                            }
+
                             for (int i = 0; i < responseTickers.size(); i++) {
                                 responseTickers.get(i).setNumId(responseIds.get(i).getAsJsonObject().get("id").toString());
                             }
                             return responseTickers;
                         })
-                .timeout(20, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> fragment.showProgressIndicator())
                 .doOnTerminate(() -> fragment.hideProgressIndicator())
@@ -248,12 +260,35 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                 jsonObject = new JSONObject(response.body().toString());
                 Log.d(TAG, jsonObject.toString());
 
-                JSONArray jsonArray = jsonObject.getJSONArray("price_usd");
-
                 ArrayList<PointTimePrice> list = new ArrayList<>();
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
-                    list.add(new PointTimePrice(jsonArray1.getString(0), jsonArray1.getString(1)));
+
+                switch (SharedPreferencesHelper.getInstance().getCurrentCurrency()) {
+                    case USD:
+                        JSONArray jsonArrayUsd = jsonObject.getJSONArray("price_usd");
+                        for (int i = 0; i < jsonArrayUsd.length(); i++) {
+                            JSONArray jsonArray1 = jsonArrayUsd.getJSONArray(i);
+                            list.add(new PointTimePrice(jsonArray1.getString(0), jsonArray1.getString(1)));
+                        }
+                        break;
+                    case EUR:
+                        JSONArray jsonArray = jsonObject.getJSONArray("price_usd");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                            String unixTime = jsonArray1.getString(0);
+                            String price = jsonArray1.getString(1);
+                            float coef = SharedPreferencesHelper.getInstance().getCoefficent();
+                            String priceEur = String.valueOf(Float.parseFloat(price) / coef);
+                            list.add(new PointTimePrice(unixTime, priceEur));
+                        }
+                        break;
+                    default:
+                        JSONArray jsonArrayBtc = jsonObject.getJSONArray("price_btc");
+                        Log.d(TAG, "responseChartsDataHandler: jsonArrayBtc " + jsonArrayBtc.toString());
+                        for (int i = 0; i < jsonArrayBtc.length(); i++) {
+                            JSONArray jsonArray1 = jsonArrayBtc.getJSONArray(i);
+                            list.add(new PointTimePrice(jsonArray1.getString(0), jsonArray1.getString(1)));
+                        }
+                        break;
                 }
 
                 fragment.setList(list);

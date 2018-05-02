@@ -26,6 +26,7 @@ public class Constants {
     public static final String CURRENT_CURRENCY = "CURRENT_CURRENCY";
     public static final String CURRENT_CURRENCY_SYMBOL = "CURRENT_CURRENCY_SYMBOL";
     public static final String SKIP = "SKIP";
+    public static final String COEFFICIENT = "COEFFICIENT";
 
     //Currencies
     public static final String USD = "USD";

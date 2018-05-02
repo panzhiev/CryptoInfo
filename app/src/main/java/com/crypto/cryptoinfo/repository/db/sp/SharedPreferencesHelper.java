@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import static com.crypto.cryptoinfo.utils.Constants.BTC;
+import static com.crypto.cryptoinfo.utils.Constants.COEFFICIENT;
 import static com.crypto.cryptoinfo.utils.Constants.CURRENT_CURRENCY;
 import static com.crypto.cryptoinfo.utils.Constants.CURRENT_CURRENCY_SYMBOL;
 import static com.crypto.cryptoinfo.utils.Constants.EUR;
@@ -48,16 +49,32 @@ public class SharedPreferencesHelper {
         mSharedPreferences.edit().putInt(key, value).apply();
     }
 
+    public int getIntValue(String key) {
+        return mSharedPreferences.getInt(key, -1);
+    }
+
+    public void putFloatValue(String key, float value) {
+        mSharedPreferences.edit().putFloat(key, value).apply();
+    }
+
+    public float getFloatValue(String key) {
+        return mSharedPreferences.getFloat(key, -1.0f);
+    }
+
+    public void putCoefficent(float value) {
+        mSharedPreferences.edit().putFloat(COEFFICIENT, value).apply();
+    }
+
+    public float getCoefficent() {
+        return mSharedPreferences.getFloat(COEFFICIENT, 1.0f);
+    }
+
     public int getSkip() {
         return mSharedPreferences.getInt(SKIP, 0);
     }
 
     public void putSkip(int value) {
         mSharedPreferences.edit().putInt(SKIP, value).apply();
-    }
-
-    public int getIntValue(String key) {
-        return mSharedPreferences.getInt(key, -1);
     }
 
     public void putLastUpdAllCoins(String lastUpd) {
@@ -84,8 +101,8 @@ public class SharedPreferencesHelper {
 //        return mSharedPreferences.getString(Config.TOKEN, "");
 //    }
 
-    public void putCurrentCurrency(String key, String value) {
-        mSharedPreferences.edit().putString(key, value).apply();
+    public void putCurrentCurrency(String value) {
+        mSharedPreferences.edit().putString(CURRENT_CURRENCY, value).apply();
         switch (value) {
             case USD:
                 putCurrentCurrencySymbol(CURRENT_CURRENCY_SYMBOL, "$");
@@ -97,7 +114,6 @@ public class SharedPreferencesHelper {
                 putCurrentCurrencySymbol(CURRENT_CURRENCY_SYMBOL, "฿");
                 break;
         }
-
     }
 
     public String getCurrentCurrency() {

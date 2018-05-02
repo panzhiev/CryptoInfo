@@ -23,7 +23,6 @@ public class HourAxisValueFormatter implements IAxisValueFormatter {
 
 //        TimeZone tz = TimeZone.getDefault();
 //        System.out.println("TimeZone   "+tz.getDisplayName(false, TimeZone.SHORT)+" Timezon id :: " +tz.getID());
-
     }
 
     /**
