@@ -53,6 +53,7 @@ public class HourAxisValueFormatter implements IAxisValueFormatter {
 //            mDate.setTime(timestamp);
             return mDataFormat.format(mDate);
         } catch (Exception ex) {
+
             return "xx";
         }
     }

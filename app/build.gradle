@@ -95,5 +95,5 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 
     implementation 'com.github.skydoves:powermenu:2.0.3'
-
+    implementation 'com.github.ceryle:RadioRealButton:v2.1.1'
 }

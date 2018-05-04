@@ -14,105 +14,63 @@
         app:cardCornerRadius="3dp"
         app:cardElevation="2dp">
 
-        <RadioGroup
+        <co.ceryle.radiorealbutton.RadioRealButtonGroup
+            android:id="@+id/rg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="6">
+            app:rrbg_animateDrawables_enter="overshoot"
+            app:rrbg_animateSelector_duration="500"
+            app:rrbg_animateTexts_enter="overshoot"
+            app:rrbg_backgroundColor="@color/colorPrimary"
+            app:rrbg_dividerColor="@color/colorPrimaryDark"
+            app:rrbg_dividerSize="1dp"
+            app:rrbg_selectorColor="@color/selectorColor"
+            app:rrbg_selectorSize="4dp">
 
-            <RadioButton
-                android:id="@+id/rb_1"
+            <co.ceryle.radiorealbutton.RadioRealButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/radio_button_bg"
-                android:button="@android:color/transparent"
-                android:checked="true"
-                android:gravity="center"
-                android:padding="@dimen/divider_xs"
-                android:text="@string/_6_hours" />
+                app:rrb_checked="true"
+                app:rrb_ripple="true"
+                app:rrb_rippleColor="@color/translucent_white"
+                app:rrb_text="@string/_6_hours" />
 
-            <View
-                android:layout_width="0.3dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark" />
-
-            <RadioButton
-                android:id="@+id/rb_2"
+            <co.ceryle.radiorealbutton.RadioRealButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/radio_button_bg"
-                android:button="@android:color/transparent"
-                android:gravity="center"
-                android:padding="@dimen/divider_xs"
-                android:text="@string/_1_day" />
+                app:rrb_ripple="true"
+                app:rrb_rippleColor="@color/translucent_white"
+                app:rrb_text="@string/_1_day" />
 
-            <View
-                android:layout_width="0.3dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark" />
-
-            <RadioButton
-                android:id="@+id/rb_3"
+            <co.ceryle.radiorealbutton.RadioRealButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/radio_button_bg"
-                android:button="@android:color/transparent"
-                android:gravity="center"
-                android:padding="@dimen/divider_xs"
-                android:text="@string/_7_days" />
+                app:rrb_ripple="true"
+                app:rrb_rippleColor="@color/translucent_white"
+                app:rrb_text="@string/_7_days" />
 
-            <View
-                android:layout_width="0.3dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark" />
-
-            <RadioButton
-                android:id="@+id/rb_4"
+            <co.ceryle.radiorealbutton.RadioRealButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/radio_button_bg"
-                android:button="@android:color/transparent"
-                android:gravity="center"
-                android:padding="@dimen/divider_xs"
-                android:text="@string/_1_month" />
+                app:rrb_ripple="true"
+                app:rrb_rippleColor="@color/translucent_white"
+                app:rrb_text="@string/_1_month" />
 
-            <View
-                android:layout_width="0.3dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark" />
-
-            <RadioButton
-                android:id="@+id/rb_5"
+            <co.ceryle.radiorealbutton.RadioRealButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/radio_button_bg"
-                android:button="@android:color/transparent"
-                android:gravity="center"
-                android:padding="@dimen/divider_xs"
-                android:text="@string/_6_months" />
+                app:rrb_ripple="true"
+                app:rrb_rippleColor="@color/translucent_white"
+                app:rrb_text="@string/_6_months" />
 
-            <View
-                android:layout_width="0.3dp"
-                android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark" />
-
-            <RadioButton
-                android:id="@+id/rb_6"
+            <co.ceryle.radiorealbutton.RadioRealButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/radio_button_bg"
-                android:button="@android:color/transparent"
-                android:gravity="center"
-                android:padding="@dimen/divider_xs"
-                android:text="@string/_1_year" />
+                app:rrb_ripple="true"
+                app:rrb_rippleColor="@color/translucent_white"
+                app:rrb_text="@string/_1_year" />
+        </co.ceryle.radiorealbutton.RadioRealButtonGroup>
 
-        </RadioGroup>
     </android.support.v7.widget.CardView>
 
     <FrameLayout
@@ -123,10 +81,10 @@
 
         <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/chart_coin"
-            android:clipChildren="false"
-            android:clipToPadding="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:visibility="gone" />
 
         <com.wang.avi.AVLoadingIndicatorView
@@ -135,7 +93,7 @@
             android:layout_height="@dimen/dimen_currency_icon"
             android:layout_gravity="center"
             android:visibility="visible"
-            app:indicatorColor="@color/colorPrimary"
+            app:indicatorColor="@color/color_progress_bar"
             app:indicatorName="BallPulseSyncIndicator" />
     </FrameLayout>
 </LinearLayout>

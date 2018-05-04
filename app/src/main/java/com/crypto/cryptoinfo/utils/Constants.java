@@ -7,12 +7,12 @@ public class Constants {
     public static final int COIN_FAV_SETTINGS_VIEW_TYPE = 1;
 
     //timestamps for charts in sec
-    public static final long SIX_HOURS = 21600;
-    public static final long ONE_DAY = 86400;
-    public static final long SEVEN_DAYS = 604800;
-    public static final long ONE_MONTH = 2629743;
-    public static final long SIX_MONTHS = 15778458;
-    public static final long ONE_YEAR = 31556926;
+    public static final long SIX_HOURS = 21600000L;
+    public static final long ONE_DAY = 86400000L;
+    public static final long SEVEN_DAYS = 604800000L;
+    public static final long ONE_MONTH = 2629743000L;
+    public static final long SIX_MONTHS = 15778458000L;
+    public static final long ONE_YEAR = 31556926000L;
 
     //keys for intent of CoinInfoActivity
     public static final String COIN = "COIN";

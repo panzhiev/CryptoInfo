@@ -88,5 +88,6 @@
     <string name="no">no</string>
     <string name="yes">yes</string>
     <string name="don_t_ask_me_again">Don`t ask me again</string>
+    <string name="price_">Price:\u0020</string>
 
 </resources>

@@ -265,6 +265,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
                 switch (SharedPreferencesHelper.getInstance().getCurrentCurrency()) {
                     case USD:
                         JSONArray jsonArrayUsd = jsonObject.getJSONArray("price_usd");
+                        //adding the first fake item to draw highlight vertical line correctly
                         for (int i = 0; i < jsonArrayUsd.length(); i++) {
                             JSONArray jsonArray1 = jsonArrayUsd.getJSONArray(i);
                             list.add(new PointTimePrice(jsonArray1.getString(0), jsonArray1.getString(1)));
