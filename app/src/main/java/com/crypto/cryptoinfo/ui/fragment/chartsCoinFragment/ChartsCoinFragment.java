@@ -195,9 +195,6 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
                 yVals.add(new Entry(Float.parseFloat(p.getUnixTime()), Float.parseFloat(p.getPriceUsd())));
             }
         }
-
-        Log.d(TAG, "setList: " + yVals);
-
         // create a dataset and give it a type
         LineDataSet set1 = new LineDataSet(yVals, "DataSet 1");
         set1.setDrawFilled(true);

@@ -72,8 +72,6 @@ public class XValueFormatter implements IAxisValueFormatter {
      */
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
-
         return mDataFormat.format(new Date((long) value));
-//        return Utils.formatPrice(String.valueOf(value));
     }
 }

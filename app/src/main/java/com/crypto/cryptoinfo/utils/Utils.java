@@ -25,6 +25,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import static com.crypto.cryptoinfo.utils.Constants.CHART_IMAGE_URL;
 import static com.crypto.cryptoinfo.utils.Constants.COIN_IMAGE_URL_128x128;
@@ -95,8 +96,15 @@ public class Utils {
         unformattedPrice = unformattedPrice.toLowerCase();
 
         if (unformattedPrice.startsWith("0") || unformattedPrice.contains("e-")) {
+
+            if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                return symbol.concat(" ").concat(String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedPrice)));
+            }
             return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedPrice)).concat(" ").concat(symbol);
         } else {
+            if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                return symbol.concat(" ").concat(String.format(Locale.getDefault(), "%1$,.2f", Double.parseDouble(unformattedPrice)));
+            }
             return String.format(Locale.getDefault(), "%1$,.2f", Double.parseDouble(unformattedPrice)).concat(" ").concat(symbol);
         }
     }
@@ -106,6 +114,11 @@ public class Utils {
         String symbol = SharedPreferencesHelper.getInstance().getCurrentCurrencySymbol();
 
         if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty() && unformattedMarketCap.startsWith("0")) {
+
+            if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                return symbol.concat(" ").concat(String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)));
+            }
+
             return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
         } else if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty()) {
 
@@ -114,6 +127,10 @@ public class Utils {
             DecimalFormat df = new DecimalFormat();
             df.setDecimalFormatSymbols(symbols);
             df.setGroupingSize(3);
+
+            if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                return symbol.concat(" ").concat(df.format(Double.parseDouble(unformattedMarketCap)));
+            }
 
             return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
         } else {
@@ -135,17 +152,26 @@ public class Utils {
 
         String unformattedMarketCap = String.valueOf(priceBtcDouble * marketCapUsdDouble / priceUsdDouble);
 
-        if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty() && unformattedMarketCap.startsWith("0")) {
-            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
-        } else if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty()) {
+        if (!unformattedMarketCap.isEmpty()) {
+            if (unformattedMarketCap.startsWith("0")) {
+                if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                    return symbol.concat(" ").concat(String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)));
+                }
+                return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
+            } else {
 
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-            symbols.setGroupingSeparator(' ');
-            DecimalFormat df = new DecimalFormat();
-            df.setDecimalFormatSymbols(symbols);
-            df.setGroupingSize(3);
+                DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+                symbols.setGroupingSeparator(' ');
+                DecimalFormat df = new DecimalFormat();
+                df.setDecimalFormatSymbols(symbols);
+                df.setGroupingSize(3);
 
-            return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
+                if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                    return symbol.concat(" ").concat(df.format(Double.parseDouble(unformattedMarketCap)));
+                }
+
+                return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
+            }
         }
         return "? ".concat(symbol);
     }
