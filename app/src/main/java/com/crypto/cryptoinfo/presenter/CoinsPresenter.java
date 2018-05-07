@@ -124,6 +124,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
     public void getMarketsPrices() {
         mSubscriptionGetMarketsPrices = mModel
                 .getMarketsPrices()
+                .timeout(15, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> fragment.showProgressIndicator())
@@ -176,6 +177,7 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
     public void getChartsData(String coin, String pastTime) {
         mSubscriptionGetCharts = mModel
                 .getGraphsPerPeriod(coin, pastTime, String.valueOf(System.currentTimeMillis()))
+                .timeout(15, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> fragment.showProgressIndicator())
@@ -187,7 +189,9 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
 
     public void getCoinSnapshot(@NonNull String fromSymbol, @NonNull String toSymbol) {
 
-        mSubscriptionGetCoinSnapshot = mModel.getCoinSnapshot(fromSymbol, toSymbol)
+        mSubscriptionGetCoinSnapshot = mModel
+                .getCoinSnapshot(fromSymbol, toSymbol)
+                .timeout(15, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> fragment.showProgressIndicator())
@@ -199,7 +203,9 @@ public class CoinsPresenter extends BasePresenter implements IPresenter {
 
     public void getCoinTicker(String coin) {
 
-        mSubscriptionGetCoinTicker = mModel.getTicker(coin)
+        mSubscriptionGetCoinTicker = mModel
+                .getTicker(coin)
+                .timeout(15, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(() -> fragment.showProgressIndicator())

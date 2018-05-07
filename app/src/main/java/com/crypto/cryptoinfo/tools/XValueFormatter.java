@@ -1,10 +1,12 @@
 package com.crypto.cryptoinfo.tools;
 
-import com.crypto.cryptoinfo.utils.Utils;
+import android.util.Log;
+
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -12,23 +14,24 @@ import java.util.TimeZone;
 
 public class XValueFormatter implements IAxisValueFormatter {
 
-    public static final int SIX_HOURS = 0;
-    public static final int ONE_DAY = 1;
-    public static final int SEVEN_DAYS = 2;
-    public static final int ONE_MONTH = 3;
-    public static final int SIX_MONTHS = 4;
-    public static final int ONE_YEAR = 5;
+    private static final String TAG = "XValueFormatter";
 
-    private int index;
+    private static final int SIX_HOURS = 0;
+    private static final int ONE_DAY = 1;
+    private static final int SEVEN_DAYS = 2;
+    private static final int ONE_MONTH = 3;
+    private static final int SIX_MONTHS = 4;
+    private static final int ONE_YEAR = 5;
 
     private DateFormat mDataFormat;
 
     public XValueFormatter(int periodIndex) {
 
-        index = periodIndex;
+        Log.d(TAG, "constructor init");
+
         String pattern = "";
 
-        switch (index) {
+        switch (periodIndex) {
             case SIX_HOURS:
                 pattern = "HH:mm";
                 break;
@@ -52,6 +55,8 @@ public class XValueFormatter implements IAxisValueFormatter {
                 break;
         }
 
+        Log.d(TAG, "XValueFormatter: pattern " + pattern);
+
         mDataFormat = new SimpleDateFormat(pattern, Locale.getDefault());
         mDataFormat.setTimeZone(TimeZone.getDefault());
     }
@@ -67,6 +72,7 @@ public class XValueFormatter implements IAxisValueFormatter {
      */
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
+
         return mDataFormat.format(new Date((long) value));
 //        return Utils.formatPrice(String.valueOf(value));
     }

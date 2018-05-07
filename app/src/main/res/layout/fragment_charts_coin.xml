@@ -25,7 +25,7 @@
             app:rrbg_dividerColor="@color/colorPrimaryDark"
             app:rrbg_dividerSize="1dp"
             app:rrbg_selectorColor="@color/selectorColor"
-            app:rrbg_selectorSize="4dp">
+            app:rrbg_selectorSize="3dp">
 
             <co.ceryle.radiorealbutton.RadioRealButton
                 android:layout_width="wrap_content"

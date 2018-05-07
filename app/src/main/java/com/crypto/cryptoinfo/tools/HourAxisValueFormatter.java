@@ -15,7 +15,7 @@ public class HourAxisValueFormatter implements IAxisValueFormatter {
     private DateFormat mDataFormat;
     private Date mDate;
 
-    public HourAxisValueFormatter(long referenceTimestamp) {
+    public HourAxisValueFormatter() {
 //        this.referenceTimestamp = referenceTimestamp;
         this.mDataFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         this.mDataFormat.setTimeZone(TimeZone.getDefault());
