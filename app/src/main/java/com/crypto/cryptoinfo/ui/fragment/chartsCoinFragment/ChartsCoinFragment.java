@@ -79,7 +79,6 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         View view = inflater.inflate(R.layout.fragment_charts_coin, container, false);
         ButterKnife.bind(this, view);
         setListeners();
-        // add some transparency to the color with "& 0x90FFFFFF"
         setupChart();
 
         mCoinPojo = ((CoinInfoActivity) getActivity()).getCoinPojo();
@@ -131,7 +130,9 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 
         // set data
         lineChart.setData(lineData);
-        lineChart.getXAxis().setValueFormatter(new XValueFormatter(index));
+        lineChart.getXAxis().setValueFormatter(new XValueFormatter(
+                index,
+                Long.parseLong(((ArrayList<PointTimePrice>) list).get(0).getUnixTime())));
         lineChart.animateX(500);
     }
 
@@ -165,14 +166,10 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
     @Override
     public void showProgressIndicator() {
         progressBar.setVisibility(View.VISIBLE);
-//        mProgressDialog = DialogFactory.createProgressDialog(getContext(), R.string.loading);
-//        mProgressDialog.show();
-//        mAVLoadingIndicatorView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressIndicator() {
-
         progressBar.setVisibility(View.INVISIBLE);
     }
 
@@ -266,7 +263,11 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 //        chart.setAutoScaleMinMaxEnabled(true);
 //        chart.getAxisLeft().setDrawTopYLabelEntry(true);
 
-        lineChart.getAxisRight().setEnabled(false);
+        YAxis yAxisRight = lineChart.getAxisRight();
+        yAxisRight.setEnabled(true);
+        yAxisRight.setDrawLabels(false);
+        yAxisRight.setDrawGridLines(false);
+
 //        chart.getAxisRight().setDrawZeroLine(true);
 
         YAxis yAxis = lineChart.getAxisLeft();
@@ -274,6 +275,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
         yAxis.setSpaceBottom(20);
         yAxis.setSpaceTop(2);
         yAxis.setYOffset(-7f);
+        yAxis.setLabelCount(10, true);
         yAxis.setValueFormatter(new YValueFormatter());
 //        yAxis.setAxisMinimum(data.getDataSetByIndex(0).getYMin() - data.getDataSetByIndex(0).getYMin() / 2000);
 //        yAxis.setAxisMinimum(data.getDataSetByIndex(0).getYMin());
@@ -292,13 +294,7 @@ public class ChartsCoinFragment extends Fragment implements IBaseFragment {
 //        xAxis.setAxisMinimum();
 
 //        IAxisValueFormatter xAxisFormatter = new HourAxisValueFormatter(Long.parseLong(mPointList.get(0).getUnixTime()));
-        xAxis.setValueFormatter(new XValueFormatter(index));
-
-//        SimpleDateFormat mDataFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
-//        mDataFormat.setTimeZone(TimeZone.getDefault());
-//        Date date = new Date(Long.parseLong(mPointList.get(0).getUnixTime()));
-//
-//        Log.d(TAG, mDataFormat.format(date));
+//        xAxis.setValueFormatter(new XValueFormatter(index));
 
 //        chart.moveViewToX(200f);
 

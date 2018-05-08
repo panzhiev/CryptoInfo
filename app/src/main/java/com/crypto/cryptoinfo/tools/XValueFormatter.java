@@ -15,6 +15,8 @@ import java.util.TimeZone;
 public class XValueFormatter implements IAxisValueFormatter {
 
     private static final String TAG = "XValueFormatter";
+    private long referenceTimestamp;
+    private Date mDate;
 
     private static final int SIX_HOURS = 0;
     private static final int ONE_DAY = 1;
@@ -25,7 +27,10 @@ public class XValueFormatter implements IAxisValueFormatter {
 
     private DateFormat mDataFormat;
 
-    public XValueFormatter(int periodIndex) {
+    public XValueFormatter(int periodIndex, long referenceTimestamp) {
+
+        this.referenceTimestamp = referenceTimestamp;
+        this.mDate = new Date();
 
         Log.d(TAG, "constructor init");
 
@@ -72,6 +77,21 @@ public class XValueFormatter implements IAxisValueFormatter {
      */
     @Override
     public String getFormattedValue(float value, AxisBase axis) {
-        return mDataFormat.format(new Date((long) value));
+
+        long relativeTimestamp = (long) value;
+        // Retrieve absolute timestamp (referenceTimestamp + relativeTimestamp)
+        long originalTimestamp = referenceTimestamp + relativeTimestamp;
+        return getHour(originalTimestamp);
+    }
+
+    /**
+     * Get formatted hour from a timestamp.
+     *
+     * @param timestamp timestamp to format.
+     * @return formatted hour.
+     */
+    private String getHour(long timestamp) {
+        mDate.setTime(timestamp);
+        return mDataFormat.format(mDate);
     }
 }
