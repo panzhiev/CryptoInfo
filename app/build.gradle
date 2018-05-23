@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 27
@@ -96,4 +97,8 @@ dependencies {
 
     implementation 'com.github.skydoves:powermenu:2.0.3'
     implementation 'com.github.ceryle:RadioRealButton:v2.1.1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
