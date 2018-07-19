@@ -35,14 +35,13 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.crypto.cryptoinfo.utils.Constants.BTC;
+import static com.crypto.cryptoinfo.utils.Constants.EUR;
 import static com.crypto.cryptoinfo.utils.Constants.USD;
 
 public class NotificationsCoinFragment extends Fragment implements IBaseFragment {
 
     private final String TAG = getClass().getSimpleName();
-
-    @BindView(R.id.btn_save_changes)
-    Button btnSaveChanges;
 
     @BindView(R.id.tv_price_high)
     TextView tvPriceHigh;
@@ -67,7 +66,6 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
     double seekBarValueLow;
 
     private CoinPojo mCoinPojo;
-    private AlertCoinPojo mAlertCoinPojo = new AlertCoinPojo();
     private static int JOB_ID = 101;
     private JobInfo mJobInfo;
     private JobScheduler mJobScheduler;
@@ -95,21 +93,50 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
         prepareSeekBars();
 
         mCoinPojo = ((CoinInfoActivity) getActivity()).getCoinPojo();
-//        mJobScheduler = (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        AlertCoinPojo alertCoinPojo = App.dbInstance.getAlertCoinDao().getAlertCoin(mCoinPojo.getSymbol());
 
         String currentCurrency = SharedPreferencesHelper.getInstance().getCurrentCurrency();
         String price;
         switch (currentCurrency) {
             case USD:
                 price = Utils.formatPrice(mCoinPojo.getPriceUsd());
-                tvPriceHigh.setText(price);
-                tvPriceLow.setText(price);
                 currentValue = Double.parseDouble(mCoinPojo.getPriceUsd());
                 break;
-            default:
-                tvPriceHigh.setText(mCoinPojo.getPriceUsd());
-                tvPriceLow.setText(mCoinPojo.getPriceUsd());
+            case EUR:
+                price = Utils.formatPrice(mCoinPojo.getPriceEur());
+                currentValue = Double.parseDouble(mCoinPojo.getPriceEur());
                 break;
+            case BTC:
+                price = Utils.formatPrice(mCoinPojo.getPriceBtc());
+                currentValue = Double.parseDouble(mCoinPojo.getPriceBtc());
+                break;
+            default:
+                price = Utils.formatPrice(mCoinPojo.getPriceUsd());
+                currentValue = 1.0;
+                break;
+        }
+
+//        tvPriceHigh.setText(price);
+//        tvPriceLow.setText(price);
+
+        if (alertCoinPojo != null) {
+            if (alertCoinPojo.getHigh() != 0.0) {
+                checkBoxHigh.setChecked(true);
+                seekBarValueHigh = alertCoinPojo.getHigh();
+                int progress = (int) (((alertCoinPojo.getHigh() - currentValue) * 5000d) / (0.5 * currentValue));
+                seekBarHigh.setProgress(progress);
+            }
+
+            if (alertCoinPojo.getLow() != 0.0) {
+                checkBoxLow.setChecked(true);
+                seekBarValueLow = alertCoinPojo.getLow();
+                int progress = (int) (((alertCoinPojo.getLow() - 0.5 * currentValue) * 5000d) / (0.5 * currentValue));
+
+                Log.d(TAG, "currentValue: " + currentValue);
+                Log.d(TAG, "alertCoinPojo.getLow(): " + alertCoinPojo.getLow());
+                Log.d(TAG, "progress: " + progress);
+                seekBarLow.setProgress(progress);
+            }
         }
 
         return view;
@@ -119,24 +146,21 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
         checkBoxHigh.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (isChecked) {
-                seekBarValueHigh = currentValue;
-                Log.d(TAG, "setListeners: seekBarValueHigh" + seekBarValueHigh);
+                Log.d(TAG, "setListeners: seekBarValueHigh " + seekBarValueHigh);
                 seekBarHigh.setEnabled(true);
             } else {
                 seekBarHigh.setEnabled(false);
+                seekBarHigh.setProgress(0);
             }
         });
-
         checkBoxLow.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (isChecked) {
-                seekBarValueLow = currentValue - (currentValue * 0.5d);
-                Log.d(TAG, "setListeners: seekBarValueLow" + seekBarValueLow);
                 seekBarLow.setEnabled(true);
             } else {
                 seekBarLow.setEnabled(false);
+                seekBarLow.setProgress(seekBarLow.getMax());
             }
         });
-//        btnSaveChanges.setOnClickListener(v -> saveChanges());
         seekBarHigh.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean byUser) {
@@ -156,9 +180,7 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
         seekBarLow.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean byUser) {
-                if (byUser) {
-                    updateUILow(i);
-                }
+                updateUILow(i);
             }
 
             @Override
@@ -171,31 +193,6 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
             }
         });
-    }
-
-    @SuppressLint("StaticFieldLeak")
-    private void saveChanges() {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                if (!checkBoxHigh.isChecked() && !checkBoxLow.isChecked()) {
-                    App.dbInstance.getAlertCoinDao().deleteAlert(mCoinPojo.getSymbol());
-                    Log.d(TAG, "saveChanges: return");
-                    return null;
-                }
-
-                mAlertCoinPojo.setSymbol(mCoinPojo.getSymbol());
-                //TODO: add radio button for checking is one time alert or not
-                mAlertCoinPojo.setOneTime(true);
-                if (checkBoxHigh.isChecked()) mAlertCoinPojo
-                        .setHigh(seekBarValueHigh);
-                if (checkBoxLow.isChecked()) mAlertCoinPojo
-                        .setLow(seekBarValueLow);
-
-                App.dbInstance.getAlertCoinDao().insertAll(mAlertCoinPojo);
-                return null;
-            }
-        }.execute();
     }
 
     @Override
@@ -235,9 +232,6 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
     @Override
     public void showProgressIndicator() {
-//        mProgressDialog = DialogFactory.createProgressDialog(getContext(), R.string.loading);
-//        mProgressDialog.show();
-//        mAVLoadingIndicatorView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -245,16 +239,11 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
 
     }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        Log.d(TAG, "onHiddenChanged: started. Hidden = " + hidden);
-        if (hidden) {
-            saveChanges();
-        }
-    }
-
     private void prepareSeekBars() {
+        //changing progress of seekBarHigh to call seekBar listener and update ui
+        seekBarHigh.setProgress(50);
+        seekBarHigh.setProgress(0);
+
         seekBarLow.setProgress(seekBarLow.getMax());
         if (checkBoxHigh.isChecked()) {
             seekBarHigh.setEnabled(true);
@@ -268,7 +257,7 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
         }
     }
 
-    private void updateUIHigh(final int i) {
+    private void updateUIHigh(int i) {
         new Handler(Looper.getMainLooper()).post(() -> {
             double percentChange = ((double) i) / 100.0d;
             seekBarValueHigh = (currentValue * (100.0d + percentChange)) / 100.0d;
@@ -276,7 +265,7 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
         });
     }
 
-    private void updateUILow(final int i) {
+    private void updateUILow(int i) {
         new Handler(Looper.getMainLooper()).post(() -> {
             double percentChange = ((double) i) / 100.0d;
             seekBarValueLow = currentValue - (currentValue * (50.0d - percentChange)) / 100.0d;
@@ -302,7 +291,31 @@ public class NotificationsCoinFragment extends Fragment implements IBaseFragment
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: ");
+    }
+
+    @Override
     public void onDestroy() {
+        Log.d(TAG, "onDestroy: ");
+
+        if (!checkBoxHigh.isChecked() && !checkBoxLow.isChecked()) {
+            App.dbInstance.getAlertCoinDao().deleteAlert(mCoinPojo.getSymbol());
+        } else {
+            Log.d(TAG, "onDestroy: SAVE");
+            AlertCoinPojo alertCoinPojo = new AlertCoinPojo();
+            alertCoinPojo.setSymbol(mCoinPojo.getSymbol());
+            if (checkBoxHigh.isChecked()) {
+                alertCoinPojo.setHigh(seekBarValueHigh);
+            }
+            if (checkBoxLow.isChecked()) {
+                alertCoinPojo.setLow(seekBarValueLow);
+            }
+            App.dbInstance.getAlertCoinDao().insertAll(alertCoinPojo);
+            Log.d(TAG, "onDestroy: alertCoinPojo " + alertCoinPojo);
+        }
+
         super.onDestroy();
 //        if (mCoinsPresenter != null) {
 //            mCoinsPresenter.unsubscribe();

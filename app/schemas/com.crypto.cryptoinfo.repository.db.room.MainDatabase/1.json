@@ -2,23 +2,17 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "09ebd9eacdb0c90ebc12e68032979afc",
+    "identityHash": "3b0687fb0f5946b273037832ca9ad46f",
     "entities": [
       {
         "tableName": "coin",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` TEXT, `name` TEXT, `symbol` TEXT, `rank` TEXT, `priceUsd` TEXT, `priceBtc` TEXT, `_24hVolumeUsd` TEXT, `marketCapUsd` TEXT, `availableSupply` TEXT, `maxSupply` TEXT, `totalSupply` TEXT, `percentChange1h` TEXT, `percentChange24h` TEXT, `percentChange7d` TEXT, `lastUpdated` TEXT, `numId` TEXT, `isFavourite` INTEGER NOT NULL, `priceEur` TEXT, `_24hVolumeEur` TEXT, `marketCapEur` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT, `symbol` TEXT, `rank` TEXT, `priceUsd` TEXT, `priceBtc` TEXT, `_24hVolumeUsd` TEXT, `marketCapUsd` TEXT, `availableSupply` TEXT, `maxSupply` TEXT, `totalSupply` TEXT, `percentChange1h` TEXT, `percentChange24h` TEXT, `percentChange7d` TEXT, `lastUpdated` TEXT, `numId` TEXT, `isFavourite` INTEGER NOT NULL, `priceEur` TEXT, `_24hVolumeEur` TEXT, `marketCapEur` TEXT, PRIMARY KEY(`id`))",
         "fields": [
-          {
-            "fieldPath": "uid",
-            "columnName": "uid",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "name",
@@ -137,9 +131,9 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "uid"
+            "id"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -172,7 +166,7 @@
       },
       {
         "tableName": "alert_coin",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`symbol` TEXT NOT NULL, `high` REAL NOT NULL, `low` REAL NOT NULL, `oneTime` INTEGER NOT NULL, PRIMARY KEY(`symbol`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`symbol` TEXT NOT NULL, `high` REAL NOT NULL, `low` REAL NOT NULL, `oneTime` INTEGER NOT NULL, `toCurrency` TEXT, PRIMARY KEY(`symbol`))",
         "fields": [
           {
             "fieldPath": "symbol",
@@ -197,6 +191,12 @@
             "columnName": "oneTime",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "toCurrency",
+            "columnName": "toCurrency",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -207,11 +207,49 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "market_price",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`price` TEXT, `name` TEXT, `pair` TEXT, `namePair` TEXT NOT NULL, PRIMARY KEY(`namePair`))",
+        "fields": [
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pair",
+            "columnName": "pair",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "namePair",
+            "columnName": "namePair",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "namePair"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"09ebd9eacdb0c90ebc12e68032979afc\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"3b0687fb0f5946b273037832ca9ad46f\")"
     ]
   }
 }

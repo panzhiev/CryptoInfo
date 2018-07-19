@@ -1,6 +1,7 @@
 package com.crypto.cryptoinfo.ui.fragment.detailsCoinFragment;
 
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,24 +21,34 @@ import com.bumptech.glide.request.RequestOptions;
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
+import com.crypto.cryptoinfo.repository.db.room.entity.marketsPrices.MarketPrice;
+import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
-import com.crypto.cryptoinfo.ui.fragment.detailsCoinFragment.adapter.ExchangesAdapter;
+import com.crypto.cryptoinfo.ui.fragment.detailsCoinFragment.adapter.MarketsAdapter;
+import com.crypto.cryptoinfo.ui.fragment.detailsCoinFragment.viewModel.MarketsViewModel;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.Utils;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.crypto.cryptoinfo.utils.Constants.BTC;
+import static com.crypto.cryptoinfo.utils.Constants.BTC_SYMBOL;
+import static com.crypto.cryptoinfo.utils.Constants.EUR;
+import static com.crypto.cryptoinfo.utils.Constants.EUR_SYMBOL;
+import static com.crypto.cryptoinfo.utils.Constants.TIME_TO_UPD;
+import static com.crypto.cryptoinfo.utils.Constants.USD;
+import static com.crypto.cryptoinfo.utils.Constants.USD_SYMBOL;
 
 public class DetailsCoinFragment extends Fragment implements IBaseFragment {
 
     @BindView(R.id.iv_coin_icon)
     ImageView mIvCoinIcon;
-    @BindView(R.id.iv_coin_icon_exchanges)
+    @BindView(R.id.iv_coin_icon_markets)
     ImageView mIvCoinIconExchanges;
     @BindView(R.id.tv_price)
     TextView mTvPrice;
@@ -76,13 +88,17 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     AVLoadingIndicatorView mAVLoadingIndicatorView;
     @BindView(R.id.tv_no_exchanges)
     TextView mTvNoExchanges;
+    @BindView(R.id.tv_last_upd_markets)
+    TextView mTvLastUpdMarkets;
+    @BindView(R.id.ib_refresh)
+    ImageButton mIbRefresh;
+
+    private MarketsViewModel mMarketsViewModel;
 
     private final String TAG = getClass().getSimpleName();
-
     private CoinsPresenter mCoinsPresenter;
-
     private CoinPojo mCoinPojo;
-    private ExchangesAdapter mExchangesAdapter;
+    private MarketsAdapter mMarketsAdapter;
 
     public DetailsCoinFragment() {
         // Required empty public constructor
@@ -95,7 +111,10 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCoinsPresenter = new CoinsPresenter(this);
+        Log.d(TAG, "onCreate: ");
+        if (mCoinsPresenter == null) {
+            mCoinsPresenter = new CoinsPresenter(this);
+        }
     }
 
     @Override
@@ -111,9 +130,26 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
         mCoinPojo = ((CoinInfoActivity) getActivity()).getCoinPojo();
         parseCoinInfo();
 
-        mCoinsPresenter.getCoinSnapshot(mCoinPojo.getSymbol(), "USD");
+        MarketsViewModel.pair = (mCoinPojo.getSymbol() + SharedPreferencesHelper.getInstance().getCurrentCurrency()).toLowerCase();
+        mMarketsViewModel = ViewModelProviders.of(this).get(MarketsViewModel.class);
+        mMarketsViewModel.getMarketsList().observe(this, coins -> {
+                    setList((ArrayList) coins);
+                    mTvLastUpdMarkets.setText(Utils.longToDateTime(Long.parseLong(SharedPreferencesHelper.getInstance().getLastUpdMarkets())));
+                }
+        );
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: ");
+        String lastUpd = SharedPreferencesHelper.getInstance().getLastUpdMarkets();
+        mTvLastUpdMarkets.setText(Utils.longToDateTime(Long.parseLong(lastUpd)));
+        if (System.currentTimeMillis() - Long.parseLong(lastUpd) > TIME_TO_UPD) {
+            mCoinsPresenter.getMarketsPrices();
+        }
     }
 
     private void setUpRecyclerView() {
@@ -122,35 +158,29 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
         mRvExchanges.setNestedScrollingEnabled(false);
     }
 
-    private String formattingDoubleValues(String rawValue) {
-        return getString(R.string.usd_symbol) + " " + String.format(Locale.getDefault(), "%1$,.2f",
-                Double.parseDouble(rawValue));
-    }
-
     private void setListeners() {
+        mIbRefresh.setOnClickListener(v -> mCoinsPresenter.getMarketsPrices());
     }
 
     @Override
     public void setList(ArrayList list) {
         Log.d(TAG, "setList started");
-
         if (list == null || list.isEmpty()) {
-            Log.d(TAG, "list null or empty");
             mTvNoExchanges.setVisibility(View.VISIBLE);
             return;
         } else {
             mTvNoExchanges.setVisibility(View.GONE);
         }
 
-        Log.d(TAG, list.toString());
-
-        if (mExchangesAdapter == null) {
-            Log.d(TAG, "mExchangesAdapter == null");
-            mExchangesAdapter = new ExchangesAdapter(list);
-            mRvExchanges.setAdapter(mExchangesAdapter);
+        if (mMarketsAdapter == null) {
+            Log.d(TAG, "mMarketsAdapter == null");
+            mMarketsAdapter = new MarketsAdapter(list);
+            mRvExchanges.setAdapter(mMarketsAdapter);
         } else {
-            Log.d(TAG, "mCoinsAdapter != null");
-            mExchangesAdapter.reloadList(list);
+            Log.d(TAG, "mMarketsAdapter != null");
+            // should to set adapter again because of losing adapter after state lose
+            mRvExchanges.setAdapter(mMarketsAdapter);
+            mMarketsAdapter.reloadList(list);
         }
     }
 
@@ -181,13 +211,14 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
 
     @Override
     public void showProgressIndicator() {
-
         mAVLoadingIndicatorView.setVisibility(View.VISIBLE);
+        mIbRefresh.setVisibility(View.INVISIBLE);
     }
 
     @Override
     public void hideProgressIndicator() {
         mAVLoadingIndicatorView.setVisibility(View.GONE);
+        mIbRefresh.setVisibility(View.VISIBLE);
     }
 
 
@@ -200,8 +231,6 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
     }
 
     public void parseCoinInfo() {
-
-        String currentCurrency = this.getString(R.string.usd_symbol);
 
         Bitmap bitmap = Utils.getBitmapFromCryptoIconsAssets(getContext(), mCoinPojo.getSymbol().toLowerCase());
         if (bitmap != null) {
@@ -224,25 +253,102 @@ public class DetailsCoinFragment extends Fragment implements IBaseFragment {
                     .into(mIvCoinIconExchanges);
         }
 
-        mTvPriceValue.setText(
-                Utils.formatPrice(mCoinPojo.getPriceUsd())
-                        .concat(currentCurrency));
+        String currentCurrency = SharedPreferencesHelper.getInstance().getCurrentCurrency();
 
-        mTvMarketCapValue.setText(
-                Utils.formatPrice(mCoinPojo.getMarketCapUsd())
-                        .concat(currentCurrency));
+        String formatPrice = "";
+        String formatMarketCap = "";
+        String formatAvailableSupply = "";
+        String formatMaxSupply = "";
+        String formatVolume = "";
 
-        mTvAvailableSupplyValue.setText(
-                Utils.formatPrice(mCoinPojo.getAvailableSupply())
-                        .concat(currentCurrency));
+        switch (currentCurrency) {
+            case USD:
+                formatPrice = Utils.formatPrice(mCoinPojo.getPriceUsd());
+                formatMarketCap = Utils.formatMarketCap(mCoinPojo.getMarketCapUsd());
+                formatAvailableSupply = Utils.formatPrice(mCoinPojo.getAvailableSupply());
+                formatMaxSupply = Utils.formatPrice(mCoinPojo.getMaxSupply());
+                formatVolume = Utils.formatPrice(mCoinPojo.get24hVolumeUsd());
+                break;
+            case EUR:
+                formatPrice = Utils.formatPrice(mCoinPojo.getPriceEur());
+                formatMarketCap = Utils.formatMarketCap(mCoinPojo.getMarketCapEur());
 
-        mTvMaxSupplyValue.setText(
-                Utils.formatPrice(mCoinPojo.getMaxSupply())
-                        .concat(currentCurrency));
+                if (mCoinPojo.getPriceUsd() == null) {
+                    formatAvailableSupply = "? ".concat(EUR_SYMBOL);
+                    formatMaxSupply = "? ".concat(EUR_SYMBOL);
+                    formatVolume = "? ".concat(EUR_SYMBOL);
+                    break;
+                }
 
-        mTvVolume24hValue.setText(
-                Utils.formatPrice(mCoinPojo.get24hVolumeUsd())
-                        .concat(currentCurrency));
+                double coefficientUsdEur = Double.parseDouble(mCoinPojo.getPriceUsd())
+                        / Double.parseDouble(mCoinPojo.getPriceEur());
+
+                if (mCoinPojo.getAvailableSupply() != null) {
+                    double avSupply = Double.parseDouble(mCoinPojo.getAvailableSupply());
+                    formatAvailableSupply = Utils.formatPrice(String.valueOf(avSupply / coefficientUsdEur));
+                } else {
+                    formatAvailableSupply = "? ".concat(EUR_SYMBOL);
+                }
+
+                if (mCoinPojo.getMaxSupply() != null) {
+                    double maxSupply = Double.parseDouble(mCoinPojo.getMaxSupply());
+                    formatMaxSupply = Utils.formatPrice(String.valueOf(maxSupply / coefficientUsdEur));
+                } else {
+                    formatMaxSupply = "? ".concat(EUR_SYMBOL);
+                }
+
+                formatVolume = Utils.formatMarketCap(mCoinPojo.get_24hVolumeEur());
+
+                break;
+            case BTC:
+                formatPrice = Utils.formatPrice(mCoinPojo.getPriceBtc());
+
+                String priceUsd = mCoinPojo.getPriceUsd();
+                String marketCapUsd = mCoinPojo.getMarketCapUsd();
+                String priceBtc = mCoinPojo.getPriceBtc();
+
+                formatMarketCap = Utils.formatMarketCapForBtc(priceUsd, priceBtc, marketCapUsd);
+
+                if (mCoinPojo.getPriceUsd() == null) {
+                    formatAvailableSupply = "? ".concat(BTC_SYMBOL);
+                    formatMaxSupply = "? ".concat(BTC_SYMBOL);
+                    formatVolume = "? ".concat(BTC_SYMBOL);
+                    break;
+                }
+
+                double coefficientUsdBtc = Double.parseDouble(mCoinPojo.getPriceUsd())
+                        / Double.parseDouble(mCoinPojo.getPriceBtc());
+
+                if (mCoinPojo.getAvailableSupply() != null) {
+                    double avSupply = Double.parseDouble(mCoinPojo.getAvailableSupply());
+                    formatAvailableSupply = Utils.formatPrice(String.valueOf(avSupply / coefficientUsdBtc));
+                } else {
+                    formatAvailableSupply = "? ".concat(BTC_SYMBOL);
+                }
+
+                if (mCoinPojo.getMaxSupply() != null) {
+                    double maxSupply = Double.parseDouble(mCoinPojo.getMaxSupply());
+                    formatMaxSupply = Utils.formatPrice(String.valueOf(maxSupply / coefficientUsdBtc));
+                } else {
+                    formatMaxSupply = "? ".concat(BTC_SYMBOL);
+                }
+
+                if (mCoinPojo.get24hVolumeUsd() != null) {
+                    double volume = Double.parseDouble(mCoinPojo.get24hVolumeUsd());
+                    formatVolume = Utils.formatPrice(String.valueOf(volume / coefficientUsdBtc));
+                } else {
+                    formatVolume = "? ".concat(BTC_SYMBOL);
+                }
+                break;
+            default:
+                break;
+        }
+
+        mTvPriceValue.setText(formatPrice);
+        mTvMarketCapValue.setText(formatMarketCap);
+        mTvAvailableSupplyValue.setText(formatAvailableSupply);
+        mTvMaxSupplyValue.setText(formatMaxSupply);
+        mTvVolume24hValue.setText(formatVolume);
 
         Utils.formatPercentChange(getContext(), mTvPercentChange1hValue, mCoinPojo.getPercentChange1h());
         Utils.formatPercentChange(getContext(), mTvPercentChange24hValue, mCoinPojo.getPercentChange24h());

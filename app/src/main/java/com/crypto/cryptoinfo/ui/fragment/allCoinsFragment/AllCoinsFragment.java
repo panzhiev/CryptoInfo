@@ -1,10 +1,12 @@
 package com.crypto.cryptoinfo.ui.fragment.allCoinsFragment;
 
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -22,10 +24,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
+import com.crypto.cryptoinfo.App;
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.background.asyncTask.DeleteAlertsAsync;
+import com.crypto.cryptoinfo.background.asyncTask.NotificationAsyncTask;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
+import com.crypto.cryptoinfo.repository.db.room.entity.AlertCoinPojo;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
+import com.crypto.cryptoinfo.ui.ChangeCurrencyListener;
 import com.crypto.cryptoinfo.ui.activity.CoinInfoActivity;
 import com.crypto.cryptoinfo.ui.activity.MainActivity;
 import com.crypto.cryptoinfo.ui.fragment.IBaseFragment;
@@ -35,6 +42,7 @@ import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.FavouritesCoins
 import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.KeyboardUtils;
+import com.crypto.cryptoinfo.utils.NotificationUtils;
 import com.crypto.cryptoinfo.utils.Utils;
 import com.skydoves.powermenu.MenuAnimation;
 import com.skydoves.powermenu.PowerMenu;
@@ -42,6 +50,7 @@ import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +64,7 @@ import static com.crypto.cryptoinfo.utils.Constants.MAIN_SCREEN;
 import static com.crypto.cryptoinfo.utils.Constants.TIME_TO_UPD;
 import static com.crypto.cryptoinfo.utils.Constants.USD;
 import static com.crypto.cryptoinfo.utils.Constants.currencies;
+import static com.crypto.cryptoinfo.utils.NotificationUtils.sendNotificationForPriceChange;
 import static com.crypto.cryptoinfo.utils.ScreenUtils.convertDIPToPixels;
 import static com.crypto.cryptoinfo.utils.ScreenUtils.getScreenDimensionsInPx;
 import static com.jakewharton.rxbinding2.widget.RxTextView.textChanges;
@@ -148,7 +158,6 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
                 }
         );
 
-
         searchDisposable = textChanges(mEtSearch)
                 .map(inputText -> filter(inputText.toString()))
                 .subscribe(list -> setList((ArrayList) list), Throwable::printStackTrace);
@@ -191,7 +200,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
         }
 
         String lastUpd = SharedPreferencesHelper.getInstance().getLastUpdAllCoins();
-        if ((System.currentTimeMillis() - Long.parseLong(lastUpd) > TIME_TO_UPD)) {
+        if (System.currentTimeMillis() - Long.parseLong(lastUpd) > TIME_TO_UPD) {
             mCoinsPresenter.getCurrenciesList();
         }
     }
@@ -295,7 +304,6 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
 
     @Override
     public void reloadList(ArrayList list) {
-
     }
 
     @Override
@@ -309,7 +317,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
 
     @Override
     public void notifyForChanges() {
-
+        new NotificationAsyncTask(getContext()).execute();
     }
 
     @Override
@@ -357,6 +365,7 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
                 .setMenuColor(getContext().getResources().getColor(R.color.color_fragment_bg))
                 .setSelectedMenuColor(getContext().getResources().getColor(R.color.colorPrimary))
                 .setOnMenuItemClickListener((position, item) -> {
+
                     switch (position) {
                         case 0:
                             menuItem.setTitle(USD);
@@ -370,10 +379,14 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
                         default:
                             break;
                     }
-                    SharedPreferencesHelper.getInstance().putCurrentCurrency(CURRENT_CURRENCY, currencies[position]);
-                    mPowerMenu.setSelectedPosition(position);
+
+                    if (!Objects.equals(SharedPreferencesHelper.getInstance().getCurrentCurrency(), currencies[position])) {
+                        SharedPreferencesHelper.getInstance().putCurrentCurrency(currencies[position]);
+                        mPowerMenu.setSelectedPosition(position);
+                        mCoinsAdapter.notifyDataSetChanged();
+                        new DeleteAlertsAsync().execute();
+                    }
                     mPowerMenu.dismiss();
-                    mCoinsAdapter.notifyDataSetChanged();
                 })
                 .build();
 
@@ -399,14 +412,21 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_currency:
-                // view is an anchor
-
-
-                mPowerMenu.showAsDropDown(emptyView,
-                        getScreenDimensionsInPx(getActivity())
-                                - convertDIPToPixels(getContext(), 120)
-                                - mPowerMenu.getContentViewWidth(),
-                        0);
+                if (SharedPreferencesHelper.getInstance().getSkip() == 0) {
+                    DialogFactory.createAttentionDialog(getContext(), () ->
+                            mPowerMenu.showAsDropDown(emptyView,
+                                    getScreenDimensionsInPx(Objects.requireNonNull(getActivity()))
+                                            - convertDIPToPixels(Objects.requireNonNull(getContext()), 120)
+                                            - mPowerMenu.getContentViewWidth(),
+                                    0))
+                            .show();
+                } else {
+                    mPowerMenu.showAsDropDown(emptyView,
+                            getScreenDimensionsInPx(Objects.requireNonNull(getActivity()))
+                                    - convertDIPToPixels(Objects.requireNonNull(getContext()), 120)
+                                    - mPowerMenu.getContentViewWidth(),
+                            0);
+                }
                 return true;
             case R.id.action_sort:
                 if (isVisibleSearchLayout) {
@@ -430,20 +450,13 @@ public class AllCoinsFragment extends Fragment implements IBaseFragment, CoinsAd
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.setRefreshing(true);
         }
-//        mProgressDialog = DialogFactory.createProgressDialog(getContext(), R.string.loading);
-//        mProgressDialog.show();
-//        mAVLoadingIndicatorView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressIndicator() {
-//        if (mProgressDialog != null) {
-//            mProgressDialog.dismiss();
-//        }
         if (mSwipeRefreshLayout != null) {
             mSwipeRefreshLayout.setRefreshing(false);
         }
-//        mAVLoadingIndicatorView.setVisibility(View.GONE);
     }
 
     @Override

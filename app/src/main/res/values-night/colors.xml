@@ -16,7 +16,9 @@
     <color name="color_fragment_bg">#424242</color>
 
     <!-- progress bar -->
-    <color name="color_progress_bar">#9E9E9E</color>
+    <color name="color_progress_bar">@color/colorAccent</color>
+
+    <color name="selectorColor">@color/colorAccent</color>
 
     <color name="colorYellowLight">#F6F5D1</color>
     <color name="buttonDisabled">#a0a0a0</color>
@@ -24,7 +26,12 @@
     <color name="colorTextDefault">#99ffffff</color>
     <color name="colorTextDefaultSecondary">#60ffffff</color>
 
+    <!--translucent day/night-->
+    <color name="translucent_day_night">#80000000</color>
+
     <color name="colorToolbarItems">#B9B9B9</color>
+
+    <color name="set_chart_color">@color/colorAccent</color>
 
     <color name="lightGray">#cfcfcf</color>
     <color name="navigation_drawer_bg">#E0E0E0</color>

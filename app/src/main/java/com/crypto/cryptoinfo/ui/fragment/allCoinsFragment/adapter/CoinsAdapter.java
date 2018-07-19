@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
@@ -65,7 +66,6 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
         mOnCoinItemClickListener = listener;
     }
-
 
 
     @Override
@@ -183,27 +183,20 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         switch (currentCurrency) {
             case USD:
-                formatPrice = Utils.formatPrice(coinPojo.getPriceUsd())
-                        .concat(USD_SYMBOL);
-                formatMarketCap = Utils.formatMarketCap(coinPojo.getMarketCapUsd())
-                        .concat(USD_SYMBOL);
+                formatPrice = Utils.formatPrice(coinPojo.getPriceUsd());
+                formatMarketCap = Utils.formatMarketCap(coinPojo.getMarketCapUsd());
                 break;
             case EUR:
-                formatPrice = Utils.formatPrice(coinPojo.getPriceEur())
-                        .concat(EUR_SYMBOL);
-                formatMarketCap = Utils.formatMarketCap(coinPojo.getMarketCapEur())
-                        .concat(EUR_SYMBOL);
+                formatPrice = Utils.formatPrice(coinPojo.getPriceEur());
+                formatMarketCap = Utils.formatMarketCap(coinPojo.getMarketCapEur());
                 break;
             case BTC:
-                formatPrice = Utils.formatPrice(coinPojo.getPriceBtc())
-                        .concat(BTC_SYMBOL);
+                formatPrice = Utils.formatPrice(coinPojo.getPriceBtc());
 
                 String priceUsd = coinPojo.getPriceUsd();
                 String marketCapUsd = coinPojo.getMarketCapUsd();
                 String priceBtc = coinPojo.getPriceBtc();
-
-                formatMarketCap = Utils.formatMarketCapForBtc(priceUsd, priceBtc, marketCapUsd)
-                        .concat(BTC_SYMBOL);
+                formatMarketCap = Utils.formatMarketCapForBtc(priceUsd, priceBtc, marketCapUsd);
                 break;
             default:
                 break;
@@ -232,6 +225,7 @@ public class CoinsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         return false;
                     }
                 })
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .apply(new RequestOptions()
                         .diskCacheStrategy(DiskCacheStrategy.NONE))
                 .into(holder.mIvChart);

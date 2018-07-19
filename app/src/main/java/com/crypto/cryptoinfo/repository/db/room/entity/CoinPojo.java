@@ -6,6 +6,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -15,10 +16,8 @@ import java.util.Comparator;
 @Entity(tableName = "coin")
 public class CoinPojo implements Parcelable{
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "uid")
-    private int uid;
-
+    @PrimaryKey
+    @NonNull
     @SerializedName("id")
     @Expose
     private String id;
@@ -115,7 +114,6 @@ public class CoinPojo implements Parcelable{
     }
 
     private CoinPojo(Parcel in) {
-        this.uid = in.readInt();
         this.id = in.readString();
         this.name = in.readString();
         this.symbol = in.readString();
@@ -148,14 +146,6 @@ public class CoinPojo implements Parcelable{
             return new CoinPojo[size];
         }
     };
-
-    public int getUid() {
-        return uid;
-    }
-
-    public void setUid(int uid) {
-        this.uid = uid;
-    }
 
     public String getId() {
         return id;
@@ -320,7 +310,6 @@ public class CoinPojo implements Parcelable{
     @Override
     public String toString() {
         return "CoinPojo{" +
-                "uid=" + uid +
                 ", id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", symbol='" + symbol + '\'' +
@@ -452,7 +441,6 @@ public class CoinPojo implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(uid);
         parcel.writeString(id);
         parcel.writeString(name);
         parcel.writeString(symbol);

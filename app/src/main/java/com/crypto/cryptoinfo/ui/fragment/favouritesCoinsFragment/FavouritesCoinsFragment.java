@@ -22,6 +22,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.background.asyncTask.DeleteAlertsAsync;
+import com.crypto.cryptoinfo.background.asyncTask.NotificationAsyncTask;
 import com.crypto.cryptoinfo.presenter.CoinsPresenter;
 import com.crypto.cryptoinfo.repository.db.room.entity.CoinPojo;
 import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
@@ -35,16 +37,27 @@ import com.crypto.cryptoinfo.ui.fragment.favouritesCoinsFragment.viewModel.Coins
 import com.crypto.cryptoinfo.utils.Constants;
 import com.crypto.cryptoinfo.utils.DialogFactory;
 import com.crypto.cryptoinfo.utils.Utils;
+import com.skydoves.powermenu.MenuAnimation;
+import com.skydoves.powermenu.PowerMenu;
+import com.skydoves.powermenu.PowerMenuItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.crypto.cryptoinfo.utils.Constants.BTC;
 import static com.crypto.cryptoinfo.utils.Constants.COIN;
+import static com.crypto.cryptoinfo.utils.Constants.CURRENT_CURRENCY;
+import static com.crypto.cryptoinfo.utils.Constants.EUR;
 import static com.crypto.cryptoinfo.utils.Constants.MAIN_SCREEN;
 import static com.crypto.cryptoinfo.utils.Constants.TIME_TO_UPD;
+import static com.crypto.cryptoinfo.utils.Constants.USD;
+import static com.crypto.cryptoinfo.utils.Constants.currencies;
+import static com.crypto.cryptoinfo.utils.ScreenUtils.convertDIPToPixels;
+import static com.crypto.cryptoinfo.utils.ScreenUtils.getScreenDimensionsInPx;
 
 public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, CoinsAdapter.OnCoinItemClickListener {
 
@@ -74,6 +87,9 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
     @BindView(R.id.ib_close)
     public ImageButton mIbClose;
 
+    @BindView(R.id.empty_view)
+    public View emptyView;
+
     private CoinsAdapter mCoinsAdapter;
     private CoinsFavListViewModel mCoinsFavListViewModel;
     private CoinsPresenter mCoinsPresenter;
@@ -86,6 +102,7 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
     private boolean isSortPriceUp = false;
     private boolean isSortCapUp = false;
     private boolean isSort1hUp = false;
+    private PowerMenu mPowerMenu;
 
     public FavouritesCoinsFragment() {
         // Required empty public constructor
@@ -256,7 +273,7 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
 
     @Override
     public void notifyForChanges() {
-
+        new NotificationAsyncTask(getContext()).execute();
     }
 
     @Override
@@ -283,12 +300,33 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.favourites_menu, menu);
+        MenuItem menuItem = menu.getItem(0);
+        menuItem.setTitle(SharedPreferencesHelper.getInstance().getCurrentCurrency());
+        buildDropDownMenu(menuItem);
         Utils.setToolbarIconsColor(getContext(), menu, R.color.colorToolbarItems);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_currency:
+                // view is an anchor
+                if (SharedPreferencesHelper.getInstance().getSkip() == 0) {
+                    DialogFactory.createAttentionDialog(getContext(), () ->
+                            mPowerMenu.showAsDropDown(emptyView,
+                                    getScreenDimensionsInPx(Objects.requireNonNull(getActivity()))
+                                            - convertDIPToPixels(Objects.requireNonNull(getContext()), 120)
+                                            - mPowerMenu.getContentViewWidth(),
+                                    0))
+                            .show();
+                } else {
+                    mPowerMenu.showAsDropDown(emptyView,
+                            getScreenDimensionsInPx(Objects.requireNonNull(getActivity()))
+                                    - convertDIPToPixels(Objects.requireNonNull(getContext()), 120)
+                                    - mPowerMenu.getContentViewWidth(),
+                            0);
+                }
+                return true;
             case R.id.action_sort:
                 setSortLayoutVisibility();
                 return true;
@@ -332,4 +370,61 @@ public class FavouritesCoinsFragment extends Fragment implements IBaseFragment, 
         intent.putExtra(COIN, coinPojo);
         startActivity(intent);
     }
+
+    public void buildDropDownMenu(MenuItem menuItem) {
+        mPowerMenu = new PowerMenu.Builder(getContext())
+                .addItem(new PowerMenuItem(USD, false))
+                .addItem(new PowerMenuItem(EUR, false))
+                .addItem(new PowerMenuItem(BTC, false))
+                .setWidth(300)
+                .setLifecycleOwner(this)
+                .setMenuRadius(10f)
+                .setMenuShadow(10f)
+                .setAnimation(MenuAnimation.SHOWUP_TOP_RIGHT)
+                .setTextColor(getContext().getResources().getColor(R.color.colorTextDefault))
+                .setSelectedTextColor(getContext().getResources().getColor(R.color.colorTextDefault))
+                .setMenuColor(getContext().getResources().getColor(R.color.color_fragment_bg))
+                .setSelectedMenuColor(getContext().getResources().getColor(R.color.colorPrimary))
+                .setOnMenuItemClickListener((position, item) -> {
+                    switch (position) {
+                        case 0:
+                            menuItem.setTitle(USD);
+                            break;
+                        case 1:
+                            menuItem.setTitle(EUR);
+                            break;
+                        case 2:
+                            menuItem.setTitle(BTC);
+                            break;
+                        default:
+                            break;
+                    }
+                    if (!Objects.equals(SharedPreferencesHelper.getInstance().getCurrentCurrency(), currencies[position])) {
+                        SharedPreferencesHelper.getInstance().putCurrentCurrency(currencies[position]);
+                        mPowerMenu.setSelectedPosition(position);
+                        mCoinsAdapter.notifyDataSetChanged();
+                        new DeleteAlertsAsync().execute();
+                    }
+                    mPowerMenu.dismiss();
+                })
+                .build();
+
+        int pos;
+        switch (SharedPreferencesHelper.getInstance().getCurrentCurrency()) {
+            case USD:
+                pos = 0;
+                break;
+            case EUR:
+                pos = 1;
+                break;
+            case BTC:
+                pos = 2;
+                break;
+            default:
+                pos = 0;
+                break;
+        }
+        mPowerMenu.setSelectedPosition(pos);
+    }
+
 }

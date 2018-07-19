@@ -14,6 +14,8 @@ public class ApiConstants {
     public static final String TICKERS = "ticker/?limit=2000";
     public static final String TICKER_SPECIFIC = "/ticker/{id}/";
 
-
     public static final String GLOBAL = "global/";
+
+    public static final String CRYPTOWAT_BASE_URL = "https://api.cryptowat.ch/";
+    public static final String CRYPTOWAT_PATH_MARKETS_PRICES = "markets/summaries";
 }

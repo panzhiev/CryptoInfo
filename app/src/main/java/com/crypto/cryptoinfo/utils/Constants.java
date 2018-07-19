@@ -7,12 +7,12 @@ public class Constants {
     public static final int COIN_FAV_SETTINGS_VIEW_TYPE = 1;
 
     //timestamps for charts in sec
-    public static final long SIX_HOURS = 21600;
-    public static final long ONE_DAY = 86400;
-    public static final long SEVEN_DAYS = 604800;
-    public static final long ONE_MONTH = 2629743;
-    public static final long SIX_MONTHS = 15778458;
-    public static final long ONE_YEAR = 31556926;
+    public static final long SIX_HOURS = 21600000L;
+    public static final long ONE_DAY = 86400000L;
+    public static final long SEVEN_DAYS = 604800000L;
+    public static final long ONE_MONTH = 2629743000L;
+    public static final long SIX_MONTHS = 15778458000L;
+    public static final long ONE_YEAR = 31556926000L;
 
     //keys for intent of CoinInfoActivity
     public static final String COIN = "COIN";
@@ -22,7 +22,11 @@ public class Constants {
     public static final String ENABLE_AUTO_NIGHT_MODE = "enable_auto_night_mode";
     public static final String MAIN_SCREEN = "pref_key_main_screen_list";
     public static final String LAST_UPD_ALL_COINS = "LAST_UPD_ALL_COINS";
+    public static final String LAST_UPD_MARKETS = "LAST_UPD_ALL_MARKETS";
     public static final String CURRENT_CURRENCY = "CURRENT_CURRENCY";
+    public static final String CURRENT_CURRENCY_SYMBOL = "CURRENT_CURRENCY_SYMBOL";
+    public static final String SKIP = "SKIP";
+    public static final String COEFFICIENT = "COEFFICIENT";
 
     //Currencies
     public static final String USD = "USD";
@@ -32,6 +36,7 @@ public class Constants {
     public static final String USD_SYMBOL = "$";
     public static final String EUR_SYMBOL = "€";
     public static final String BTC_SYMBOL = "฿";
+    public static final String PERCENT_SYMBOL = "%";
 
     //other
     public static final long TIME_TO_UPD = 300000;

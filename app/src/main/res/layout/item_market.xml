@@ -4,21 +4,22 @@
     android:id="@+id/ll_item_market"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:padding="@dimen/divider_s"
-        android:layout_height="wrap_content">
+        android:layout_height="@dimen/item_markets_height"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/tv_market_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:paddingStart="@dimen/divider_s"
             tools:text="Bitfinex" />
 
         <TextView
@@ -26,21 +27,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            tools:text="$ 2563.45" />
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/margin_price_market"
+            tools:text="2 563,45 $" />
+
+        <TextView
+            android:id="@+id/tv_market_change_percentage"
+            android:layout_width="96dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/gradient_market_item_green"
+            android:gravity="center_vertical|end"
+            android:paddingEnd="@dimen/divider_s"
+            android:paddingStart="@dimen/divider_s"
+            tools:text="-0.003%" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackground">
+
+
+        </FrameLayout>
 
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/tv_market_last_update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-light"
-        android:paddingBottom="@dimen/divider_s"
-        android:paddingEnd="@dimen/divider_s"
-        android:paddingStart="@dimen/divider_s"
-        android:textSize="@dimen/textSizeXSmall"
-        android:layout_gravity="end"
-        tools:text="23.02.2018" />
 
     <View
         android:layout_width="match_parent"

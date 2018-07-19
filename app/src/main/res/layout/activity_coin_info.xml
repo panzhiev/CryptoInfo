@@ -39,5 +39,4 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </android.support.design.widget.CoordinatorLayout>
-
     <!--<com.wang.avi.AVLoadingIndicatorView--><!--android:id="@+id/loading_indicator"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--app:indicatorColor="@color/colorPrimary"--><!--android:layout_gravity="center"--><!--android:visibility="visible"--><!--app:indicatorName="BallPulseSyncIndicator" />-->

@@ -1,31 +1,40 @@
 package com.crypto.cryptoinfo.utils;
 
+import android.arch.persistence.room.util.StringUtil;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Menu;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.crypto.cryptoinfo.R;
+import com.crypto.cryptoinfo.repository.db.sp.SharedPreferencesHelper;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import static com.crypto.cryptoinfo.utils.Constants.CHART_IMAGE_URL;
 import static com.crypto.cryptoinfo.utils.Constants.COIN_IMAGE_URL_128x128;
+import static com.crypto.cryptoinfo.utils.Constants.PERCENT_SYMBOL;
 
 
 public class Utils {
+
+    private static final String TAG = "Utils";
 
     public static void setToolbarIconsColor(Context context, Menu menu, int color) {
         for (int i = 0; i < menu.size(); i++) {
@@ -47,9 +56,7 @@ public class Utils {
             bitmap = BitmapFactory.decodeStream(istr);
         } catch (IOException e) {
             e.printStackTrace();
-            // handle exception
         }
-
         return bitmap;
     }
 
@@ -63,8 +70,12 @@ public class Utils {
     }
 
     public static String longToDateTime(long timestamp) {
-        Date date = new Date(timestamp * 1000);
-        DateFormat formatter = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.getDefault());
+        return longToDateTime(timestamp, "dd.MM.yyyy HH:mm:ss");
+    }
+
+    public static String longToDateTime(long timestamp, String dateFormatPattern) {
+        Date date = new Date(timestamp);
+        DateFormat formatter = new SimpleDateFormat(dateFormatPattern, Locale.getDefault());
         return formatter.format(date);
     }
 
@@ -76,22 +87,39 @@ public class Utils {
         return COIN_IMAGE_URL_128x128 + coinNumId + ".png";
     }
 
-
     public static String formatPrice(String unformattedPrice) {
 
-        if (unformattedPrice != null && !unformattedPrice.isEmpty() && unformattedPrice.startsWith("0")) {
-            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedPrice)).concat(" ");
-        } else if (unformattedPrice != null && !unformattedPrice.isEmpty()) {
-            return String.format(Locale.getDefault(), "%1$,.2f", Double.parseDouble(unformattedPrice)).concat(" ");
+        String symbol = SharedPreferencesHelper.getInstance().getCurrentCurrencySymbol();
+
+        if (unformattedPrice == null || unformattedPrice.isEmpty()) return "? ".concat(symbol);
+
+        unformattedPrice = unformattedPrice.toLowerCase();
+
+        if (unformattedPrice.startsWith("0") || unformattedPrice.contains("e-")) {
+
+            if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                return symbol.concat(" ").concat(String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedPrice)));
+            }
+            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedPrice)).concat(" ").concat(symbol);
         } else {
-            return "? ";
+            if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                return symbol.concat(" ").concat(String.format(Locale.getDefault(), "%1$,.2f", Double.parseDouble(unformattedPrice)));
+            }
+            return String.format(Locale.getDefault(), "%1$,.2f", Double.parseDouble(unformattedPrice)).concat(" ").concat(symbol);
         }
     }
 
     public static String formatMarketCap(String unformattedMarketCap) {
 
+        String symbol = SharedPreferencesHelper.getInstance().getCurrentCurrencySymbol();
+
         if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty() && unformattedMarketCap.startsWith("0")) {
-            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ");
+
+            if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                return symbol.concat(" ").concat(String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)));
+            }
+
+            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
         } else if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty()) {
 
             DecimalFormatSymbols symbols = new DecimalFormatSymbols();
@@ -100,16 +128,22 @@ public class Utils {
             df.setDecimalFormatSymbols(symbols);
             df.setGroupingSize(3);
 
-            return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ");
+            if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                return symbol.concat(" ").concat(df.format(Double.parseDouble(unformattedMarketCap)));
+            }
+
+            return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
         } else {
-            return "? ";
+            return "? ".concat(symbol);
         }
     }
 
     public static String formatMarketCapForBtc(String priceUsd, String priceBtc, String marketCapUsd) {
 
+        String symbol = SharedPreferencesHelper.getInstance().getCurrentCurrencySymbol();
+
         if (priceUsd == null || priceBtc == null || marketCapUsd == null) {
-            return "? ";
+            return "? ".concat(symbol);
         }
 
         Double priceUsdDouble = Double.parseDouble(priceUsd);
@@ -118,19 +152,28 @@ public class Utils {
 
         String unformattedMarketCap = String.valueOf(priceBtcDouble * marketCapUsdDouble / priceUsdDouble);
 
-        if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty() && unformattedMarketCap.startsWith("0")) {
-            return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ");
-        } else if (unformattedMarketCap != null && !unformattedMarketCap.isEmpty()) {
+        if (!unformattedMarketCap.isEmpty()) {
+            if (unformattedMarketCap.startsWith("0")) {
+                if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                    return symbol.concat(" ").concat(String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)));
+                }
+                return String.format(Locale.getDefault(), "%1$,.7f", Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
+            } else {
 
-            DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-            symbols.setGroupingSeparator(' ');
-            DecimalFormat df = new DecimalFormat();
-            df.setDecimalFormatSymbols(symbols);
-            df.setGroupingSize(3);
+                DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+                symbols.setGroupingSeparator(' ');
+                DecimalFormat df = new DecimalFormat();
+                df.setDecimalFormatSymbols(symbols);
+                df.setGroupingSize(3);
 
-            return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ");
+                if (Objects.equals(symbol, Constants.USD_SYMBOL)) {
+                    return symbol.concat(" ").concat(df.format(Double.parseDouble(unformattedMarketCap)));
+                }
+
+                return df.format(Double.parseDouble(unformattedMarketCap)).concat(" ").concat(symbol);
+            }
         }
-        return "? ";
+        return "? ".concat(symbol);
     }
 
     public static void formatPercentChange(Context context, TextView tv, String percentChange) {
@@ -149,8 +192,23 @@ public class Utils {
         }
     }
 
-    public static Drawable getTextDrawable(Context context, String symbol) {
+    public static String formatPercentChangeForMarkets(Double percentChange) {
 
+        String formattedValue = "-%";
+        if (percentChange != null) {
+            formattedValue = String.format(Locale.US, "%.3f", percentChange).concat(PERCENT_SYMBOL);
+        }
+        return formattedValue;
+    }
+
+    public static String capitalizeFirstLetter(String original) {
+        if (original == null || original.length() == 0) {
+            return original;
+        }
+        return original.substring(0, 1).toUpperCase() + original.substring(1);
+    }
+
+    public static Drawable getTextDrawable(Context context, String symbol) {
         return TextDrawable.builder()
                 .beginConfig()
                 .textColor(context.getResources().getColor(R.color.textDisabled))

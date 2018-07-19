@@ -4,8 +4,15 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import static com.crypto.cryptoinfo.utils.Constants.BTC;
+import static com.crypto.cryptoinfo.utils.Constants.COEFFICIENT;
 import static com.crypto.cryptoinfo.utils.Constants.CURRENT_CURRENCY;
+import static com.crypto.cryptoinfo.utils.Constants.CURRENT_CURRENCY_SYMBOL;
+import static com.crypto.cryptoinfo.utils.Constants.EUR;
 import static com.crypto.cryptoinfo.utils.Constants.LAST_UPD_ALL_COINS;
+import static com.crypto.cryptoinfo.utils.Constants.LAST_UPD_MARKETS;
+import static com.crypto.cryptoinfo.utils.Constants.SKIP;
+import static com.crypto.cryptoinfo.utils.Constants.USD;
 
 public class SharedPreferencesHelper {
 
@@ -46,12 +53,44 @@ public class SharedPreferencesHelper {
         return mSharedPreferences.getInt(key, -1);
     }
 
-    public void putLastUpdAllCoins (String lastUpd){
+    public void putFloatValue(String key, float value) {
+        mSharedPreferences.edit().putFloat(key, value).apply();
+    }
+
+    public float getFloatValue(String key) {
+        return mSharedPreferences.getFloat(key, -1.0f);
+    }
+
+    public void putCoefficent(float value) {
+        mSharedPreferences.edit().putFloat(COEFFICIENT, value).apply();
+    }
+
+    public float getCoefficent() {
+        return mSharedPreferences.getFloat(COEFFICIENT, 1.0f);
+    }
+
+    public int getSkip() {
+        return mSharedPreferences.getInt(SKIP, 0);
+    }
+
+    public void putSkip(int value) {
+        mSharedPreferences.edit().putInt(SKIP, value).apply();
+    }
+
+    public void putLastUpdAllCoins(String lastUpd) {
         mSharedPreferences.edit().putString(LAST_UPD_ALL_COINS, lastUpd).apply();
     }
 
     public String getLastUpdAllCoins() {
         return mSharedPreferences.getString(LAST_UPD_ALL_COINS, "0");
+    }
+
+    public void putLastUpdMarkets(String lastUpd) {
+        mSharedPreferences.edit().putString(LAST_UPD_MARKETS, lastUpd).apply();
+    }
+
+    public String getLastUpdMarkets() {
+        return mSharedPreferences.getString(LAST_UPD_MARKETS, "0");
     }
 
 //    public void putToken(String token) {
@@ -62,12 +101,31 @@ public class SharedPreferencesHelper {
 //        return mSharedPreferences.getString(Config.TOKEN, "");
 //    }
 
-    public void putCurrentCurrency (String key, String value) {
-        mSharedPreferences.edit().putString(key, value).apply();
+    public void putCurrentCurrency(String value) {
+        mSharedPreferences.edit().putString(CURRENT_CURRENCY, value).apply();
+        switch (value) {
+            case USD:
+                putCurrentCurrencySymbol(CURRENT_CURRENCY_SYMBOL, "$");
+                break;
+            case EUR:
+                putCurrentCurrencySymbol(CURRENT_CURRENCY_SYMBOL, "€");
+                break;
+            case BTC:
+                putCurrentCurrencySymbol(CURRENT_CURRENCY_SYMBOL, "฿");
+                break;
+        }
     }
 
     public String getCurrentCurrency() {
         return mSharedPreferences.getString(CURRENT_CURRENCY, "USD");
+    }
+
+    public void putCurrentCurrencySymbol(String key, String value) {
+        mSharedPreferences.edit().putString(key, value).apply();
+    }
+
+    public String getCurrentCurrencySymbol() {
+        return mSharedPreferences.getString(CURRENT_CURRENCY_SYMBOL, "$");
     }
 
     public SharedPreferences getSharedPreferencesLink() {
