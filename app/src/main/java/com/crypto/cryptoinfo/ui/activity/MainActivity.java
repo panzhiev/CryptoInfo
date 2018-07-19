@@ -2,6 +2,8 @@ package com.crypto.cryptoinfo.ui.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.NavigationView;
@@ -16,6 +18,7 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.crypto.cryptoinfo.R;
 import com.crypto.cryptoinfo.background.service.NotificationService;
@@ -200,6 +203,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    public Bitmap takeScreenShot(View view) {
+        Bitmap bitmap = Bitmap.createBitmap(view.getWidth(),
+                view.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+        return bitmap;
+    }
 
     public void navigator(Fragment fragment, String TAG) {
 
